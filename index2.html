@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELL IT - Private Equity Access</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600&display=swap" rel="stylesheet">
+
+    <style>
+        /* Typography System */
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-sans { font-family: 'Montserrat', sans-serif; }
+
+        /* Luxury Background Texture (Noise) */
+        .bg-luxury {
+            background-color: #080808;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)' opacity='0.05'/%3E%3C/svg%3E");
+        }
+
+        /* Platinum/Silver Text Gradient */
+        .text-platinum {
+            background: linear-gradient(to bottom, #ffffff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .text-platinum-hover:hover {
+            background: linear-gradient(to bottom, #ffffff 0%, #ffffff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Border Gradients */
+        .border-gradient {
+            border-image: linear-gradient(to right, #333, #666, #333) 1;
+        }
+
+        /* Utilities */
+        ::selection {
+            background-color: #333;
+            color: #fff;
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        onyx: '#0a0a0a',
+                        charcoal: '#1a1a1a',
+                        silver: '#C0C0C0',
+                    },
+                    letterSpacing: {
+                        'widest': '.25em',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-luxury text-gray-300 font-sans antialiased overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 py-6 md:py-8 backdrop-blur-sm bg-black/20 border-b border-white/5">
+        <div class="container mx-auto px-8 md:px-12 flex justify-between items-center">
+            
+            <!-- Logo -->
+            <div class="z-50">
+                <div class="text-2xl font-serif font-semibold tracking-wide text-white">
+                    SELL IT.
+                </div>
+            </div>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center space-x-12">
+                <a href="#philosophy" class="text-xs font-sans uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-500" data-key="nav.method">Le Protocole</a>
+                <a href="#results" class="text-xs font-sans uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-500" data-key="nav.proof">Preuve</a>
+                
+                <div class="h-4 w-px bg-white/20"></div>
+
+                <button onclick="toggleLang()" class="text-xs font-sans uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-500 flex items-center gap-2">
+                    <span id="current-lang">FR</span>
+                </button>
+
+                <a href="#contact" class="px-8 py-3 border border-white/20 text-xs font-sans uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all duration-500 rounded-sm">
+                    <span data-key="nav.access">Accès Membre</span>
+                </a>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <div class="md:hidden z-50 cursor-pointer text-white" onclick="toggleMenu()">
+                <i id="menu-icon" class="ph ph-list text-2xl"></i>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 bg-onyx z-40 hidden flex-col items-center justify-center space-y-8 opacity-0 transition-opacity duration-300">
+            <a href="#philosophy" onclick="toggleMenu()" class="text-xl font-serif text-white italic" data-key="nav.method">Le Protocole</a>
+            <a href="#results" onclick="toggleMenu()" class="text-xl font-serif text-white italic" data-key="nav.proof">Preuve</a>
+            <button onclick="toggleLang(); toggleMenu()" class="text-sm font-sans uppercase tracking-widest text-gray-400">
+                Langue : <span id="mobile-lang">FR</span>
+            </button>
+            <a href="#contact" onclick="toggleMenu()" class="text-xl font-serif text-white italic decoration-1 underline underline-offset-8" data-key="nav.access">Demander l'Accès</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center px-6 pt-20">
+        <!-- Background Radial Glow -->
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-white rounded-full blur-[150px] opacity-[0.03] pointer-events-none"></div>
+
+        <div class="container mx-auto text-center relative z-10 max-w-5xl">
+            <div class="mb-8 animate-fade-in-up">
+                <span class="text-[10px] md:text-xs font-sans font-medium uppercase tracking-[0.3em] text-gray-500" data-key="hero.label">EST. 2024 — PRIVATE EQUITY FOR CLINICS</span>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-normal leading-tight mb-12 text-platinum animate-fade-in-up delay-100 italic" data-key="hero.title">
+                Transformez l'intérêt patient<br> <span class="not-italic">en capital prévisible.</span>
+            </h1>
+            
+            <div class="flex flex-col items-center animate-fade-in-up delay-200">
+                <a href="#contact" class="group relative px-10 py-4 overflow-hidden border border-white/30 rounded-sm transition-all duration-500 hover:border-white/60">
+                    <span class="relative z-10 text-xs font-sans font-semibold uppercase tracking-widest text-white group-hover:text-white transition-colors" data-key="hero.cta">Candidater pour un Audit</span>
+                    <div class="absolute inset-0 bg-white/5 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left duration-500 ease-out"></div>
+                </a>
+                <div class="h-16 w-px bg-gradient-to-b from-white/30 to-transparent mt-12"></div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Philosophy Section (Cards) -->
+    <section id="philosophy" class="py-24 md:py-32 relative">
+        <div class="container mx-auto px-8 md:px-12">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 border-b border-white/10 pb-8">
+                <div class="max-w-xl">
+                    <h2 class="text-3xl md:text-4xl font-serif text-white mb-6 italic" data-key="philosophy.title">
+                        La vente n'est pas une option.<br>C'est une science.
+                    </h2>
+                    <p class="font-sans text-sm font-light leading-loose text-gray-400" data-key="philosophy.text">
+                        Les meilleurs chirurgiens ne laissent rien au hasard au bloc. Pourquoi le faites-vous en consultation ? Nous installons des protocoles rigoureux pour éliminer l'improvisation et sécuriser votre croissance.
+                    </p>
+                </div>
+                <div class="mt-8 md:mt-0">
+                    <span class="font-serif text-5xl text-white/5 font-bold">01</span>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Card 1 -->
+                <div class="p-10 bg-white/[0.02] border border-white/5 hover:border-white/20 transition-all duration-700 group">
+                    <div class="mb-8 text-gray-500 group-hover:text-white transition-colors duration-500">
+                        <i class="ph-thin ph-columns text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-serif text-white mb-4 italic" data-key="philosophy.cards.0.title">Architecture</h3>
+                    <p class="text-xs font-sans uppercase tracking-wider text-gray-500 group-hover:text-gray-300 transition-colors" data-key="philosophy.cards.0.desc">Construction d'un pôle vente autonome.</p>
+                </div>
+                <!-- Card 2 -->
+                <div class="p-10 bg-white/[0.02] border border-white/5 hover:border-white/20 transition-all duration-700 group">
+                    <div class="mb-8 text-gray-500 group-hover:text-white transition-colors duration-500">
+                        <i class="ph-thin ph-chart-line-up text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-serif text-white mb-4 italic" data-key="philosophy.cards.1.title">Contrôle</h3>
+                    <p class="text-xs font-sans uppercase tracking-wider text-gray-500 group-hover:text-gray-300 transition-colors" data-key="philosophy.cards.1.desc">Monitoring précis des KPI financiers.</p>
+                </div>
+                <!-- Card 3 -->
+                <div class="p-10 bg-white/[0.02] border border-white/5 hover:border-white/20 transition-all duration-700 group">
+                    <div class="mb-8 text-gray-500 group-hover:text-white transition-colors duration-500">
+                        <i class="ph-thin ph-diamond text-3xl"></i>
+                    </div>
+                    <h3 class="text-lg font-serif text-white mb-4 italic" data-key="philosophy.cards.2.title">Exécution</h3>
+                    <p class="text-xs font-sans uppercase tracking-wider text-gray-500 group-hover:text-gray-300 transition-colors" data-key="philosophy.cards.2.desc">Scripts et processus ne laissant aucune place à l'erreur.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section (Minimalist) -->
+    <section id="results" class="py-24 bg-charcoal border-y border-white/5">
+        <div class="container mx-auto px-8 md:px-12">
+            <div class="text-center mb-16">
+                <span class="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-gray-500 block mb-4" data-key="stats.label">PERFORMANCE VÉRIFIÉE</span>
+                <div class="w-12 h-px bg-white/20 mx-auto"></div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-white/10">
+                <!-- Stat 1 -->
+                <div class="py-8 md:px-8 text-center group">
+                    <div class="text-5xl md:text-6xl font-serif text-white mb-2 group-hover:text-platinum transition-colors duration-500" data-key="stats.items.0.value">370K€</div>
+                    <div class="text-xs font-sans uppercase tracking-widest text-gray-400" data-key="stats.items.0.label">CA Mensuel</div>
+                    <div class="text-[10px] font-sans text-gray-600 mt-2 italic" data-key="stats.items.0.sub">vs 150K€ avant protocole</div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="py-8 md:px-8 text-center group">
+                    <div class="text-5xl md:text-6xl font-serif text-white mb-2 group-hover:text-platinum transition-colors duration-500" data-key="stats.items.1.value">+146%</div>
+                    <div class="text-xs font-sans uppercase tracking-widest text-gray-400" data-key="stats.items.1.label">Croissance</div>
+                    <div class="text-[10px] font-sans text-gray-600 mt-2 italic" data-key="stats.items.1.sub">en 60 jours</div>
+                </div>
+                <!-- Stat 3 -->
+                <div class="py-8 md:px-8 text-center group">
+                    <div class="text-5xl md:text-6xl font-serif text-white mb-2 group-hover:text-platinum transition-colors duration-500" data-key="stats.items.2.value">72K€</div>
+                    <div class="text-xs font-sans uppercase tracking-widest text-gray-400" data-key="stats.items.2.label">Ventes Vidéo</div>
+                    <div class="text-[10px] font-sans text-gray-600 mt-2 italic" data-key="stats.items.2.sub">générés en 1 semaine</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="min-h-[80vh] flex flex-col items-center justify-center py-20 px-6 text-center relative">
+        <div class="max-w-2xl relative z-10">
+            <i class="ph-thin ph-lock-key text-4xl text-gray-600 mb-8 block mx-auto"></i>
+            
+            <h2 class="text-4xl md:text-5xl font-serif text-white mb-6 italic leading-tight" data-key="contact.title">
+                Nous ne cherchons pas de clients.
+            </h2>
+            <p class="text-lg md:text-xl font-sans font-light text-gray-400 mb-12" data-key="contact.subtitle">
+                Nous cherchons des partenaires prêts à scaler.
+            </p>
+            
+            <p class="text-sm font-sans text-gray-500 leading-relaxed mb-12 max-w-lg mx-auto border-t border-b border-white/5 py-8" data-key="contact.desc">
+                L'implémentation du protocole Sell It demande une rigueur absolue. Si vous êtes prêt à structurer votre clinique comme une entreprise de haut niveau, demandez votre audit.
+            </p>
+            
+            <a href="mailto:contact@sellit.com?subject=Candidature%20Audit%20Stratégique" class="inline-block px-12 py-5 bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors duration-300">
+                <span data-key="contact.cta">Réserver l'Audit Stratégique</span>
+            </a>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center md:text-left">
+        <div class="container mx-auto px-8 md:px-12 flex flex-col md:flex-row justify-between items-center text-[10px] font-sans uppercase tracking-widest text-gray-600">
+            <div class="mb-4 md:mb-0">
+                <span class="text-gray-400 font-semibold mr-2">SELL IT.</span>
+                Excellence Only.
+            </div>
+            <div>
+                &copy; <span id="year"></span> <span data-key="footer.rights">Tous droits réservés.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Set Year
+        document.getElementById('year').innerText = new Date().getFullYear();
+
+        // Mobile Menu Logic
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenu.classList.remove('opacity-0');
+                    mobileMenu.classList.add('flex');
+                }, 10);
+                menuIcon.classList.remove('ph-list');
+                menuIcon.classList.add('ph-x');
+            } else {
+                mobileMenu.classList.add('opacity-0');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                }, 300);
+                menuIcon.classList.remove('ph-x');
+                menuIcon.classList.add('ph-list');
+            }
+        }
+
+        // Language Logic
+        let currentLang = 'fr';
+        const content = {
+            fr: {
+                "nav.method": "Le Protocole",
+                "nav.proof": "Preuve",
+                "nav.access": "Accès Membre",
+                "hero.label": "EST. 2024 — PRIVATE EQUITY FOR CLINICS",
+                "hero.title": "Transformez l'intérêt patient<br> <span class='not-italic'>en capital prévisible.</span>",
+                "hero.cta": "Candidater pour un Audit",
+                "philosophy.title": "La vente n'est pas une option.<br>C'est une science.",
+                "philosophy.text": "Les meilleurs chirurgiens ne laissent rien au hasard au bloc. Pourquoi le faites-vous en consultation ? Nous installons des protocoles rigoureux pour éliminer l'improvisation et sécuriser votre croissance.",
+                "philosophy.cards.0.title": "Architecture",
+                "philosophy.cards.0.desc": "Construction d'un pôle vente autonome.",
+                "philosophy.cards.1.title": "Contrôle",
+                "philosophy.cards.1.desc": "Monitoring précis des KPI financiers.",
+                "philosophy.cards.2.title": "Exécution",
+                "philosophy.cards.2.desc": "Scripts et processus ne laissant aucune place à l'erreur.",
+                "stats.label": "PERFORMANCE VÉRIFIÉE",
+                "stats.items.0.value": "370K€",
+                "stats.items.0.label": "CA Mensuel",
+                "stats.items.0.sub": "vs 150K€ avant protocole",
+                "stats.items.1.value": "+146%",
+                "stats.items.1.label": "Croissance",
+                "stats.items.1.sub": "en 60 jours",
+                "stats.items.2.value": "72K€",
+                "stats.items.2.label": "Ventes Vidéo",
+                "stats.items.2.sub": "générés en 1 semaine",
+                "contact.title": "Nous ne cherchons pas de clients.",
+                "contact.subtitle": "Nous cherchons des partenaires prêts à scaler.",
+                "contact.desc": "L'implémentation du protocole Sell It demande une rigueur absolue. Si vous êtes prêt à structurer votre clinique comme une entreprise de haut niveau, demandez votre audit.",
+                "contact.cta": "Réserver l'Audit Stratégique",
+                "footer.rights": "Tous droits réservés."
+            },
+            en: {
+                "nav.method": "The Protocol",
+                "nav.proof": "Proof",
+                "nav.access": "Member Access",
+                "hero.label": "EST. 2024 — PRIVATE EQUITY FOR CLINICS",
+                "hero.title": "Turn patient interest<br> <span class='not-italic'>into predictable capital.</span>",
+                "hero.cta": "Apply for an Audit",
+                "philosophy.title": "Sales is not optional.<br>It is a science.",
+                "philosophy.text": "Top surgeons leave nothing to chance in the OR. Why do you do it in consultation? We install rigorous protocols to eliminate improvisation and secure your growth.",
+                "philosophy.cards.0.title": "Architecture",
+                "philosophy.cards.0.desc": "Building an autonomous sales unit.",
+                "philosophy.cards.1.title": "Control",
+                "philosophy.cards.1.desc": "Precise monitoring of financial KPIs.",
+                "philosophy.cards.2.title": "Execution",
+                "philosophy.cards.2.desc": "Scripts and processes leaving no room for error.",
+                "stats.label": "VERIFIED PERFORMANCE",
+                "stats.items.0.value": "$370K",
+                "stats.items.0.label": "Monthly Rev",
+                "stats.items.0.sub": "vs $150K before protocol",
+                "stats.items.1.value": "+146%",
+                "stats.items.1.label": "Growth",
+                "stats.items.1.sub": "in 60 days",
+                "stats.items.2.value": "$72K",
+                "stats.items.2.label": "Video Sales",
+                "stats.items.2.sub": "generated in 1 week",
+                "contact.title": "We are not looking for clients.",
+                "contact.subtitle": "We are looking for partners ready to scale.",
+                "contact.desc": "Implementing the Sell It protocol requires absolute rigor. If you are ready to structure your clinic like a high-level enterprise, request your audit.",
+                "contact.cta": "Book Strategic Audit",
+                "footer.rights": "All rights reserved."
+            }
+        };
+
+        function toggleLang() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            
+            // Update UI Labels
+            document.getElementById('current-lang').innerText = currentLang.toUpperCase();
+            document.getElementById('mobile-lang').innerText = currentLang.toUpperCase();
+            document.documentElement.lang = currentLang;
+
+            // Update Text Content
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (content[currentLang][key]) {
+                    el.innerHTML = content[currentLang][key]; // Use innerHTML for <br> tags
+                }
+            });
+        }
+    </script>
+</body>
+</html>
