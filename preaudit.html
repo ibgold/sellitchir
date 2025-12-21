@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELL IT - Pré-Audit</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Typography System */
+        .font-serif { font-family: 'Cormorant Garamond', serif; }
+        .font-sans { font-family: 'Inter', sans-serif; }
+
+        /* Custom Colors */
+        .bg-midnight { background-color: #050505; }
+        .text-klein { color: #3b5bdb; }
+        .bg-klein { background-color: #3b5bdb; }
+        .border-klein { border-color: #3b5bdb; }
+
+        /* Form Styling */
+        input[type="text"], 
+        input[type="email"], 
+        input[type="number"], 
+        textarea {
+            background-color: transparent;
+            border: none;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: white;
+            padding: 1rem 0;
+            width: 100%;
+            font-family: 'Inter', sans-serif;
+            font-weight: 300;
+            transition: all 0.5s ease;
+            border-radius: 0;
+            font-size: 1rem;
+        }
+
+        input:focus, textarea:focus {
+            outline: none;
+            border-bottom-color: #3b5bdb;
+            padding-left: 1rem;
+        }
+
+        /* Custom Checkbox */
+        .custom-checkbox input:checked + div {
+            background-color: #3b5bdb;
+            border-color: #3b5bdb;
+        }
+        .custom-checkbox input:checked + div svg {
+            opacity: 1;
+        }
+
+        /* Animations */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(20px);
+            animation: revealUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        @keyframes revealUp {
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        ::selection {
+            background-color: #3b5bdb;
+            color: #fff;
+        }
+    </style>
+</head>
+<body class="bg-midnight text-white font-sans antialiased overflow-x-hidden">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 px-6 py-8 md:px-12 md:py-10 bg-midnight/90 backdrop-blur-md border-b border-white/5 transition-all">
+        <div class="flex justify-between items-center max-w-5xl mx-auto w-full">
+            <a href="index4.html" class="text-3xl font-serif italic font-light tracking-tighter hover:text-klein transition-colors duration-500">
+                Sell It.
+            </a>
+            
+            <div class="flex items-center space-x-8">
+                <button onclick="toggleLang()" class="text-xs font-sans uppercase tracking-widest text-zinc-500 hover:text-white transition-colors">
+                    Lang: <span id="current-lang" class="text-white">FR</span>
+                </button>
+                <a href="index4.html" class="hidden md:block text-xs uppercase tracking-widest text-zinc-500 hover:text-white transition-colors" data-key="nav.back">
+                    Retour au site
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Header -->
+    <header class="pt-40 pb-20 px-6 relative">
+        <div class="max-w-3xl mx-auto text-center">
+            <span class="text-klein text-xs font-bold uppercase tracking-widest block mb-4 reveal-up" data-key="header.phase">Phase 01</span>
+            <h1 class="text-5xl md:text-7xl font-serif italic font-light mb-6 reveal-up delay-100" data-key="header.title">
+                Questionnaire Pré-Audit
+            </h1>
+            <p class="text-zinc-400 font-light text-lg max-w-xl mx-auto reveal-up delay-200" data-key="header.desc">
+                Ce document nous permet de comprendre votre fonctionnement actuel et de préparer l'architecture de votre croissance.
+            </p>
+        </div>
+    </header>
+
+    <!-- Form Section -->
+    <section class="pb-32 px-6">
+        <form id="auditForm" class="max-w-3xl mx-auto space-y-24">
+
+            <!-- Section I -->
+            <div class="reveal-up delay-300">
+                <div class="flex items-baseline gap-4 mb-12 border-b border-white/10 pb-4">
+                    <span class="text-4xl font-serif italic text-zinc-800">I.</span>
+                    <h2 class="text-2xl font-light uppercase tracking-widest" data-key="section1.title">Vision & Douleurs</h2>
+                </div>
+                
+                <div class="space-y-12">
+                    <div class="group field-group">
+                        <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section1.q1.label">Vos problèmes actuels</label>
+                        <textarea name="Problemes_Actuels" rows="2" data-placeholder="section1.q1.placeholder" placeholder="Quels sont les principaux freins, frictions ou stress que vous rencontrez aujourd'hui ?"></textarea>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section1.q2.label">Qualité des patients (Note /10)</label>
+                            <input name="Qualite_Patients" type="text" data-placeholder="section1.q2.placeholder" placeholder="Combien sont réellement éligibles ?">
+                        </div>
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section1.q3.label">Profils "Perte de temps"</label>
+                            <input name="Profils_Perte_Temps" type="text" data-placeholder="section1.q3.placeholder" placeholder="Quels profils vous font perdre du temps ?">
+                        </div>
+                    </div>
+
+                    <div class="group field-group">
+                        <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section1.q4.label">Objectifs de l'audit</label>
+                        <textarea name="Objectifs" rows="2" data-placeholder="section1.q4.placeholder" placeholder="Qu'attendez-vous concrètement (gain de temps, closing, filtrage...) ?"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section II -->
+            <div class="reveal-up">
+                <div class="flex items-baseline gap-4 mb-12 border-b border-white/10 pb-4">
+                    <span class="text-4xl font-serif italic text-zinc-800">II.</span>
+                    <h2 class="text-2xl font-light uppercase tracking-widest" data-key="section2.title">Le Parcours Patient</h2>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="group field-group">
+                        <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section2.q1.label">Les Étapes Chronologiques</label>
+                        <textarea name="Etapes_Chronologiques" rows="3" data-placeholder="section2.q1.placeholder" placeholder="Ex: Lead > Appel > Consult > Devis..."></textarea>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section2.q2.label">Canaux de communication</label>
+                            <input name="Canaux_Com" type="text" data-placeholder="section2.q2.placeholder" placeholder="WhatsApp, Mail, Téléphone, SMS...">
+                        </div>
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section2.q3.label">Outils & Supports</label>
+                            <input name="Outils_Supports" type="text" data-placeholder="section2.q3.placeholder" placeholder="PDF, Brochures, Devis types...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section III -->
+            <div class="reveal-up">
+                <div class="flex items-baseline gap-4 mb-12 border-b border-white/10 pb-4">
+                    <span class="text-4xl font-serif italic text-zinc-800">III.</span>
+                    <h2 class="text-2xl font-light uppercase tracking-widest" data-key="section3.title">Organisation & Équipe</h2>
+                </div>
+
+                <div class="space-y-12">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section3.q1.label">Qui répond aux leads ?</label>
+                            <input name="Qui_Repond_Leads" type="text" data-placeholder="section3.q1.placeholder" placeholder="Poste ou Prénom">
+                        </div>
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section3.q2.label">Qui assure le closing ?</label>
+                            <input name="Qui_Assure_Closing" type="text" data-placeholder="section3.q2.placeholder" placeholder="Suivi Consult -> Décision">
+                        </div>
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section3.q3.label">Qui gère les relances ?</label>
+                            <input name="Qui_Gere_Relances" type="text" data-placeholder="section3.q3.placeholder" placeholder="Devis non signés">
+                        </div>
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section3.q4.label">Qui gère le post-op ?</label>
+                            <input name="Qui_Gere_PostOp" type="text" data-placeholder="section3.q4.placeholder" placeholder="Suivi médical">
+                        </div>
+                    </div>
+
+                    <div class="group field-group">
+                        <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section3.q5.label">Ressenti Coordinatrice / Équipe</label>
+                        <textarea name="Ressenti_Equipe" rows="2" data-placeholder="section3.q5.placeholder" placeholder="Moments de débordement ? Tâches chronophages ?"></textarea>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section IV -->
+            <div class="reveal-up">
+                <div class="flex items-baseline gap-4 mb-12 border-b border-white/10 pb-4">
+                    <span class="text-4xl font-serif italic text-zinc-800">IV.</span>
+                    <h2 class="text-2xl font-light uppercase tracking-widest" data-key="section4.title">Performance & Data</h2>
+                </div>
+
+                <div class="space-y-12">
+                    <p class="text-xs text-zinc-500 italic" data-key="section4.subtitle">Moyenne mensuelle estimée</p>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                        <div class="group field-group bg-white/5 p-6 border border-white/5">
+                            <label class="text-xs uppercase tracking-widest text-klein mb-4 block" data-key="section4.kpi1">Leads / Mois</label>
+                            <input name="KPI_Leads" type="number" class="text-3xl font-serif font-light text-center border-none p-0 focus:padding-0" placeholder="0">
+                        </div>
+                        <div class="group field-group bg-white/5 p-6 border border-white/5">
+                            <label class="text-xs uppercase tracking-widest text-klein mb-4 block" data-key="section4.kpi2">Consults / Mois</label>
+                            <input name="KPI_Consults" type="number" class="text-3xl font-serif font-light text-center border-none p-0 focus:padding-0" placeholder="0">
+                        </div>
+                        <div class="group field-group bg-white/5 p-6 border border-white/5">
+                            <label class="text-xs uppercase tracking-widest text-klein mb-4 block" data-key="section4.kpi3">Actes / Mois</label>
+                            <input name="KPI_Actes" type="number" class="text-3xl font-serif font-light text-center border-none p-0 focus:padding-0" placeholder="0">
+                        </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section4.q1.label">Taux de No-Show (Lapins)</label>
+                            <input name="Taux_NoShow" type="text" data-placeholder="section4.q1.placeholder" placeholder="Estimation (Faible / Moyen / Élevé)">
+                        </div>
+                        <div class="group field-group">
+                            <label class="text-xs uppercase tracking-widest text-zinc-500 mb-2 block group-focus-within:text-klein transition-colors" data-key="section4.q2.label">Délai Contact -> Paiement</label>
+                            <input name="Delai_Paiement" type="text" data-placeholder="section4.q2.placeholder" placeholder="Ex: 2 semaines, 3 mois...">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Section V -->
+            <div class="reveal-up">
+                <div class="flex items-baseline gap-4 mb-12 border-b border-white/10 pb-4">
+                    <span class="text-4xl font-serif italic text-zinc-800">V.</span>
+                    <h2 class="text-2xl font-light uppercase tracking-widest" data-key="section5.title">Accès & Technique</h2>
+                </div>
+                <p class="text-sm text-zinc-400 mb-8 font-light" data-key="section5.desc">Cochez les éléments auxquels nous aurons accès pour l'audit :</p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Checkbox Item -->
+                    <label class="custom-checkbox cursor-pointer flex items-center space-x-4 p-4 border border-white/10 hover:border-klein transition-colors group">
+                        <input name="Acces_Agenda" type="checkbox" class="hidden">
+                        <div class="w-6 h-6 border border-zinc-600 flex items-center justify-center transition-colors group-hover:border-klein">
+                            <svg class="w-4 h-4 text-white opacity-0 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="text-sm font-light uppercase tracking-wide" data-key="section5.cb1">Agenda</span>
+                    </label>
+
+                    <label class="custom-checkbox cursor-pointer flex items-center space-x-4 p-4 border border-white/10 hover:border-klein transition-colors group">
+                        <input name="Acces_CRM" type="checkbox" class="hidden">
+                        <div class="w-6 h-6 border border-zinc-600 flex items-center justify-center transition-colors group-hover:border-klein">
+                            <svg class="w-4 h-4 text-white opacity-0 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="text-sm font-light uppercase tracking-wide" data-key="section5.cb2">CRM / Suivi Excel</span>
+                    </label>
+
+                    <label class="custom-checkbox cursor-pointer flex items-center space-x-4 p-4 border border-white/10 hover:border-klein transition-colors group">
+                        <input name="Acces_Comms" type="checkbox" class="hidden">
+                        <div class="w-6 h-6 border border-zinc-600 flex items-center justify-center transition-colors group-hover:border-klein">
+                            <svg class="w-4 h-4 text-white opacity-0 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="text-sm font-light uppercase tracking-wide" data-key="section5.cb3">Outils Communication (Mails/WhatsApp)</span>
+                    </label>
+
+                    <label class="custom-checkbox cursor-pointer flex items-center space-x-4 p-4 border border-white/10 hover:border-klein transition-colors group">
+                        <input name="Acces_Scripts" type="checkbox" class="hidden">
+                        <div class="w-6 h-6 border border-zinc-600 flex items-center justify-center transition-colors group-hover:border-klein">
+                            <svg class="w-4 h-4 text-white opacity-0 transition-opacity" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                            </svg>
+                        </div>
+                        <span class="text-sm font-light uppercase tracking-wide" data-key="section5.cb4">Scripts Existants</span>
+                    </label>
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="pt-12 text-center reveal-up">
+                <button type="button" onclick="handleSubmit()" class="group relative px-16 py-6 bg-transparent overflow-hidden border border-white/20 hover:border-klein transition-colors duration-500">
+                    <span class="relative z-10 text-sm font-bold uppercase tracking-widest group-hover:text-white transition-colors" data-key="submit">Envoyer l'Analyse</span>
+                    <div class="absolute inset-0 bg-klein transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out"></div>
+                </button>
+            </div>
+
+        </form>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 md:px-12 border-t border-white/5 text-center text-[10px] uppercase tracking-widest text-zinc-600">
+        Sell It System — Confidential Document
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        let currentLang = 'fr';
+        
+        const content = {
+            fr: {
+                "nav.back": "Retour au site",
+                "header.phase": "Phase 01",
+                "header.title": "Questionnaire Pré-Audit",
+                "header.desc": "Ce document nous permet de comprendre votre fonctionnement actuel et de préparer l'architecture de votre croissance.",
+                "section1.title": "Vision & Douleurs",
+                "section1.q1.label": "Vos problèmes actuels",
+                "section1.q1.placeholder": "Quels sont les principaux freins, frictions ou stress que vous rencontrez aujourd'hui ?",
+                "section1.q2.label": "Qualité des patients (Note /10)",
+                "section1.q2.placeholder": "Combien sont réellement éligibles ?",
+                "section1.q3.label": "Profils \"Perte de temps\"",
+                "section1.q3.placeholder": "Quels profils vous font perdre du temps ?",
+                "section1.q4.label": "Objectifs de l'audit",
+                "section1.q4.placeholder": "Qu'attendez-vous concrètement (gain de temps, closing, filtrage...) ?",
+                "section2.title": "Le Parcours Patient",
+                "section2.q1.label": "Les Étapes Chronologiques",
+                "section2.q1.placeholder": "Ex: Lead > Appel > Consult > Devis...",
+                "section2.q2.label": "Canaux de communication",
+                "section2.q2.placeholder": "WhatsApp, Mail, Téléphone, SMS...",
+                "section2.q3.label": "Outils & Supports",
+                "section2.q3.placeholder": "PDF, Brochures, Devis types...",
+                "section3.title": "Organisation & Équipe",
+                "section3.q1.label": "Qui répond aux leads ?",
+                "section3.q1.placeholder": "Poste ou Prénom",
+                "section3.q2.label": "Qui assure le closing ?",
+                "section3.q2.placeholder": "Suivi Consult -> Décision",
+                "section3.q3.label": "Qui gère les relances ?",
+                "section3.q3.placeholder": "Devis non signés",
+                "section3.q4.label": "Qui gère le post-op ?",
+                "section3.q4.placeholder": "Suivi médical",
+                "section3.q5.label": "Ressenti Coordinatrice / Équipe",
+                "section3.q5.placeholder": "Moments de débordement ? Tâches chronophages ?",
+                "section4.title": "Performance & Data",
+                "section4.subtitle": "Moyenne mensuelle estimée",
+                "section4.kpi1": "Leads / Mois",
+                "section4.kpi2": "Consults / Mois",
+                "section4.kpi3": "Actes / Mois",
+                "section4.q1.label": "Taux de No-Show (Lapins)",
+                "section4.q1.placeholder": "Estimation (Faible / Moyen / Élevé)",
+                "section4.q2.label": "Délai Contact -> Paiement",
+                "section4.q2.placeholder": "Ex: 2 semaines, 3 mois...",
+                "section5.title": "Accès & Technique",
+                "section5.desc": "Cochez les éléments auxquels nous aurons accès pour l'audit :",
+                "section5.cb1": "Agenda (Doctolib...)",
+                "section5.cb2": "CRM / Suivi Excel",
+                "section5.cb3": "Outils Communication (Mails/WhatsApp)",
+                "section5.cb4": "Scripts Existants",
+                "submit": "Envoyer l'Analyse",
+                "copySuccess": "Dossier généré et téléchargé ! Votre logiciel mail va s'ouvrir.",
+                "emailSubject": "Réponses Pré-Audit SELL IT"
+            },
+            en: {
+                "nav.back": "Back to site",
+                "header.phase": "Phase 01",
+                "header.title": "Pre-Audit Questionnaire",
+                "header.desc": "This document allows us to understand your current operations and prepare the architecture for your growth.",
+                "section1.title": "Vision & Pain Points",
+                "section1.q1.label": "Current Problems",
+                "section1.q1.placeholder": "What are the main obstacles, frictions, or stressors you encounter today?",
+                "section1.q2.label": "Patient Quality (Score /10)",
+                "section1.q2.placeholder": "How many are truly eligible?",
+                "section1.q3.label": "\"Time Waster\" Profiles",
+                "section1.q3.placeholder": "Which profiles waste your time?",
+                "section1.q4.label": "Audit Objectives",
+                "section1.q4.placeholder": "What do you concretely expect (time saving, closing, filtering...)?",
+                "section2.title": "Patient Journey",
+                "section2.q1.label": "Chronological Steps",
+                "section2.q1.placeholder": "Ex: Lead > Call > Consult > Quote...",
+                "section2.q2.label": "Communication Channels",
+                "section2.q2.placeholder": "WhatsApp, Email, Phone, SMS...",
+                "section2.q3.label": "Tools & Assets",
+                "section2.q3.placeholder": "PDFs, Brochures, Quote templates...",
+                "section3.title": "Organization & Team",
+                "section3.q1.label": "Who answers leads?",
+                "section3.q1.placeholder": "Role or Name",
+                "section3.q2.label": "Who handles closing?",
+                "section3.q2.placeholder": "Consult -> Decision Follow-up",
+                "section3.q3.label": "Who manages follow-ups?",
+                "section3.q3.placeholder": "Unsigned quotes",
+                "section3.q4.label": "Who manages post-op?",
+                "section3.q4.placeholder": "Medical follow-up",
+                "section3.q5.label": "Coordinator / Team Feedback",
+                "section3.q5.placeholder": "Overwhelmed moments? Time-consuming tasks?",
+                "section4.title": "Performance & Data",
+                "section4.subtitle": "Estimated Monthly Average",
+                "section4.kpi1": "Leads / Month",
+                "section4.kpi2": "Consults / Month",
+                "section4.kpi3": "Surgeries / Month",
+                "section4.q1.label": "No-Show Rate",
+                "section4.q1.placeholder": "Estimate (Low / Medium / High)",
+                "section4.q2.label": "Contact -> Payment Delay",
+                "section4.q2.placeholder": "Ex: 2 weeks, 3 months...",
+                "section5.title": "Access & Technical",
+                "section5.desc": "Check the items we will have access to for the audit:",
+                "section5.cb1": "Agenda (Doctolib...)",
+                "section5.cb2": "CRM / Excel Tracking",
+                "section5.cb3": "Comm Tools (Email/WhatsApp)",
+                "section5.cb4": "Existing Scripts",
+                "submit": "Submit Analysis",
+                "copySuccess": "File generated and downloaded! Email client opening.",
+                "emailSubject": "SELL IT Pre-Audit Responses"
+            }
+        };
+
+        function toggleLang() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            
+            document.getElementById('current-lang').innerText = currentLang.toUpperCase();
+            document.documentElement.lang = currentLang;
+
+            // Update Text Content
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (content[currentLang][key]) {
+                    el.innerText = content[currentLang][key];
+                }
+            });
+
+            // Update Placeholders
+            const inputs = document.querySelectorAll('[data-placeholder]');
+            inputs.forEach(el => {
+                const key = el.getAttribute('data-placeholder');
+                if (content[currentLang][key]) {
+                    el.placeholder = content[currentLang][key];
+                }
+            });
+        }
+
+        function handleSubmit() {
+            // 1. Collect Data formatted clearly
+            const form = document.getElementById('auditForm');
+            let messageBody = `SELL IT - PRE-AUDIT (${currentLang.toUpperCase()})\nDate: ${new Date().toLocaleDateString()}\n----------------------------------------\n\n`;
+
+            const fieldGroups = document.querySelectorAll('.field-group, .custom-checkbox');
+            
+            fieldGroups.forEach(group => {
+                const label = group.querySelector('label')?.innerText || group.querySelector('span')?.innerText;
+                const input = group.querySelector('input, textarea');
+                
+                if (input && label) {
+                    let value = input.value;
+                    if (input.type === 'checkbox') {
+                        value = input.checked ? '[X] OUI' : '[ ] NON';
+                    } else if (!value) {
+                        value = '---';
+                    }
+                    messageBody += `${label.toUpperCase()} :\n${value}\n\n`;
+                }
+            });
+
+            // 2. GENERATE TEXT FILE DOWNLOAD
+            try {
+                const blob = new Blob([messageBody], { type: 'text/plain' });
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `Audit_Sell_It_${new Date().toISOString().split('T')[0]}.txt`;
+                document.body.appendChild(a); // Required for Firefox
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            } catch (err) {
+                console.error("Erreur téléchargement", err);
+            }
+
+            // 3. COPY TO CLIPBOARD (BACKUP)
+            // Utilisation de document.execCommand('copy') pour éviter les erreurs de permission
+            const textArea = document.createElement("textarea");
+            textArea.value = messageBody;
+            
+            // S'assurer que l'élément est hors écran mais techniquement visible
+            textArea.style.position = "fixed";
+            textArea.style.left = "-9999px";
+            textArea.style.top = "0";
+            document.body.appendChild(textArea);
+            
+            textArea.focus();
+            textArea.select();
+            
+            try {
+                document.execCommand('copy');
+            } catch (err) {
+                console.error('Erreur copie presse-papier', err);
+            }
+            
+            document.body.removeChild(textArea);
+
+            // 4. OPEN MAIL CLIENT
+            const subject = content[currentLang].emailSubject;
+            const mailBody = currentLang === 'fr' 
+                ? "Bonjour,\n\nVeuillez trouver ci-joint mes réponses au questionnaire de pré-audit (fichier .txt).\n\nCordialement." 
+                : "Hello,\n\nPlease find attached my answers to the pre-audit questionnaire (.txt file).\n\nBest regards.";
+            
+            const mailtoLink = `mailto:contact@sellit.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(mailBody)}`;
+            
+            // Small delay to ensure download starts first
+            setTimeout(() => {
+                window.location.href = mailtoLink;
+                alert(content[currentLang].copySuccess);
+            }, 500);
+        }
+    </script>
+
+</body>
+</html>
