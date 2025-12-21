@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELL IT - Editorial</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Inter:wght@200;300;400;500&display=swap" rel="stylesheet">
+
+    <style>
+        /* Typography System */
+        .font-serif { font-family: 'Cormorant Garamond', serif; }
+        .font-sans { font-family: 'Inter', sans-serif; }
+
+        /* Custom Colors */
+        .bg-midnight { background-color: #050505; }
+        .text-klein { color: #002FA7; } /* Bleu Klein / Electric */
+        .bg-klein { background-color: #002FA7; }
+
+        /* Editorial Layout Utilities */
+        .vertical-text {
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            transform: rotate(180deg);
+        }
+
+        /* Smooth Reveal Animation */
+        .reveal-up {
+            opacity: 0;
+            transform: translateY(40px);
+            animation: revealUp 1s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+        }
+        
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+
+        @keyframes revealUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Image Hover Effect */
+        .hover-distort {
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .group:hover .hover-distort {
+            transform: scale(0.95);
+        }
+
+        /* Custom Selection */
+        ::selection {
+            background-color: #002FA7;
+            color: #fff;
+        }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        midnight: '#050505',
+                        klein: '#3b5bdb', // Slightly lighter for screen visibility
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-midnight text-white font-sans antialiased overflow-x-hidden">
+
+    <!-- Navbar (Minimalist Floating) -->
+    <nav class="fixed w-full z-50 px-6 py-8 md:px-12 md:py-10 mix-blend-difference text-white">
+        <div class="flex justify-between items-start">
+            <!-- Logo -->
+            <a href="#" class="text-3xl md:text-4xl font-serif italic font-light tracking-tighter hover:text-klein transition-colors duration-500">
+                Sell It.
+            </a>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex flex-col items-end space-y-1">
+                <div class="flex items-center space-x-8 text-[10px] uppercase tracking-[0.2em] font-light">
+                    <a href="#philosophy" class="hover:line-through decoration-klein decoration-2 transition-all" data-key="nav.method">Protocole</a>
+                    <a href="#results" class="hover:line-through decoration-klein decoration-2 transition-all" data-key="nav.proof">Preuve</a>
+                    <button onclick="toggleLang()" class="hover:text-klein transition-colors">
+                        (<span id="current-lang">FR</span>)
+                    </button>
+                </div>
+                <div class="pt-4">
+                    <a href="#contact" class="text-xs font-serif italic border-b border-white hover:border-klein hover:text-klein transition-colors pb-1" data-key="nav.access">
+                        Demander l'accès
+                    </a>
+                </div>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <button class="md:hidden text-2xl" onclick="toggleMenu()">
+                <i id="menu-icon" class="ph-thin ph-list"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobile-menu" class="fixed inset-0 bg-white text-midnight z-40 hidden flex-col justify-center items-center space-y-8">
+        <a href="#philosophy" onclick="toggleMenu()" class="text-5xl font-serif italic font-light" data-key="nav.method">Protocole</a>
+        <a href="#results" onclick="toggleMenu()" class="text-5xl font-serif italic font-light" data-key="nav.proof">Preuve</a>
+        <button onclick="toggleLang(); toggleMenu()" class="text-sm font-sans uppercase tracking-widest">
+            Langue : <span id="mobile-lang">FR</span>
+        </button>
+        <a href="#contact" onclick="toggleMenu()" class="text-xl border-b border-midnight pb-1" data-key="nav.access">Accès</a>
+    </div>
+
+    <!-- Hero Section (Editorial Layout) -->
+    <header class="min-h-screen relative flex flex-col justify-center px-6 md:px-12 pt-20">
+        <!-- Abstract Shape -->
+        <div class="absolute top-0 right-0 w-1/3 h-full bg-zinc-900/10 pointer-events-none border-l border-white/5 hidden md:block"></div>
+
+        <div class="relative z-10 max-w-6xl w-full mx-auto">
+            <div class="flex flex-col md:flex-row items-baseline gap-4 mb-2 reveal-up">
+                <span class="text-klein text-xs font-bold uppercase tracking-widest">N° 01</span>
+                <span class="text-zinc-500 text-[10px] uppercase tracking-[0.3em]" data-key="hero.label">The Revenue Protocol</span>
+            </div>
+
+            <h1 class="text-6xl md:text-8xl lg:text-9xl font-serif font-light leading-[0.9] mb-12 mix-blend-exclusion" data-key="hero.title">
+                <span class="block reveal-up delay-100">Transformer</span>
+                <span class="block italic text-zinc-400 reveal-up delay-200">l'Intérêt</span>
+                <span class="block reveal-up delay-300">en Capital.</span>
+            </h1>
+
+            <div class="flex flex-col md:flex-row justify-between items-end border-t border-white/10 pt-8 reveal-up delay-300">
+                <p class="max-w-md text-sm md:text-base font-light text-zinc-400 leading-relaxed mb-8 md:mb-0" data-key="philosophy.text">
+                    La vente n'est pas une improvisation. C'est une architecture. Nous installons les fondations invisibles de votre croissance.
+                </p>
+                
+                <a href="#contact" class="group flex items-center space-x-4 text-white hover:text-klein transition-colors duration-500">
+                    <span class="text-xs uppercase tracking-widest border-b border-white/30 pb-1 group-hover:border-klein" data-key="hero.cta">Candidater pour l'Audit</span>
+                    <i class="ph-light ph-arrow-right text-xl group-hover:translate-x-4 transition-transform duration-500"></i>
+                </a>
+            </div>
+        </div>
+        
+        <!-- Floating Vertical Text -->
+        <div class="absolute left-6 bottom-10 hidden md:block">
+            <span class="vertical-text text-[10px] uppercase tracking-[0.4em] text-zinc-700">Edition 2024 — Private Access</span>
+        </div>
+    </header>
+
+    <!-- Philosophy Section (Deconstructed Grid) -->
+    <section id="philosophy" class="py-32 px-6 md:px-12 relative overflow-hidden">
+        <div class="max-w-7xl mx-auto">
+            
+            <!-- Section Header -->
+            <div class="flex flex-col md:flex-row justify-between items-start mb-24">
+                <h2 class="text-4xl md:text-5xl font-serif italic mb-8 md:mb-0" data-key="philosophy.title">La Science<br>de la Vente.</h2>
+                <div class="w-24 h-px bg-klein md:mt-6"></div>
+            </div>
+
+            <!-- Asymmetric Content -->
+            <div class="relative">
+                <!-- Vertical Line -->
+                <div class="absolute left-1/2 top-0 bottom-0 w-px bg-white/5 hidden md:block"></div>
+
+                <!-- Item 1 (Left) -->
+                <div class="flex flex-col md:flex-row gap-12 mb-32 group">
+                    <div class="md:w-1/2 flex justify-end md:pr-12">
+                        <div class="text-right">
+                            <span class="text-8xl font-serif text-zinc-900 leading-none absolute -ml-20 -mt-10 -z-10 group-hover:text-zinc-800 transition-colors">01</span>
+                            <h3 class="text-2xl font-light uppercase tracking-widest mb-4" data-key="philosophy.cards.0.title">Architecture</h3>
+                            <p class="text-zinc-500 text-sm max-w-xs ml-auto" data-key="philosophy.cards.0.desc">Construction d'un pôle vente autonome, détaché de l'émotionnel.</p>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 md:pl-12 pt-8">
+                        <div class="w-full h-px bg-white/10 group-hover:w-1/2 transition-all duration-700"></div>
+                    </div>
+                </div>
+
+                <!-- Item 2 (Right) -->
+                <div class="flex flex-col md:flex-row-reverse gap-12 mb-32 group">
+                    <div class="md:w-1/2 flex justify-start md:pl-12">
+                        <div class="text-left relative">
+                            <span class="text-8xl font-serif text-zinc-900 leading-none absolute -mr-20 -mt-10 right-0 -z-10 group-hover:text-zinc-800 transition-colors">02</span>
+                            <h3 class="text-2xl font-light uppercase tracking-widest mb-4" data-key="philosophy.cards.1.title">Contrôle</h3>
+                            <p class="text-zinc-500 text-sm max-w-xs mr-auto" data-key="philosophy.cards.1.desc">Monitoring précis des KPI financiers. Rien ne nous échappe.</p>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 md:pr-12 pt-8 flex justify-end">
+                        <div class="w-full h-px bg-white/10 group-hover:w-1/2 transition-all duration-700"></div>
+                    </div>
+                </div>
+
+                <!-- Item 3 (Center) -->
+                <div class="flex flex-col items-center text-center group">
+                    <div class="mb-8">
+                         <span class="text-xs text-klein font-bold uppercase tracking-widest">Vital</span>
+                    </div>
+                    <h3 class="text-4xl font-serif italic mb-6" data-key="philosophy.cards.2.title">Exécution</h3>
+                    <p class="text-zinc-500 text-sm max-w-md mx-auto mb-8" data-key="philosophy.cards.2.desc">Scripts et processus ne laissant aucune place à l'erreur. Une chorégraphie parfaite.</p>
+                    <div class="w-px h-24 bg-white/10 group-hover:bg-klein transition-colors duration-500"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats Section (Bold Typography) -->
+    <section id="results" class="py-32 bg-white text-midnight px-6 md:px-12">
+        <div class="max-w-7xl mx-auto">
+            <span class="block text-xs font-bold uppercase tracking-widest mb-20 text-klein" data-key="stats.label">Résultats Vérifiés</span>
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-16">
+                <!-- Stat 1 -->
+                <div>
+                    <div class="text-6xl md:text-8xl font-serif font-light mb-2 tracking-tighter" data-key="stats.items.0.value">370K€</div>
+                    <div class="border-t border-midnight pt-4">
+                        <p class="text-xs uppercase font-bold tracking-widest mb-1" data-key="stats.items.0.label">CA Mensuel</p>
+                        <p class="text-[10px] text-zinc-500 uppercase" data-key="stats.items.0.sub">vs 150K€ avant protocole</p>
+                    </div>
+                </div>
+                <!-- Stat 2 -->
+                <div class="md:mt-24">
+                    <div class="text-6xl md:text-8xl font-serif italic font-light mb-2 tracking-tighter text-klein" data-key="stats.items.1.value">+146%</div>
+                    <div class="border-t border-midnight pt-4">
+                        <p class="text-xs uppercase font-bold tracking-widest mb-1" data-key="stats.items.1.label">Croissance</p>
+                        <p class="text-[10px] text-zinc-500 uppercase" data-key="stats.items.1.sub">en seulement 60 jours</p>
+                    </div>
+                </div>
+                <!-- Stat 3 -->
+                <div class="md:mt-48">
+                    <div class="text-6xl md:text-8xl font-serif font-light mb-2 tracking-tighter" data-key="stats.items.2.value">72K€</div>
+                    <div class="border-t border-midnight pt-4">
+                        <p class="text-xs uppercase font-bold tracking-widest mb-1" data-key="stats.items.2.label">Ventes Vidéo</p>
+                        <p class="text-[10px] text-zinc-500 uppercase" data-key="stats.items.2.sub">générés en 1 semaine</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section (Editorial Form) -->
+    <section id="contact" class="min-h-screen flex items-center justify-center py-20 px-6 relative">
+        <!-- Background Glow -->
+        <div class="absolute inset-0 bg-gradient-to-b from-midnight via-midnight to-[#0a0a0a] -z-10"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-klein rounded-full blur-[120px] opacity-10 pointer-events-none"></div>
+
+        <div class="text-center max-w-3xl z-10">
+            <p class="text-[10px] uppercase tracking-[0.4em] mb-8 text-zinc-500" data-key="contact.label">Accès Restreint</p>
+            
+            <h2 class="text-5xl md:text-7xl font-serif italic font-light leading-tight mb-8" data-key="contact.title">
+                Nous ne cherchons pas de clients.
+            </h2>
+            <p class="text-xl md:text-2xl font-light text-zinc-400 mb-16" data-key="contact.subtitle">
+                Nous cherchons des partenaires prêts à scaler.
+            </p>
+
+            <a href="mailto:contact@sellit.com?subject=Demande%20Audit" class="inline-block relative group px-12 py-6 overflow-hidden border border-white/20 hover:border-klein transition-colors duration-500">
+                <span class="relative z-10 text-xs font-bold uppercase tracking-widest group-hover:text-white transition-colors" data-key="contact.cta">Réserver l'Audit</span>
+                <div class="absolute inset-0 bg-klein transform translate-y-full group-hover:translate-y-0 transition-transform duration-500 ease-in-out"></div>
+            </a>
+            
+            <p class="mt-12 text-xs text-zinc-600 max-w-md mx-auto leading-relaxed" data-key="contact.desc">
+                L'implémentation du protocole Sell It demande une rigueur absolue. Si vous êtes prêt à structurer votre clinique, demandez votre audit.
+            </p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 px-6 md:px-12 border-t border-white/5 flex flex-col md:flex-row justify-between items-center text-[10px] uppercase tracking-widest text-zinc-600">
+        <div class="mb-4 md:mb-0">
+            Sell It System © <span id="year"></span>
+        </div>
+        <div>
+            <span data-key="footer.rights">Tous droits réservés.</span>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        document.getElementById('year').innerText = new Date().getFullYear();
+
+        // Mobile Menu
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileMenu.classList.remove('hidden');
+                mobileMenu.classList.add('flex');
+                menuIcon.classList.remove('ph-list');
+                menuIcon.classList.add('ph-x');
+            } else {
+                mobileMenu.classList.add('hidden');
+                mobileMenu.classList.remove('flex');
+                menuIcon.classList.remove('ph-x');
+                menuIcon.classList.add('ph-list');
+            }
+        }
+
+        // Language Logic
+        let currentLang = 'fr';
+        const content = {
+            fr: {
+                "nav.method": "Protocole",
+                "nav.proof": "Preuve",
+                "nav.access": "Demander l'accès",
+                "hero.label": "The Revenue Protocol",
+                "hero.title": "<span class='block reveal-up delay-100'>Transformer</span><span class='block italic text-zinc-400 reveal-up delay-200'>l'Intérêt</span><span class='block reveal-up delay-300'>en Capital.</span>",
+                "hero.cta": "Candidater pour l'Audit",
+                "philosophy.text": "La vente n'est pas une improvisation. C'est une architecture. Nous installons les fondations invisibles de votre croissance.",
+                "philosophy.title": "La Science<br>de la Vente.",
+                "philosophy.cards.0.title": "Architecture",
+                "philosophy.cards.0.desc": "Construction d'un pôle vente autonome, détaché de l'émotionnel.",
+                "philosophy.cards.1.title": "Contrôle",
+                "philosophy.cards.1.desc": "Monitoring précis des KPI financiers. Rien ne nous échappe.",
+                "philosophy.cards.2.title": "Exécution",
+                "philosophy.cards.2.desc": "Scripts et processus ne laissant aucune place à l'erreur. Une chorégraphie parfaite.",
+                "stats.label": "Résultats Vérifiés",
+                "stats.items.0.value": "370K€",
+                "stats.items.0.label": "CA Mensuel",
+                "stats.items.0.sub": "vs 150K€ avant protocole",
+                "stats.items.1.value": "+146%",
+                "stats.items.1.label": "Croissance",
+                "stats.items.1.sub": "en seulement 60 jours",
+                "stats.items.2.value": "72K€",
+                "stats.items.2.label": "Ventes Vidéo",
+                "stats.items.2.sub": "générés en 1 semaine",
+                "contact.label": "Accès Restreint",
+                "contact.title": "Nous ne cherchons pas de clients.",
+                "contact.subtitle": "Nous cherchons des partenaires prêts à scaler.",
+                "contact.cta": "Réserver l'Audit",
+                "contact.desc": "L'implémentation du protocole Sell It demande une rigueur absolue. Si vous êtes prêt à structurer votre clinique, demandez votre audit.",
+                "footer.rights": "Tous droits réservés."
+            },
+            en: {
+                "nav.method": "Protocol",
+                "nav.proof": "Proof",
+                "nav.access": "Request Access",
+                "hero.label": "The Revenue Protocol",
+                "hero.title": "<span class='block reveal-up delay-100'>Transform</span><span class='block italic text-zinc-400 reveal-up delay-200'>Interest</span><span class='block reveal-up delay-300'>Into Capital.</span>",
+                "hero.cta": "Apply for Audit",
+                "philosophy.text": "Sales is not improvisation. It is architecture. We install the invisible foundations of your growth.",
+                "philosophy.title": "The Science<br>of Sales.",
+                "philosophy.cards.0.title": "Architecture",
+                "philosophy.cards.0.desc": "Building an autonomous sales unit, detached from emotion.",
+                "philosophy.cards.1.title": "Control",
+                "philosophy.cards.1.desc": "Precise monitoring of financial KPIs. Nothing escapes us.",
+                "philosophy.cards.2.title": "Execution",
+                "philosophy.cards.2.desc": "Scripts and processes leaving no room for error. A perfect choreography.",
+                "stats.label": "Verified Results",
+                "stats.items.0.value": "$370K",
+                "stats.items.0.label": "Monthly Rev",
+                "stats.items.0.sub": "vs $150K before protocol",
+                "stats.items.1.value": "+146%",
+                "stats.items.1.label": "Growth",
+                "stats.items.1.sub": "in just 60 days",
+                "stats.items.2.value": "$72K",
+                "stats.items.2.label": "Video Sales",
+                "stats.items.2.sub": "generated in 1 week",
+                "contact.label": "Restricted Access",
+                "contact.title": "We are not looking for clients.",
+                "contact.subtitle": "We are looking for partners ready to scale.",
+                "contact.cta": "Book Audit",
+                "contact.desc": "Implementing the Sell It protocol requires absolute rigor. If you are ready to structure your clinic, request your audit.",
+                "footer.rights": "All rights reserved."
+            }
+        };
+
+        function toggleLang() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            
+            document.getElementById('current-lang').innerText = currentLang.toUpperCase();
+            document.getElementById('mobile-lang').innerText = currentLang.toUpperCase();
+            document.documentElement.lang = currentLang;
+
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (content[currentLang][key]) {
+                    el.innerHTML = content[currentLang][key];
+                }
+            });
+        }
+    </script>
+</body>
+</html>
