@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="fr" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELL IT - Private Equity Access</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Typography System */
+        .font-serif { font-family: 'Playfair Display', serif; }
+        .font-sans { font-family: 'Montserrat', sans-serif; }
+
+        /* Luxury Background Texture (Noise + Stone feel) */
+        .bg-luxury {
+            background-color: #0c0c0c;
+            /* Texture subtile type pierre sombre */
+            background-image: url("https://www.transparenttextures.com/patterns/dark-matter.png"); 
+            background-blend-mode: overlay;
+        }
+        
+        /* Hero Specific Stone Texture Overlay */
+        .hero-texture {
+            background-image: linear-gradient(to bottom, rgba(0,0,0,0.3), #0c0c0c), url("https://images.unsplash.com/photo-1618367588411-d9a90fefa881?q=80&w=2000&auto=format&fit=crop");
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+
+        /* Platinum/Silver Text Gradient */
+        .text-platinum {
+            background: linear-gradient(to bottom, #ffffff 0%, #a0a0a0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #0a0a0a; 
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #333; 
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #555; 
+        }
+
+        /* Accordion Styles */
+        .accordion-content {
+            transition: max-height 0.3s ease-out, opacity 0.3s ease-out;
+            max-height: 0;
+            opacity: 0;
+            overflow: hidden;
+        }
+        .accordion-item.active .accordion-content {
+            max-height: 500px; /* Adjust based on content */
+            opacity: 1;
+        }
+        .accordion-icon {
+            transition: transform 0.3s ease;
+        }
+        .accordion-item.active .accordion-icon {
+            transform: rotate(180deg);
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-fade-in-up {
+            animation: fadeInUp 0.8s ease-out forwards;
+            opacity: 0;
+        }
+        .delay-100 { animation-delay: 0.1s; }
+        .delay-200 { animation-delay: 0.2s; }
+        .delay-300 { animation-delay: 0.3s; }
+    </style>
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        onyx: '#0a0a0a',
+                        charcoal: '#1a1a1a',
+                        silver: '#C0C0C0',
+                    },
+                    letterSpacing: {
+                        'widest': '.25em',
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-luxury text-gray-300 font-sans antialiased overflow-x-hidden selection:bg-white/20 selection:text-white">
+
+    <!-- Navbar -->
+    <nav class="fixed w-full z-50 transition-all duration-300 py-6 md:py-8 backdrop-blur-md bg-black/40 border-b border-white/5">
+        <div class="container mx-auto px-6 md:px-12 flex justify-between items-center">
+            
+            <!-- Logo -->
+            <div class="z-50 flex flex-col items-start">
+                <div class="text-2xl font-serif font-semibold tracking-wide text-white">
+                    SELL IT.
+                </div>
+                <div class="text-[8px] font-sans uppercase tracking-widest text-gray-500 mt-1">
+                    by The Closer School
+                </div>
+            </div>
+
+            <!-- Desktop Nav -->
+            <div class="hidden md:flex items-center space-x-10">
+                <a href="#philosophy" class="text-[11px] font-sans uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-500" data-key="nav.method">Le Protocole</a>
+                <a href="#case-study" class="text-[11px] font-sans uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-500" data-key="nav.case">Cas Alexis</a>
+                <a href="#programs" class="text-[11px] font-sans uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-500" data-key="nav.programs">Programmes</a>
+                <a href="#team" class="text-[11px] font-sans uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-500" data-key="nav.team">L'Équipe</a>
+                
+                <div class="h-4 w-px bg-white/20"></div>
+
+                <button onclick="toggleLang()" class="text-[11px] font-sans uppercase tracking-widest text-gray-400 hover:text-white transition-colors duration-500 flex items-center gap-2">
+                    <span id="current-lang">FR</span>
+                </button>
+
+                <a href="#contact" class="px-6 py-2 border border-white/20 text-[10px] font-sans uppercase tracking-widest text-white hover:bg-white hover:text-black transition-all duration-500 rounded-sm">
+                    <span data-key="nav.access">Audit Stratégique</span>
+                </a>
+            </div>
+
+            <!-- Mobile Toggle -->
+            <div class="md:hidden z-50 cursor-pointer text-white" onclick="toggleMenu()">
+                <i id="menu-icon" class="ph ph-list text-2xl"></i>
+            </div>
+        </div>
+
+        <!-- Mobile Menu Overlay -->
+        <div id="mobile-menu" class="fixed inset-0 bg-onyx z-40 hidden flex-col items-center justify-center space-y-8 opacity-0 transition-opacity duration-300">
+            <a href="#philosophy" onclick="toggleMenu()" class="text-lg font-serif text-white italic" data-key="nav.method">Le Protocole</a>
+            <a href="#case-study" onclick="toggleMenu()" class="text-lg font-serif text-white italic" data-key="nav.case">Cas Client</a>
+            <a href="#programs" onclick="toggleMenu()" class="text-lg font-serif text-white italic" data-key="nav.programs">Programmes</a>
+            <a href="#team" onclick="toggleMenu()" class="text-lg font-serif text-white italic" data-key="nav.team">L'Équipe</a>
+            <button onclick="toggleLang(); toggleMenu()" class="text-sm font-sans uppercase tracking-widest text-gray-400">
+                Langue : <span id="mobile-lang">FR</span>
+            </button>
+            <a href="#contact" onclick="toggleMenu()" class="text-lg font-serif text-white italic decoration-1 underline underline-offset-8" data-key="nav.access">Demander l'Audit</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative min-h-screen flex items-center justify-center px-6 pt-20 hero-texture">
+        <!-- Overlay Darkener for readability -->
+        <div class="absolute inset-0 bg-black/60 z-0"></div>
+
+        <div class="container mx-auto text-center relative z-10 max-w-5xl">
+            <div class="mb-8 animate-fade-in-up">
+                <span class="text-[10px] md:text-xs font-sans font-medium uppercase tracking-[0.3em] text-gray-400 border border-white/20 px-4 py-2 rounded-full backdrop-blur-sm">
+                    SELLIT BY TCS - SYSTEM FOR SURGEONS
+                </span>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif font-normal leading-tight mb-8 text-platinum animate-fade-in-up delay-100 italic">
+                <span data-key="hero.title1">Transformez l'intérêt patient</span><br> 
+                <span class="not-italic text-white" data-key="hero.title2">en capital prévisible.</span>
+            </h1>
+
+            <p class="text-sm md:text-base font-sans text-gray-300 max-w-2xl mx-auto mb-12 font-light leading-relaxed animate-fade-in-up delay-200" data-key="hero.subtitle">
+                Créer un vrai département commercial au sein de votre clinique. Boostez vos ventes avec des techniques encore méconnues des chirurgiens. Protocole + formation jusqu’aux résultats.
+            </p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 animate-fade-in-up delay-300">
+                <a href="#contact" class="group relative px-10 py-4 overflow-hidden bg-white text-black rounded-sm transition-all duration-500 hover:bg-gray-200">
+                    <span class="relative z-10 text-xs font-sans font-bold uppercase tracking-widest" data-key="hero.cta">Candidater pour un Audit</span>
+                </a>
+                <a href="#philosophy" class="text-xs font-sans uppercase tracking-widest text-white hover:text-gray-300 transition-colors border-b border-transparent hover:border-white pb-1" data-key="hero.cta_secondary">
+                    Découvrir le protocole
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Protocol Section (Detailed) -->
+    <section id="philosophy" class="py-24 relative bg-black/50">
+        <div class="container mx-auto px-6 md:px-12">
+            <!-- Header -->
+            <div class="flex flex-col md:flex-row justify-between items-end mb-20 border-b border-white/10 pb-8">
+                <div class="max-w-xl">
+                    <span class="text-xs font-sans text-gray-500 uppercase tracking-widest mb-4 block" data-key="protocol.super">Le Système Sellit</span>
+                    <h2 class="text-3xl md:text-4xl font-serif text-white mb-6 italic" data-key="protocol.title">
+                        La vente n'est pas une option.<br>C'est une science.
+                    </h2>
+                    <p class="font-sans text-sm font-light leading-loose text-gray-400" data-key="protocol.text">
+                        Comme au bloc opératoire, la vente exige des protocoles, pas de l'improvisation. Nous installons un système d'exploitation complet (OS) pour garantir une croissance durable.
+                    </p>
+                </div>
+            </div>
+
+            <!-- 5 Phases Layout (Vertical Timeline on Mobile, Horizontal Flow on Desktop) -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-6">
+                <!-- Phase 1 -->
+                <div class="group relative p-6 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-4xl text-gray-700 font-serif font-bold mb-4 group-hover:text-white transition-colors">01</div>
+                    <div class="h-px w-8 bg-white/20 mb-6 group-hover:w-full transition-all duration-500"></div>
+                    <h3 class="text-lg font-serif text-white mb-3" data-key="phase.1.title">Diagnostic</h3>
+                    <p class="text-[10px] font-sans uppercase tracking-widest text-gray-500 mb-2" data-key="phase.1.subtitle">L'IRM Commerciale</p>
+                    <p class="text-xs text-gray-400 leading-relaxed" data-key="phase.1.desc">Identification des points de rupture du parcours patient. Rapport "Revenue Gap" et plan d'urgence.</p>
+                </div>
+
+                <!-- Phase 2 -->
+                <div class="group relative p-6 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-4xl text-gray-700 font-serif font-bold mb-4 group-hover:text-white transition-colors">02</div>
+                    <div class="h-px w-8 bg-white/20 mb-6 group-hover:w-full transition-all duration-500"></div>
+                    <h3 class="text-lg font-serif text-white mb-3" data-key="phase.2.title">Implémentation</h3>
+                    <p class="text-[10px] font-sans uppercase tracking-widest text-gray-500 mb-2" data-key="phase.2.subtitle">Structurer la Machine</p>
+                    <p class="text-xs text-gray-400 leading-relaxed" data-key="phase.2.desc">Alignement Rôles. Scripts de transformation émotionnelle. Vidéos post-consultation. Templates WhatsApp.</p>
+                </div>
+
+                <!-- Phase 3 -->
+                <div class="group relative p-6 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-4xl text-gray-700 font-serif font-bold mb-4 group-hover:text-white transition-colors">03</div>
+                    <div class="h-px w-8 bg-white/20 mb-6 group-hover:w-full transition-all duration-500"></div>
+                    <h3 class="text-lg font-serif text-white mb-3" data-key="phase.3.title">Coaching Élite</h3>
+                    <p class="text-[10px] font-sans uppercase tracking-widest text-gray-500 mb-2" data-key="phase.3.subtitle">Partenaires de Soins</p>
+                    <p class="text-xs text-gray-400 leading-relaxed" data-key="phase.3.desc">Formation intensive Chirurgiens + Coordinatrices. Analyse forensique des appels. Psychologie patient.</p>
+                </div>
+
+                <!-- Phase 4 -->
+                <div class="group relative p-6 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-4xl text-gray-700 font-serif font-bold mb-4 group-hover:text-white transition-colors">04</div>
+                    <div class="h-px w-8 bg-white/20 mb-6 group-hover:w-full transition-all duration-500"></div>
+                    <h3 class="text-lg font-serif text-white mb-3" data-key="phase.4.title">Tracking</h3>
+                    <p class="text-[10px] font-sans uppercase tracking-widest text-gray-500 mb-2" data-key="phase.4.subtitle">Précision Data</p>
+                    <p class="text-xs text-gray-400 leading-relaxed" data-key="phase.4.desc">Monitoring des KPI : Taux de présence, Closing, Cash encaissé. Dashboard médical en temps réel.</p>
+                </div>
+
+                <!-- Phase 5 -->
+                <div class="group relative p-6 border border-white/5 bg-white/[0.02] hover:bg-white/[0.05] transition-all duration-500 hover:-translate-y-2">
+                    <div class="text-4xl text-gray-700 font-serif font-bold mb-4 group-hover:text-white transition-colors">05</div>
+                    <div class="h-px w-8 bg-white/20 mb-6 group-hover:w-full transition-all duration-500"></div>
+                    <h3 class="text-lg font-serif text-white mb-3" data-key="phase.5.title">Optimisation</h3>
+                    <p class="text-[10px] font-sans uppercase tracking-widest text-gray-500 mb-2" data-key="phase.5.subtitle">Excellence</p>
+                    <p class="text-xs text-gray-400 leading-relaxed" data-key="phase.5.desc">Correction immédiate si chute des KPI. Affinage du discours. Scaler les résultats pour soigner plus.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Use Case: Alexis Delobaux -->
+    <section id="case-study" class="py-24 bg-charcoal relative overflow-hidden">
+        <!-- Background Element -->
+        <div class="absolute right-0 top-0 w-1/3 h-full bg-white/[0.02] skew-x-12 pointer-events-none"></div>
+
+        <div class="container mx-auto px-6 md:px-12 relative z-10">
+            <div class="mb-12">
+                <span class="text-[10px] font-sans font-bold uppercase tracking-[0.2em] text-gray-500 block mb-4" data-key="case.label">CASE STUDY — SUCCESS STORY</span>
+                <h2 class="text-3xl md:text-5xl font-serif text-white italic" data-key="case.title">Dr. Alexis Delobaux</h2>
+                <p class="text-sm font-sans text-gray-400 mt-2 uppercase tracking-wider">Chirurgien Esthétique & Fondateur BCA</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+                <!-- Left: Stats & Context -->
+                <div class="space-y-12">
+                    <div>
+                        <h3 class="text-xl font-serif text-white mb-4 italic" data-key="case.context.title">Le Contexte</h3>
+                        <p class="text-sm text-gray-400 font-light leading-relaxed" data-key="case.context.desc">
+                            Une expertise médicale de haut niveau, mais un processus commercial improvisé entraînant des opportunités perdues. Passage de l'improvisation totale à un Protocole Data-Driven en 2 mois.
+                        </p>
+                    </div>
+
+                    <!-- Key Metrics Grid -->
+                    <div class="grid grid-cols-2 gap-8 border-t border-b border-white/10 py-8">
+                        <div>
+                            <div class="text-4xl font-serif text-white mb-1">370K€</div>
+                            <div class="text-[10px] uppercase tracking-widest text-gray-500" data-key="case.stat1">Revenu Mensuel</div>
+                            <div class="text-[9px] text-green-500 mt-1">▲ vs 150K€ avant</div>
+                        </div>
+                        <div>
+                            <div class="text-4xl font-serif text-white mb-1">+146%</div>
+                            <div class="text-[10px] uppercase tracking-widest text-gray-500" data-key="case.stat2">Croissance</div>
+                            <div class="text-[9px] text-gray-600 mt-1">En 60 jours</div>
+                        </div>
+                        <div class="col-span-2">
+                            <div class="text-4xl font-serif text-white mb-1">72K€</div>
+                            <div class="text-[10px] uppercase tracking-widest text-gray-500" data-key="case.stat3">Ventes via Vidéo</div>
+                            <div class="text-[9px] text-gray-600 mt-1">Générés en 1 semaine grâce au script vidéo</div>
+                        </div>
+                    </div>
+
+                    <!-- Timeline -->
+                    <div class="space-y-4">
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-white"></div>
+                            <div class="text-xs uppercase tracking-widest text-gray-300">Audit & Diagnostic (Octobre)</div>
+                        </div>
+                        <div class="w-px h-6 bg-white/20 ml-1"></div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                            <div class="text-xs uppercase tracking-widest text-gray-400">Implémentation Stratégie</div>
+                        </div>
+                        <div class="w-px h-6 bg-white/20 ml-1"></div>
+                        <div class="flex items-center gap-4">
+                            <div class="w-2 h-2 rounded-full bg-gray-500"></div>
+                            <div class="text-xs uppercase tracking-widest text-gray-400">Coaching Équipes & Lancement</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Right: Image -->
+                <div class="relative">
+                    <div class="aspect-[3/4] overflow-hidden rounded-sm border border-white/10 relative group">
+                        <!-- Image placeholder -->
+                        <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?q=80&w=1000&auto=format&fit=crop" alt="Dr Alexis Delobaux" class="object-cover w-full h-full grayscale group-hover:grayscale-0 transition-all duration-700">
+                        <div class="absolute bottom-0 left-0 w-full p-6 bg-gradient-to-t from-black to-transparent">
+                            <span class="text-white font-serif italic text-lg">"Sellit a transformé ma clinique."</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Section (Who are we) -->
+    <section id="team" class="py-24 border-b border-white/5">
+        <div class="container mx-auto px-6 md:px-12 text-center">
+            <h2 class="text-3xl font-serif text-white mb-16 italic" data-key="team.title">Qui sommes-nous ?</h2>
+            
+            <div class="flex flex-col md:flex-row justify-center gap-12 md:gap-24">
+                <!-- Person 1 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-48 h-48 md:w-64 md:h-64 mb-6 overflow-hidden rounded-full border border-white/10 grayscale hover:grayscale-0 transition-all duration-500">
+                        <img src="https://images.unsplash.com/photo-1556157382-97eda2d62296?q=80&w=600&auto=format&fit=crop" alt="Ibrahim" class="object-cover w-full h-full">
+                    </div>
+                    <h3 class="text-xl font-serif text-white">Ibrahim</h3>
+                    <p class="text-xs font-sans uppercase tracking-widest text-gray-500 mt-2" data-key="team.ib.role">Co-Founder & Head of Strategy</p>
+                    <p class="text-xs text-gray-500 mt-2 max-w-xs font-light">Expert en systèmes de vente complexes et structuration d'entreprises.</p>
+                </div>
+
+                <!-- Person 2 -->
+                <div class="flex flex-col items-center">
+                    <div class="w-48 h-48 md:w-64 md:h-64 mb-6 overflow-hidden rounded-full border border-white/10 grayscale hover:grayscale-0 transition-all duration-500">
+                        <img src="https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?q=80&w=600&auto=format&fit=crop" alt="Florian" class="object-cover w-full h-full">
+                    </div>
+                    <h3 class="text-xl font-serif text-white">Florian</h3>
+                    <p class="text-xs font-sans uppercase tracking-widest text-gray-500 mt-2" data-key="team.flo.role">Co-Founder & Head of Sales</p>
+                    <p class="text-xs text-gray-500 mt-2 max-w-xs font-light">Spécialiste de la conversion et de la psychologie patient.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Programs Section -->
+    <section id="programs" class="py-24 bg-black/40">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="text-center mb-16">
+                <h2 class="text-3xl md:text-4xl font-serif text-white mb-4 italic" data-key="prog.title">Nos Programmes</h2>
+                <div class="inline-block border border-white/20 px-4 py-2 rounded-full">
+                    <a href="https://thebodycontouringacademy.com/" target="_blank" class="text-[10px] font-sans uppercase tracking-widest text-white hover:text-gray-300 flex items-center gap-2">
+                        <i class="ph ph-lock-key"></i> <span data-key="prog.label">Réservé aux membres de la BCA</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                <!-- Program 1 -->
+                <div class="p-8 border border-white/10 bg-white/[0.01] hover:bg-white/[0.05] transition-all duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="h-1 w-12 bg-white mb-6"></div>
+                        <h3 class="text-lg font-serif text-white mb-2">Accélération Chirurgicale 60</h3>
+                        <p class="text-xs text-gray-500 mb-4" data-key="prog.1.desc">Audit complet + Plan stratégique 60 jours + Scripts.</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/5">
+                        <span class="text-[10px] uppercase tracking-widest text-gray-600">Audit & Strategy</span>
+                    </div>
+                </div>
+
+                <!-- Program 2 -->
+                <div class="p-8 border border-white/10 bg-white/[0.01] hover:bg-white/[0.05] transition-all duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="h-1 w-12 bg-gray-500 mb-6"></div>
+                        <h3 class="text-lg font-serif text-white mb-2">Expansion Chirurgicale 120</h3>
+                        <p class="text-xs text-gray-500 mb-4" data-key="prog.2.desc">Implémentation profonde et suivi sur 4 mois.</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/5">
+                        <span class="text-[10px] uppercase tracking-widest text-gray-600">Scale Up</span>
+                    </div>
+                </div>
+
+                <!-- Program 3 -->
+                <div class="p-8 border border-white/10 bg-white/[0.01] hover:bg-white/[0.05] transition-all duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="h-1 w-12 bg-gray-700 mb-6"></div>
+                        <h3 class="text-lg font-serif text-white mb-2">Technique Chir</h3>
+                        <p class="text-xs text-gray-500 mb-4" data-key="prog.3.desc">Perfectionnement technique et opérationnel.</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/5">
+                        <span class="text-[10px] uppercase tracking-widest text-gray-600">Operations</span>
+                    </div>
+                </div>
+
+                <!-- Program 4 -->
+                <div class="p-8 border border-white/10 bg-white/[0.01] hover:bg-white/[0.05] transition-all duration-300 flex flex-col justify-between h-full">
+                    <div>
+                        <div class="h-1 w-12 bg-gray-800 mb-6"></div>
+                        <h3 class="text-lg font-serif text-white mb-2">Sales Track & Day</h3>
+                        <p class="text-xs text-gray-500 mb-4" data-key="prog.4.desc">Immersion intensive pour les équipes commerciales.</p>
+                    </div>
+                    <div class="mt-4 pt-4 border-t border-white/5">
+                        <span class="text-[10px] uppercase tracking-widest text-gray-600">Team Training</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials (Simple) -->
+    <section class="py-20 border-t border-white/5">
+        <div class="container mx-auto px-6 md:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <!-- Testimonial 1 -->
+                <div class="text-center p-6">
+                    <div class="text-2xl text-white font-serif italic mb-4">"Une rigueur militaire."</div>
+                    <p class="text-xs uppercase tracking-widest text-gray-500">Dr. D. - Paris</p>
+                </div>
+                <!-- Testimonial 2 -->
+                <div class="text-center p-6 border-l border-r border-white/5">
+                    <div class="text-2xl text-white font-serif italic mb-4">"Enfin un process clair."</div>
+                    <p class="text-xs uppercase tracking-widest text-gray-500">Dr. M. - Lyon</p>
+                </div>
+                <!-- Testimonial 3 -->
+                <div class="text-center p-6">
+                    <div class="text-2xl text-white font-serif italic mb-4">"Mes coordinatrices revivent."</div>
+                    <p class="text-xs uppercase tracking-widest text-gray-500">Clinique R. - Genève</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="py-24 bg-charcoal">
+        <div class="container mx-auto px-6 md:px-12 max-w-3xl">
+            <h2 class="text-3xl font-serif text-white mb-12 text-center italic" data-key="faq.title">Vos Questions</h2>
+            
+            <div class="space-y-4">
+                <!-- Q1 -->
+                <div class="accordion-item border border-white/10 bg-white/[0.02] rounded-sm">
+                    <button class="w-full px-6 py-4 flex justify-between items-center text-left focus:outline-none" onclick="toggleAccordion(this)">
+                        <span class="text-sm font-sans text-white font-medium" data-key="faq.q1">C'est quoi The Closer School (TCS) ?</span>
+                        <i class="ph ph-caret-down text-white accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content px-6">
+                        <div class="pb-6 text-sm text-gray-400 font-light leading-relaxed" data-key="faq.a1">
+                            The Closer School est une entreprise de référence spécialisée dans l'audit et l'optimisation des systèmes de vente. Nous accompagnons les entreprises pour structurer leurs départements commerciaux.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q2 -->
+                <div class="accordion-item border border-white/10 bg-white/[0.02] rounded-sm">
+                    <button class="w-full px-6 py-4 flex justify-between items-center text-left focus:outline-none" onclick="toggleAccordion(this)">
+                        <span class="text-sm font-sans text-white font-medium" data-key="faq.q2">C'est quoi Sellit ?</span>
+                        <i class="ph ph-caret-down text-white accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content px-6">
+                        <div class="pb-6 text-sm text-gray-400 font-light leading-relaxed" data-key="faq.a2">
+                            Sellit est la division élite de TCS dédiée exclusivement au secteur médical et chirurgical. C'est l'offre spécialisée pour les chirurgiens et cliniques souhaitant un département commercial de haut vol.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Q3 -->
+                <div class="accordion-item border border-white/10 bg-white/[0.02] rounded-sm">
+                    <button class="w-full px-6 py-4 flex justify-between items-center text-left focus:outline-none" onclick="toggleAccordion(this)">
+                        <span class="text-sm font-sans text-white font-medium" data-key="faq.q3">L'audit est-il payant ?</span>
+                        <i class="ph ph-caret-down text-white accordion-icon"></i>
+                    </button>
+                    <div class="accordion-content px-6">
+                        <div class="pb-6 text-sm text-gray-400 font-light leading-relaxed" data-key="faq.a3">
+                            La candidature pour l'audit est gratuite. Si votre profil est retenu, nous procédons à une analyse approfondie de votre structure pour identifier les leviers de croissance.
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <p class="text-center text-xs text-gray-500 mt-12" data-key="faq.contact">
+                Vous ne trouvez pas la réponse à votre question ? <a href="mailto:contact@sellit.com" class="text-white underline">Contactez-nous.</a>
+            </p>
+        </div>
+    </section>
+
+    <!-- Contact / Final CTA -->
+    <section id="contact" class="min-h-[70vh] flex flex-col items-center justify-center py-20 px-6 text-center relative">
+        <div class="max-w-3xl relative z-10">
+            <i class="ph-thin ph-lock-key text-5xl text-gray-600 mb-8 block mx-auto"></i>
+            
+            <h2 class="text-4xl md:text-5xl font-serif text-white mb-6 italic leading-tight" data-key="contact.title">
+                Nous ne cherchons pas de clients.
+            </h2>
+            <p class="text-lg md:text-xl font-sans font-light text-gray-400 mb-12" data-key="contact.subtitle">
+                Nous recherchons des patients prêts à s'engager.
+            </p>
+            
+            <p class="text-sm font-sans text-gray-500 leading-relaxed mb-12 max-w-lg mx-auto border-t border-b border-white/5 py-8" data-key="contact.desc">
+                L'implémentation du protocole Sell It demande une rigueur absolue. Si vous êtes prêt à structurer votre clinique comme une entreprise de haut niveau, demandez votre audit.
+            </p>
+            
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                <!-- Main CTA -->
+                <a href="https://calendly.com/" target="_blank" class="px-12 py-5 bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors duration-300">
+                    <span data-key="contact.cta">Réserver l'Audit Stratégique</span>
+                </a>
+
+                <!-- WhatsApp CTA -->
+                <a href="https://wa.me/33600000000" target="_blank" class="flex items-center gap-2 px-8 py-4 border border-white/20 text-white text-xs font-bold uppercase tracking-widest hover:bg-white/10 transition-colors duration-300">
+                    <i class="ph ph-whatsapp-logo text-lg"></i>
+                    <span data-key="contact.whatsapp">Discuter avec Florian</span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-12 border-t border-white/5 text-center md:text-left bg-black">
+        <div class="container mx-auto px-8 md:px-12 flex flex-col md:flex-row justify-between items-center text-[10px] font-sans uppercase tracking-widest text-gray-600">
+            <div class="mb-4 md:mb-0 flex flex-col md:flex-row items-center gap-2">
+                <span class="text-gray-400 font-semibold">SELL IT.</span>
+                <span class="hidden md:inline">|</span>
+                <span>Powered by The Closer School (TCS)</span>
+            </div>
+            <div>
+                &copy; <span id="year"></span> <span data-key="footer.rights">Tous droits réservés.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        // Set Year
+        document.getElementById('year').innerText = new Date().getFullYear();
+
+        // Mobile Menu Logic
+        const mobileMenu = document.getElementById('mobile-menu');
+        const menuIcon = document.getElementById('menu-icon');
+        let isMenuOpen = false;
+
+        function toggleMenu() {
+            isMenuOpen = !isMenuOpen;
+            if(isMenuOpen) {
+                mobileMenu.classList.remove('hidden');
+                setTimeout(() => {
+                    mobileMenu.classList.remove('opacity-0');
+                    mobileMenu.classList.add('flex');
+                }, 10);
+                menuIcon.classList.remove('ph-list');
+                menuIcon.classList.add('ph-x');
+            } else {
+                mobileMenu.classList.add('opacity-0');
+                setTimeout(() => {
+                    mobileMenu.classList.add('hidden');
+                    mobileMenu.classList.remove('flex');
+                }, 300);
+                menuIcon.classList.remove('ph-x');
+                menuIcon.classList.add('ph-list');
+            }
+        }
+
+        // Accordion Logic
+        function toggleAccordion(element) {
+            const item = element.parentElement;
+            const content = item.querySelector('.accordion-content');
+            
+            // Close all others
+            document.querySelectorAll('.accordion-item').forEach(otherItem => {
+                if (otherItem !== item) {
+                    otherItem.classList.remove('active');
+                    otherItem.querySelector('.accordion-content').style.maxHeight = null;
+                    otherItem.querySelector('.accordion-content').style.opacity = 0;
+                }
+            });
+
+            // Toggle current
+            item.classList.toggle('active');
+            if (item.classList.contains('active')) {
+                content.style.maxHeight = content.scrollHeight + "px";
+                content.style.opacity = 1;
+            } else {
+                content.style.maxHeight = null;
+                content.style.opacity = 0;
+            }
+        }
+
+        // Language Logic
+        let currentLang = 'fr';
+        const content = {
+            fr: {
+                "nav.method": "Le Protocole",
+                "nav.case": "Cas Alexis",
+                "nav.programs": "Programmes",
+                "nav.team": "L'Équipe",
+                "nav.access": "Audit Stratégique",
+                "hero.title1": "Transformez l'intérêt patient",
+                "hero.title2": "en capital prévisible.",
+                "hero.subtitle": "Créer un vrai département commercial au sein de votre clinique. Boostez vos ventes avec des techniques encore méconnues des chirurgiens. Protocole + formation jusqu’aux résultats.",
+                "hero.cta": "Candidater pour un Audit",
+                "hero.cta_secondary": "Découvrir le protocole",
+                "protocol.super": "Le Système Sellit",
+                "protocol.title": "La vente n'est pas une option.<br>C'est une science.",
+                "protocol.text": "Comme au bloc opératoire, la vente exige des protocoles, pas de l'improvisation. Nous installons un système d'exploitation complet (OS) pour garantir une croissance durable.",
+                "phase.1.title": "Diagnostic",
+                "phase.1.subtitle": "L'IRM Commerciale",
+                "phase.1.desc": "Identification des points de rupture du parcours patient. Rapport 'Revenue Gap' et plan d'urgence.",
+                "phase.2.title": "Implémentation",
+                "phase.2.subtitle": "Structurer la Machine",
+                "phase.2.desc": "Alignement Rôles. Scripts de transformation émotionnelle. Vidéos post-consultation. Templates WhatsApp.",
+                "phase.3.title": "Coaching Élite",
+                "phase.3.subtitle": "Partenaires de Soins",
+                "phase.3.desc": "Formation intensive Chirurgiens + Coordinatrices. Analyse forensique des appels. Psychologie patient.",
+                "phase.4.title": "Tracking",
+                "phase.4.subtitle": "Précision Data",
+                "phase.4.desc": "Monitoring des KPI : Taux de présence, Closing, Cash encaissé. Dashboard médical en temps réel.",
+                "phase.5.title": "Optimisation",
+                "phase.5.subtitle": "Excellence",
+                "phase.5.desc": "Correction immédiate si chute des KPI. Affinage du discours. Scaler les résultats pour soigner plus.",
+                "case.label": "CASE STUDY — SUCCESS STORY",
+                "case.title": "Dr. Alexis Delobaux",
+                "case.context.title": "Le Contexte",
+                "case.context.desc": "Une expertise médicale de haut niveau, mais un processus commercial improvisé entraînant des opportunités perdues. Passage de l'improvisation totale à un Protocole Data-Driven en 2 mois.",
+                "case.stat1": "Revenu Mensuel",
+                "case.stat2": "Croissance",
+                "case.stat3": "Ventes via Vidéo",
+                "team.title": "Qui sommes-nous ?",
+                "team.ib.role": "Co-Founder & Head of Strategy",
+                "team.flo.role": "Co-Founder & Head of Sales",
+                "prog.title": "Nos Programmes",
+                "prog.label": "Réservé aux membres de la BCA",
+                "prog.1.desc": "Audit complet + Plan stratégique 60 jours + Scripts.",
+                "prog.2.desc": "Implémentation profonde et suivi sur 4 mois.",
+                "prog.3.desc": "Perfectionnement technique et opérationnel.",
+                "prog.4.desc": "Immersion intensive pour les équipes commerciales.",
+                "faq.title": "Vos Questions",
+                "faq.q1": "C'est quoi The Closer School (TCS) ?",
+                "faq.a1": "The Closer School est une entreprise de référence spécialisée dans l'audit et l'optimisation des systèmes de vente. Nous accompagnons les entreprises pour structurer leurs départements commerciaux.",
+                "faq.q2": "C'est quoi Sellit ?",
+                "faq.a2": "Sellit est la division élite de TCS dédiée exclusivement au secteur médical et chirurgical. C'est l'offre spécialisée pour les chirurgiens et cliniques souhaitant un département commercial de haut vol.",
+                "faq.q3": "L'audit est-il payant ?",
+                "faq.a3": "La candidature pour l'audit est gratuite. Si votre profil est retenu, nous procédons à une analyse approfondie de votre structure pour identifier les leviers de croissance.",
+                "faq.contact": "Vous ne trouvez pas la réponse à votre question ? <a href='mailto:contact@sellit.com' class='text-white underline'>Contactez-nous.</a>",
+                "contact.title": "Nous ne cherchons pas de clients.",
+                "contact.subtitle": "Nous recherchons des patients prêts à s'engager.",
+                "contact.desc": "L'implémentation du protocole Sell It demande une rigueur absolue. Si vous êtes prêt à structurer votre clinique comme une entreprise de haut niveau, demandez votre audit.",
+                "contact.cta": "Réserver l'Audit Stratégique",
+                "contact.whatsapp": "Discuter avec Florian",
+                "footer.rights": "Tous droits réservés."
+            },
+            en: {
+                "nav.method": "The Protocol",
+                "nav.case": "Alexis Case",
+                "nav.programs": "Programs",
+                "nav.team": "The Team",
+                "nav.access": "Strategic Audit",
+                "hero.title1": "Turn patient interest",
+                "hero.title2": "into predictable capital.",
+                "hero.subtitle": "Create a real sales department within your clinic. Boost your sales with techniques still unknown to surgeons. Protocol + training until results.",
+                "hero.cta": "Apply for an Audit",
+                "hero.cta_secondary": "Discover the protocol",
+                "protocol.super": "The Sellit System",
+                "protocol.title": "Sales is not optional.<br>It is a science.",
+                "protocol.text": "Top surgeons leave nothing to chance in the OR. Sales requires protocols, not improvisation. We install a complete Operating System (OS) to guarantee sustainable growth.",
+                "phase.1.title": "Diagnostic",
+                "phase.1.subtitle": "The Commercial MRI",
+                "phase.1.desc": "Identifying breaking points in the patient journey. 'Revenue Gap' report and emergency plan.",
+                "phase.2.title": "Implementation",
+                "phase.2.subtitle": "Structuring the Machine",
+                "phase.2.desc": "Role Alignment. Emotional transformation scripts. Post-consultation videos. WhatsApp Templates.",
+                "phase.3.title": "Elite Coaching",
+                "phase.3.subtitle": "Care Partners",
+                "phase.3.desc": "Intensive training for Surgeons + Coordinators. Forensic call analysis. Patient psychology.",
+                "phase.4.title": "Tracking",
+                "phase.4.subtitle": "Data Precision",
+                "phase.4.desc": "KPI Monitoring: Attendance rate, Closing, Cash collected. Real-time medical dashboard.",
+                "phase.5.title": "Optimization",
+                "phase.5.subtitle": "Excellence",
+                "phase.5.desc": "Immediate correction if KPIs drop. Refining the pitch. Scaling results to treat more patients.",
+                "case.label": "CASE STUDY — SUCCESS STORY",
+                "case.title": "Dr. Alexis Delobaux",
+                "case.context.title": "The Context",
+                "case.context.desc": "Top-level medical expertise, but an improvised commercial process leading to lost opportunities. Transition from total improvisation to a Data-Driven Protocol in 2 months.",
+                "case.stat1": "Monthly Revenue",
+                "case.stat2": "Growth",
+                "case.stat3": "Video Sales",
+                "team.title": "Who are we?",
+                "team.ib.role": "Co-Founder & Head of Strategy",
+                "team.flo.role": "Co-Founder & Head of Sales",
+                "prog.title": "Our Programs",
+                "prog.label": "Reserved for BCA members",
+                "prog.1.desc": "Full Audit + 60-day Strategic Plan + Scripts.",
+                "prog.2.desc": "Deep implementation and 4-month follow-up.",
+                "prog.3.desc": "Technical and operational perfection.",
+                "prog.4.desc": "Intensive immersion for sales teams.",
+                "faq.title": "Your Questions",
+                "faq.q1": "What is The Closer School (TCS)?",
+                "faq.a1": "The Closer School is a leading firm specializing in auditing and optimizing sales systems. We help companies structure their sales departments.",
+                "faq.q2": "What is Sellit?",
+                "faq.a2": "Sellit is the elite division of TCS dedicated exclusively to the medical and surgical sector. It is the specialized offer for surgeons and clinics wanting a high-flying sales department.",
+                "faq.q3": "Is the audit free?",
+                "faq.a3": "Application for the audit is free. If your profile is selected, we proceed with an in-depth analysis of your structure to identify growth levers.",
+                "faq.contact": "Can't find the answer to your question? <a href='mailto:contact@sellit.com' class='text-white underline'>Contact us.</a>",
+                "contact.title": "We are not looking for clients.",
+                "contact.subtitle": "We are looking for patients ready to commit.",
+                "contact.desc": "Implementing the Sell It protocol requires absolute rigor. If you are ready to structure your clinic like a high-level enterprise, request your audit.",
+                "contact.cta": "Book Strategic Audit",
+                "contact.whatsapp": "Chat with Florian",
+                "footer.rights": "All rights reserved."
+            }
+        };
+
+        function toggleLang() {
+            currentLang = currentLang === 'fr' ? 'en' : 'fr';
+            
+            // Update UI Labels
+            document.getElementById('current-lang').innerText = currentLang.toUpperCase();
+            document.getElementById('mobile-lang').innerText = currentLang.toUpperCase();
+            document.documentElement.lang = currentLang;
+
+            // Update Text Content
+            const elements = document.querySelectorAll('[data-key]');
+            elements.forEach(el => {
+                const key = el.getAttribute('data-key');
+                if (content[currentLang][key]) {
+                    el.innerHTML = content[currentLang][key];
+                }
+            });
+        }
+    </script>
+</body>
+</html>
