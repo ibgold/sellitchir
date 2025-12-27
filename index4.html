@@ -3,8 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SELL IT - Excellence Chirurgicale</title>
     
+    <!-- SEO & Social Sharing (Open Graph) -->
+    <title>SELL IT - Excellence Chirurgicale</title>
+    <meta name="description" content="Transformez l'intérêt patient en capital prévisible. Sellit structure votre département commercial chirurgical.">
+    <meta property="og:title" content="SELL IT - Private Equity for Clinics">
+    <meta property="og:description" content="L'excellence commerciale pour chirurgiens. Audit & Structuration.">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1618367588411-d9a90fefa881?q=80&w=1200&auto=format&fit=crop">
+    <meta property="og:url" content="https://sellit.com">
+    <meta property="og:type" content="website">
+    
+    <!-- Favicon (Placeholder - Remplacer par votre logo) -->
+    <link rel="icon" type="image/png" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNk+A8AAQUBAScY42YAAAAASUVORK5CYII=">
+
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
@@ -21,14 +32,41 @@
         .font-serif { font-family: 'Playfair Display', serif; }
         .font-sans { font-family: 'Montserrat', sans-serif; }
 
-        /* Luxury Background Texture (Subtle Noise) */
+        /* Luxury Background Texture */
         .bg-luxury {
             background-color: #0c0c0c;
-            /* Texture bruitée très subtile pour la profondeur */
             background-image: url("https://www.transparenttextures.com/patterns/stardust.png"); 
             background-blend-mode: overlay;
         }
         
+        /* Preloader Styles */
+        #preloader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #000;
+            z-index: 9999;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 0.8s ease-out, visibility 0.8s ease-out;
+        }
+        .loader-content {
+            text-align: center;
+            animation: pulse-slow 2s infinite;
+        }
+        @keyframes pulse-slow {
+            0% { opacity: 0.5; transform: scale(0.98); }
+            50% { opacity: 1; transform: scale(1.02); }
+            100% { opacity: 0.5; transform: scale(0.98); }
+        }
+        .preloader-hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
         /* Video Background Wrapper */
         .video-background {
             position: absolute;
@@ -49,7 +87,7 @@
             left: 50%;
             transform: translate(-50%, -50%);
             object-fit: cover;
-            filter: brightness(0.4) contrast(1.1); /* Assombri pour la lisibilité du texte */
+            filter: brightness(0.4) contrast(1.1);
         }
 
         /* Platinum/Silver Text Gradient */
@@ -99,7 +137,20 @@
             background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.3), transparent);
         }
         
-        /* Smooth Fade In */
+        /* Modal Styles */
+        #legal-modal {
+            transition: opacity 0.3s ease;
+        }
+        #legal-modal.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        #legal-modal:not(.hidden) {
+            opacity: 1;
+            pointer-events: auto;
+        }
+
+        /* Animations */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
@@ -133,6 +184,14 @@
     </script>
 </head>
 <body class="bg-luxury text-gray-200 font-sans antialiased overflow-x-hidden selection:bg-white/20 selection:text-white">
+
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-content">
+            <div class="text-3xl font-serif font-semibold tracking-wide text-white italic mb-2">SELL IT.</div>
+            <div class="text-[9px] font-sans uppercase tracking-[0.3em] text-gray-500">Loading Experience</div>
+        </div>
+    </div>
 
     <!-- Navbar -->
     <nav class="fixed w-full z-50 transition-all duration-300 py-6 backdrop-blur-md bg-black/60 border-b border-white/5">
@@ -596,14 +655,75 @@
                 <span>Excellence Chirurgicale by TCS</span>
             </div>
             <div class="flex gap-8">
-                <a href="#" class="hover:text-white transition-colors">Mentions Légales</a>
+                <button onclick="toggleLegalModal()" class="hover:text-white transition-colors uppercase tracking-widest">Mentions Légales</button>
                 <span>&copy; <span id="year"></span> Tous droits réservés.</span>
             </div>
         </div>
     </footer>
 
+    <!-- Legal Modal (Hidden by default) -->
+    <div id="legal-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+        <!-- Backdrop -->
+        <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="toggleLegalModal()"></div>
+        
+        <!-- Modal Content -->
+        <div class="relative z-10 bg-onyx border border-white/10 p-8 md:p-12 max-w-2xl w-full rounded-sm shadow-2xl">
+            <button onclick="toggleLegalModal()" class="absolute top-4 right-4 text-gray-500 hover:text-white transition-colors">
+                <i class="ph ph-x text-2xl"></i>
+            </button>
+            
+            <h3 class="text-2xl font-serif text-white mb-8 italic">Mentions Légales</h3>
+            
+            <div class="space-y-6 text-sm font-sans text-gray-400 font-light">
+                <div>
+                    <strong class="block text-gray-300 uppercase tracking-widest text-[10px] mb-2">Éditeur du site</strong>
+                    <p>THE CLOSER SCHOOL (TCS)</p>
+                    <p>Société [Forme Juridique] au capital de [Montant] €</p>
+                    <p>Immatriculée au RCS de [Ville] sous le numéro [Numéro SIRET]</p>
+                    <p>Siège social : [Adresse Complète]</p>
+                </div>
+                
+                <div>
+                    <strong class="block text-gray-300 uppercase tracking-widest text-[10px] mb-2">Contact</strong>
+                    <p>Email : contact@sellit.com</p>
+                    <p>Téléphone : [Numéro]</p>
+                </div>
+
+                <div>
+                    <strong class="block text-gray-300 uppercase tracking-widest text-[10px] mb-2">Hébergement</strong>
+                    <p>[Nom de l'hébergeur]</p>
+                    <p>[Adresse de l'hébergeur]</p>
+                </div>
+                
+                <div>
+                    <strong class="block text-gray-300 uppercase tracking-widest text-[10px] mb-2">Propriété Intellectuelle</strong>
+                    <p>L'ensemble de ce site relève de la législation française et internationale sur le droit d'auteur et la propriété intellectuelle. Tous les droits de reproduction sont réservés.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script>
+        // Preloader Logic
+        window.addEventListener('load', () => {
+            const preloader = document.getElementById('preloader');
+            // Petit délai pour laisser le temps de voir le logo
+            setTimeout(() => {
+                preloader.classList.add('preloader-hidden');
+                // Retirer du DOM après la transition
+                setTimeout(() => {
+                    preloader.style.display = 'none';
+                }, 800);
+            }, 1000);
+        });
+
+        // Legal Modal Logic
+        function toggleLegalModal() {
+            const modal = document.getElementById('legal-modal');
+            modal.classList.toggle('hidden');
+        }
+
         // Set Year
         document.getElementById('year').innerText = new Date().getFullYear();
 
