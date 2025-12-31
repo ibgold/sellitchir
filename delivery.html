@@ -67,25 +67,14 @@
 
     <!-- STRUCTURE PRINCIPALE -->
     <div id="main-app" class="flex flex-col md:flex-row min-h-screen hidden">
-        
-        <!-- BARRE LATÉRALE -->
         <aside class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col z-40 sticky top-0 h-screen">
             <div class="p-8">
                 <div class="flex items-center gap-3 mb-10">
-                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
-                        <i data-lucide="layers" class="w-6 h-6"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-black tracking-tighter text-slate-900">SELL IT</h1>
-                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Delivery Hub</p>
-                    </div>
+                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100"><i data-lucide="layers" class="w-6 h-6"></i></div>
+                    <div><h1 class="text-xl font-black tracking-tighter text-slate-900">SELL IT</h1><p class="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Delivery Hub</p></div>
                 </div>
-
-                <div id="sidebar-content" class="space-y-1">
-                    <!-- Généré dynamiquement -->
-                </div>
+                <div id="sidebar-content" class="space-y-1"></div>
             </div>
-
             <div class="mt-auto p-8 border-t border-slate-100 bg-slate-50/50">
                 <div class="flex items-center gap-4 mb-6">
                     <div id="user-avatar" class="w-10 h-10 bg-white border border-slate-200 text-indigo-600 rounded-xl flex items-center justify-center font-bold shadow-sm"></div>
@@ -100,14 +89,11 @@
             </div>
         </aside>
 
-        <!-- ZONE DE CONTENU -->
         <main class="flex-1 overflow-y-auto">
-            <!-- Bandeau supervision -->
             <div id="supervision-bar" class="bg-amber-500 text-white px-8 py-2 text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 hidden">
                 <i data-lucide="eye" class="w-4 h-4"></i> Mode Supervision : <span id="supervised-client-name">Cabinet</span>
                 <button onclick="exitSupervision()" class="ml-4 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors">Quitter</button>
             </div>
-
             <div class="p-8 md:p-12 max-w-7xl mx-auto w-full">
                 <div id="page-header" class="mb-12"></div>
                 <div id="page-content" class="tab-transition"></div>
@@ -116,8 +102,6 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
-        // URL de votre script Google Apps Script
         const API_URL = "https://script.google.com/macros/s/AKfycbwIuA8URYOwtTqTggsR-hDP7e9atQ9Sd0BvZbXqX59-Y9czYc0Me0Cgrnlyf0b87wCW/exec"; 
 
         let state = {
@@ -132,477 +116,112 @@
 
         const PHASES = ["Cadrage", "Analyse", "Organisation", "Performance"];
 
-        window.onload = async () => {
-            if (state.token) await initApp();
-            else showAuthScreen();
-        };
+        window.onload = async () => { if (state.token) await initApp(); else showAuthScreen(); };
 
         async function initApp() {
             setLoading(true);
             const data = await fetchFromAPI();
             setLoading(false);
-
-            if (!data || data.error) {
-                handleLoginError(data?.error || "Session expirée");
-                return;
-            }
-
+            if (!data || data.error) { handleLoginError(data?.error || "Session expirée"); return; }
             state.user = data.user;
             state.clients = data.clients || [];
-            
-            // Redirection selon le rôle
-            if (state.user.role === 'admin') {
-                state.activeTab = 'portfolio';
-                state.currentClient = null;
-            } else {
-                state.currentClient = data.client;
-                state.clientData = { docs: data.docs || [], tasks: data.tasks || [], kpis: data.kpis || [] };
-                state.activeTab = 'dashboard';
-            }
-
+            if (state.user.role === 'admin') { state.activeTab = 'portfolio'; state.currentClient = null; } 
+            else { state.currentClient = data.client; state.clientData = { docs: data.docs || [], tasks: data.tasks || [], kpis: data.kpis || [] }; state.activeTab = 'dashboard'; }
             document.getElementById('auth-section').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            
-            updateUserUI();
-            refreshUI();
+            updateUserUI(); refreshUI();
         }
-
-        // --- COMMUNICATIONS API ---
 
         async function fetchFromAPI(clientId = null) {
             try {
-                let url = `${API_URL}?token=${state.token}`;
-                if (clientId) url += `&client_id=${clientId}`;
-                const res = await fetch(url);
-                const json = await res.json();
-                return json;
-            } catch (e) { 
-                console.error("API Error:", e);
-                return { error: "Problème de connexion au serveur Apps Script" }; 
-            }
+                let url = `${API_URL}?token=${state.token}${clientId ? `&client_id=${clientId}` : ''}`;
+                const res = await fetch(url); return await res.json();
+            } catch (e) { return { error: "Erreur de connexion" }; }
         }
 
         async function sendToAPI(action, payload) {
             setLoading(true);
             try {
-                const res = await fetch(API_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ token: state.token, action, payload })
-                });
-                const resData = await res.json();
-                setLoading(false);
-                if (resData.success) showToast("Données synchronisées");
-                return resData;
-            } catch (e) { 
-                setLoading(false); 
-                showToast("Erreur de sauvegarde"); 
-                return { error: e.message }; 
-            }
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ token: state.token, action, payload }) });
+                const resData = await res.json(); setLoading(false);
+                if (resData.success) showToast("Sauvegardé"); return resData;
+            } catch (e) { setLoading(false); showToast("Erreur"); return { error: e.message }; }
         }
 
-        // --- NAVIGATION ---
-
-        function switchTab(tabId) {
-            state.activeTab = tabId;
-            refreshUI();
-        }
-
+        function switchTab(tabId) { state.activeTab = tabId; refreshUI(); }
         async function enterSupervision(clientId) {
-            setLoading(true);
-            const data = await fetchFromAPI(clientId);
-            setLoading(false);
-
-            if (data && !data.error) {
-                state.currentClient = data.client;
-                state.clientData = { 
-                    docs: data.docs || [], 
-                    tasks: data.tasks || [], 
-                    kpis: data.kpis || [] 
-                };
-                state.activeTab = 'dashboard';
-                refreshUI();
-            }
+            setLoading(true); const data = await fetchFromAPI(clientId); setLoading(false);
+            if (data && !data.error) { state.currentClient = data.client; state.clientData = { docs: data.docs || [], tasks: data.tasks || [], kpis: data.kpis || [] }; state.activeTab = 'dashboard'; refreshUI(); }
         }
+        function exitSupervision() { state.currentClient = null; state.activeTab = 'portfolio'; state.clientData = { docs: [], tasks: [], kpis: [] }; refreshUI(); }
+        function goToPortfolio() { if (state.user.role === 'admin') exitSupervision(); }
 
-        function exitSupervision() {
-            state.currentClient = null;
-            state.activeTab = 'portfolio';
-            state.clientData = { docs: [], tasks: [], kpis: [] };
-            refreshUI();
-        }
-
-        function goToPortfolio() {
-            if (state.user.role === 'admin') exitSupervision();
-        }
-
-        // --- RENDU UI ---
-
-        function refreshUI() {
-            renderSidebar();
-            renderHeader();
-            renderContent();
-            lucide.createIcons();
-        }
+        function refreshUI() { renderSidebar(); renderHeader(); renderContent(); lucide.createIcons(); }
 
         function renderSidebar() {
             const container = document.getElementById('sidebar-content');
             const isAdmin = state.user.role === 'admin';
-            const isSupervising = isAdmin && state.currentClient !== null;
-            
+            const isSup = isAdmin && state.currentClient !== null;
             let html = '';
-
-            if (isAdmin) {
-                html += `
-                    <div class="pb-6">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-5">Espace Consultant</label>
-                        <button onclick="goToPortfolio()" class="nav-link w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all ${state.activeTab === 'portfolio' ? 'active' : ''}">
-                            <i data-lucide="users" class="w-5 h-5"></i> Portfolio Clients
-                        </button>
-                    </div>
-                `;
-            }
-
-            if (!isAdmin || isSupervising) {
-                html += `
-                    <div class="pt-4 border-t border-slate-100">
-                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest my-4 px-5">
-                            ${isAdmin ? 'Vue Cabinet : ' + state.currentClient.name : 'Mon Cabinet'}
-                        </label>
-                        <div class="space-y-1">
-                            ${renderNavLink('dashboard', 'layout-dashboard', 'Tableau de bord')}
-                            ${renderNavLink('onboarding', 'file-check', 'Onboarding')}
-                            ${renderNavLink('actions', 'check-square', 'Plan d\'action')}
-                            ${renderNavLink('performance', 'trending-up', 'Performance')}
-                        </div>
-                    </div>
-                `;
-            }
-
+            if (isAdmin) html += `<div class="pb-6"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-5">Consultant</label><button onclick="goToPortfolio()" class="nav-link w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all ${state.activeTab === 'portfolio' ? 'active' : ''}"><i data-lucide="users" class="w-5 h-5"></i> Portfolio</button></div>`;
+            if (!isAdmin || isSup) html += `<div class="pt-4 border-t border-slate-100"><label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest my-4 px-5">${isAdmin ? 'Vue Cabinet' : 'Mon Cabinet'}</label><div class="space-y-1">${renderNavLink('dashboard', 'layout-dashboard', 'Dashboard')}${renderNavLink('onboarding', 'file-check', 'Onboarding')}${renderNavLink('actions', 'check-square', 'Plan d\'action')}${renderNavLink('performance', 'trending-up', 'Performance')}</div></div>`;
             container.innerHTML = html;
-
-            const supervisionBar = document.getElementById('supervision-bar');
-            if (isSupervising) {
-                supervisionBar.classList.remove('hidden');
-                document.getElementById('supervised-client-name').innerText = state.currentClient.name;
-            } else {
-                supervisionBar.classList.add('hidden');
-            }
+            document.getElementById('supervision-bar').classList.toggle('hidden', !isSup);
+            if (isSup) document.getElementById('supervised-client-name').innerText = state.currentClient.name;
         }
 
-        function renderNavLink(id, icon, label) {
-            const active = state.activeTab === id ? 'active' : '';
-            return `
-                <button onclick="switchTab('${id}')" class="nav-link w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all ${active}">
-                    <i data-lucide="${icon}" class="w-5 h-5"></i> ${label}
-                </button>
-            `;
-        }
+        function renderNavLink(id, icon, label) { return `<button onclick="switchTab('${id}')" class="nav-link w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all ${state.activeTab === id ? 'active' : ''}"><i data-lucide="${icon}" class="w-5 h-5"></i> ${label}</button>`; }
 
         function renderHeader() {
-            const header = document.getElementById('page-header');
-            if (state.activeTab === 'portfolio') {
-                header.innerHTML = `
-                    <div class="flex items-center justify-between">
-                        <div>
-                            <h2 class="text-4xl font-black text-slate-900 tracking-tight">Master Portfolio</h2>
-                            <p class="text-slate-500 font-medium mt-1">Supervisez l'ensemble des audits actifs</p>
-                        </div>
-                        <div class="hidden md:flex items-center gap-2 bg-white px-5 py-3 rounded-2xl border border-slate-200 shadow-sm">
-                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
-                            <span class="text-xs font-black text-slate-700 uppercase tracking-widest">${state.clients.length} Cabinets</span>
-                        </div>
-                    </div>
-                `;
-            } else if (state.currentClient) {
-                const progress = (state.currentClient.current_phase / 4) * 100;
-                header.innerHTML = `
-                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
-                        <div>
-                            <div class="flex items-center gap-3 mb-3">
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Cabinet Client</span>
-                                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ID: ${state.currentClient.id}</span>
-                            </div>
-                            <h2 class="text-4xl font-black text-slate-900 tracking-tight">${state.currentClient.name}</h2>
-                        </div>
-                        <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm w-full md:w-96">
-                            <div class="flex justify-between items-center mb-4">
-                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phase ${state.currentClient.current_phase} : ${PHASES[state.currentClient.current_phase-1]}</span>
-                                <span class="text-xs font-black text-indigo-600">${Math.round(progress)}%</span>
-                            </div>
-                            <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
-                                <div class="bg-indigo-600 h-full rounded-full transition-all duration-1000 ease-out" style="width: ${progress}%"></div>
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }
+            const h = document.getElementById('page-header');
+            if (state.activeTab === 'portfolio') h.innerHTML = `<div class="flex items-center justify-between"><div><h2 class="text-4xl font-black text-slate-900 tracking-tight">Portfolio</h2><p class="text-slate-500 font-medium mt-1">Gérez vos clients actifs</p></div><div class="bg-white px-5 py-3 rounded-2xl border border-slate-200 shadow-sm text-xs font-black text-slate-700 uppercase tracking-widest">${state.clients.length} Cabinets</div></div>`;
+            else if (state.currentClient) h.innerHTML = `<div class="flex flex-col md:flex-row md:items-end justify-between gap-8"><div><div class="flex items-center gap-3 mb-3"><span class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Cabinet</span><h2 class="text-4xl font-black text-slate-900 tracking-tight">${state.currentClient.name}</h2></div></div><div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm w-full md:w-96"><div class="flex justify-between items-center mb-4"><div><span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phase ${state.currentClient.current_phase} : ${PHASES[state.currentClient.current_phase-1]}</span>${state.user.role === 'admin' ? `<button onclick="updateClientPhase()" class="ml-2 text-[9px] font-black text-indigo-600 uppercase tracking-tighter">Modifier</button>` : ''}</div><span class="text-xs font-black text-indigo-600">${Math.round((state.currentClient.current_phase / 4) * 100)}%</span></div><div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden"><div class="bg-indigo-600 h-full rounded-full" style="width: ${(state.currentClient.current_phase / 4) * 100}%"></div></div></div></div>`;
         }
 
         function renderContent() {
-            const container = document.getElementById('page-content');
-            switch (state.activeTab) {
-                case 'portfolio': renderPortfolio(container); break;
-                case 'dashboard': renderDashboard(container); break;
-                case 'onboarding': renderOnboarding(container); break;
-                case 'actions': renderActions(container); break;
-                case 'performance': renderPerformance(container); break;
+            const c = document.getElementById('page-content');
+            if (state.activeTab === 'portfolio') renderPortfolio(c);
+            else if (state.activeTab === 'dashboard') renderDashboard(c);
+            else if (state.activeTab === 'onboarding') renderOnboarding(c);
+            else if (state.activeTab === 'actions') renderActions(c);
+            else if (state.activeTab === 'performance') renderPerformance(c);
+        }
+
+        function renderPortfolio(container) { container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${state.clients.map(c => `<div onclick="enterSupervision('${c.id}')" class="group bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all cursor-pointer relative overflow-hidden"><div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 mb-6 transition-colors"><i data-lucide="building-2"></i></div><h3 class="text-2xl font-black text-slate-900 mb-1 truncate">${c.name}</h3><p class="text-xs font-bold text-slate-400 mb-8 uppercase tracking-widest">Phase ${c.current_phase}/4</p><div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-6"><div class="bg-indigo-600 h-full" style="width: ${(c.current_phase/4)*100}%"></div></div><div class="flex items-center justify-between pt-6 border-t border-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest"><span>Gérer</span><span class="italic">${c.last_audit_date || ''}</span></div></div>`).join('')}</div>`; }
+        function renderDashboard(c) { c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-8"><div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8"><div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm"><div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-6"><i data-lucide="activity"></i></div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Statut</p><p class="text-3xl font-black text-slate-900">En cours</p></div><div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm"><div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6"><i data-lucide="target"></i></div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Focus</p><p class="text-3xl font-black text-slate-900">${PHASES[state.currentClient.current_phase-1]}</p></div><div class="sm:col-span-2 bg-indigo-900 p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden"><div class="relative z-10"><h3 class="text-2xl font-black mb-4 leading-tight">Prochaine étape de<br>votre transformation</h3><p class="text-indigo-200 text-sm mb-8 max-w-md font-medium">Consultez votre plan d'action stratégique.</p><button onclick="switchTab('actions')" class="px-8 py-3 bg-white text-indigo-900 font-black rounded-xl text-xs uppercase tracking-widest shadow-xl">Voir les tâches</button></div></div></div><div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center"><div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mb-6 shadow-inner ring-8 ring-indigo-50/50"><i data-lucide="message-circle"></i></div><h4 class="text-xl font-black text-slate-900 mb-3 uppercase tracking-tighter">Support</h4><p class="text-sm text-slate-500 font-medium mb-8">Votre consultant est disponible.</p><a href="https://wa.me/33600000000" target="_blank" class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl text-xs uppercase tracking-widest flex items-center justify-center gap-2">WhatsApp</a></div></div>`; }
+        function renderOnboarding(c) { c.innerHTML = `<div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden"><div class="p-10 border-b border-slate-100 flex justify-between items-center"><div><h3 class="text-2xl font-black text-slate-900">Collecte</h3><p class="text-slate-500 text-sm font-medium mt-1">Préparez vos documents</p></div><div class="bg-slate-50 px-6 py-3 rounded-2xl text-xs font-black text-slate-700">${state.clientData.docs.filter(d => d.status === 'Reçu').length} / ${state.clientData.docs.length} REÇUS</div></div><div class="divide-y divide-slate-100">${state.clientData.docs.map(doc => `<div class="p-8 flex items-center justify-between hover:bg-slate-50 transition-colors"><div class="flex items-center gap-6"><div class="w-14 h-14 rounded-2xl flex items-center justify-center ${doc.status === 'Reçu' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}"><i data-lucide="file-text"></i></div><div><p class="text-lg font-black text-slate-800">${doc.label}</p><p class="text-xs font-bold ${doc.status === 'Reçu' ? 'text-emerald-500' : 'text-amber-500'} uppercase tracking-widest">${doc.status}</p></div></div><div class="flex gap-2">${doc.link ? `<a href="${doc.link}" target="_blank" class="p-3 bg-white border border-slate-200 rounded-xl"><i data-lucide="eye"></i></a>` : ''}<button onclick="handleDocAction('${doc.id}')" class="px-6 py-3 bg-slate-900 text-white text-xs font-black rounded-xl uppercase tracking-widest">${doc.status === 'Reçu' ? 'Modifier' : 'Soumettre'}</button></div></div>`).join('')}</div></div>`; }
+        function renderActions(c) { const isAdmin = state.user.role === 'admin'; const tasks = isAdmin ? state.clientData.tasks : state.clientData.tasks.filter(t => t.is_visible_client === true || t.is_visible_client === "VRAI"); c.innerHTML = `<div class="flex items-center justify-between mb-10"><div><h3 class="text-2xl font-black text-slate-900">Plan Stratégique</h3><p class="text-slate-500 text-sm font-medium mt-1">Actions d'optimisation</p></div>${isAdmin ? `<button onclick="addTaskPrompt()" class="p-4 bg-indigo-600 text-white rounded-2xl shadow-xl shadow-indigo-200"><i data-lucide="plus"></i></button>` : ''}</div><div class="grid grid-cols-1 gap-4">${tasks.map(t => `<div onclick="toggleTask('${t.id}', '${t.status}')" class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center justify-between group cursor-pointer hover:border-indigo-400 transition-all"><div class="flex items-center gap-6"><div class="w-8 h-8 rounded-xl border-2 flex items-center justify-center ${t.status === 'Fait' ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-200'}">${t.status === 'Fait' ? '<i data-lucide="check" class="w-5 h-5"></i>' : ''}</div><div><p class="font-bold text-slate-800 ${t.status === 'Fait' ? 'line-through text-slate-400 opacity-60' : ''}">${t.label}</p><span class="text-[9px] font-black uppercase text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">${t.category || 'Audit'}</span></div></div></div>`).join('')}</div>`; }
+        function renderPerformance(c) { const k = state.clientData.kpis[0] || { leads: 0, consults: 0, interventions: 0 }; const r = k.consults > 0 ? ((k.interventions / k.consults) * 100).toFixed(1) : 0; c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-10"><div class="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-sm"><h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-12 text-center">Tunnel</h4><div class="space-y-10">${renderKPIBar("Leads", k.leads, 200, "bg-blue-500")}${renderKPIBar("Consultations", k.consults, k.leads || 1, "bg-indigo-500")}${renderKPIBar("Interventions", k.interventions, k.consults || 1, "bg-emerald-500")}</div></div><div class="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center"><div class="w-32 h-32 bg-emerald-50 text-emerald-600 rounded-[2.5rem] flex items-center justify-center mb-8"><i data-lucide="trending-up" class="w-16 h-16"></i></div><h4 class="text-8xl font-black text-slate-900">${r}<span class="text-4xl text-emerald-500">%</span></h4><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-4">Closing Rate</p></div></div>`; }
+        function renderKPIBar(l, v, m, c) { const p = Math.min((v/m)*100, 100); return `<div><div class="flex justify-between items-end mb-3"><span class="text-xs font-black text-slate-700 uppercase">${l}</span><span class="text-xl font-black">${v}</span></div><div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden"><div class="${c} h-full rounded-full transition-all duration-[1.5s]" style="width: ${p}%"></div></div></div>`; }
+
+        async function handleDocAction(docId) { const link = prompt("Lien du document :"); if (!link) return; const res = await sendToAPI('UPDATE_DOC', { id: docId, link }); if (res.success) { const doc = state.clientData.docs.find(d => d.id.toString() === docId.toString()); if (doc) { doc.status = 'Reçu'; doc.link = link; } renderContent(); } }
+        async function toggleTask(taskId, currentStatus) { const newStatus = currentStatus === 'Fait' ? 'Attente' : 'Fait'; const res = await sendToAPI('UPDATE_TASK', { id: taskId, status: newStatus }); if (res.success) { const task = state.clientData.tasks.find(t => t.id.toString() === taskId.toString()); if (task) task.status = newStatus; renderContent(); lucide.createIcons(); } }
+        async function addTaskPrompt() {
+            const label = prompt("Nom de la tâche :"); if (!label) return;
+            const category = prompt("Catégorie (Analyse, Livrable, etc.) :", "Analyse");
+            const visible = confirm("Rendre visible pour le client ?");
+            const res = await sendToAPI('ADD_TASK', { client_id: state.currentClient.id, label, category, is_visible_client: visible });
+            if (res.success) { 
+                // Rechargement des données client pour voir la nouvelle tâche
+                const data = await fetchFromAPI(state.currentClient.id);
+                state.clientData.tasks = data.tasks || [];
+                renderContent(); lucide.createIcons();
             }
         }
-
-        // --- VUES SPÉCIFIQUES ---
-
-        function renderPortfolio(container) {
-            container.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    ${state.clients.map(client => {
-                        const prog = (client.current_phase / 4) * 100;
-                        return `
-                        <div onclick="enterSupervision('${client.id}')" class="group bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all cursor-pointer relative overflow-hidden">
-                            <div class="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
-                                <i data-lucide="external-link" class="w-5 h-5 text-indigo-600"></i>
-                            </div>
-                            <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors mb-6">
-                                <i data-lucide="building-2" class="w-7 h-7"></i>
-                            </div>
-                            <h3 class="text-2xl font-black text-slate-900 mb-1 truncate">${client.name}</h3>
-                            <p class="text-xs font-bold text-slate-400 mb-8 uppercase tracking-widest">Phase ${client.current_phase}/4 : ${PHASES[client.current_phase-1]}</p>
-                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-6">
-                                <div class="bg-indigo-600 h-full group-hover:scale-x-105 transition-transform origin-left" style="width: ${prog}%"></div>
-                            </div>
-                            <div class="flex items-center justify-between pt-6 border-t border-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
-                                <span>Gérer le hub</span>
-                                <span class="italic font-medium">${client.last_audit_date || ''}</span>
-                            </div>
-                        </div>
-                    `}).join('')}
-                </div>
-            `;
+        async function updateClientPhase() {
+            const p = prompt("Nouvelle phase (1-4) :", state.currentClient.current_phase); if (!p || p < 1 || p > 4) return;
+            const res = await sendToAPI('UPDATE_CLIENT_PHASE', { client_id: state.currentClient.id, phase: parseInt(p) });
+            if (res.success) { state.currentClient.current_phase = parseInt(p); refreshUI(); }
         }
 
-        function renderDashboard(container) {
-            const isAdmin = state.user.role === 'admin';
-            container.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
-                        <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
-                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-6"><i data-lucide="activity"></i></div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Statut de livraison</p>
-                            <p class="text-3xl font-black text-slate-900">En cours</p>
-                        </div>
-                        <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
-                            <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6"><i data-lucide="target"></i></div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Focus actuel</p>
-                            <p class="text-3xl font-black text-slate-900">${PHASES[state.currentClient.current_phase-1]}</p>
-                        </div>
-                        <div class="sm:col-span-2 bg-indigo-900 p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
-                            <div class="relative z-10">
-                                <h3 class="text-2xl font-black mb-4 leading-tight">Prochaine étape de<br>votre transformation</h3>
-                                <p class="text-indigo-200 text-sm mb-8 max-w-md font-medium">Nous finalisons l'analyse de vos scripts de closing. Restez attentif à votre plan d'action.</p>
-                                <button onclick="switchTab('actions')" class="px-8 py-3 bg-white text-indigo-900 font-black rounded-xl text-xs uppercase tracking-widest shadow-xl">Voir les tâches</button>
-                            </div>
-                            <i data-lucide="sparkles" class="absolute -right-8 -bottom-8 w-48 h-48 text-indigo-800/50 -rotate-12"></i>
-                        </div>
-                    </div>
-                    
-                    <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
-                         <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mb-6 shadow-inner ring-8 ring-indigo-50/50">
-                            <i data-lucide="message-circle" class="w-10 h-10"></i>
-                         </div>
-                         <h4 class="text-xl font-black text-slate-900 mb-3 uppercase tracking-tighter">Support Consultant</h4>
-                         <p class="text-sm text-slate-500 font-medium mb-8">Une question sur l'audit ? Votre consultant est disponible.</p>
-                         <button class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl text-xs uppercase tracking-[0.2em] hover:bg-slate-800 shadow-lg">WhatsApp Direct</button>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderOnboarding(container) {
-            container.innerHTML = `
-                <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-10 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
-                        <div>
-                            <h3 class="text-2xl font-black text-slate-900">Collecte Documentaire</h3>
-                            <p class="text-slate-500 text-sm font-medium mt-1">Éléments nécessaires au bon déroulement de l'audit</p>
-                        </div>
-                        <div class="bg-slate-50 px-6 py-3 rounded-2xl border border-slate-100 text-xs font-black text-slate-700">
-                            ${state.clientData.docs.filter(d => d.status === 'Reçu').length} / ${state.clientData.docs.length} REÇUS
-                        </div>
-                    </div>
-                    <div class="divide-y divide-slate-100">
-                        ${state.clientData.docs.map(doc => `
-                            <div class="p-8 flex flex-col sm:flex-row items-center justify-between hover:bg-slate-50 transition-colors gap-6">
-                                <div class="flex items-center gap-6">
-                                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center ${doc.status === 'Reçu' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}">
-                                        <i data-lucide="file-text" class="w-6 h-6"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-lg font-black text-slate-800">${doc.label}</p>
-                                        <div class="flex items-center gap-2 mt-1">
-                                            <span class="w-2 h-2 rounded-full ${doc.status === 'Reçu' ? 'bg-emerald-500' : 'bg-amber-500'}"></span>
-                                            <span class="text-xs font-bold ${doc.status === 'Reçu' ? 'text-emerald-500' : 'text-amber-500'} uppercase tracking-widest">${doc.status}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="flex items-center gap-3">
-                                    ${doc.link ? `<a href="${doc.link}" target="_blank" class="p-3 bg-white border border-slate-200 text-slate-500 rounded-xl hover:bg-slate-50 shadow-sm"><i data-lucide="eye" class="w-5 h-5"></i></a>` : ''}
-                                    <button onclick="handleDocAction('${doc.id}')" class="px-8 py-3 bg-slate-900 text-white text-xs font-black rounded-xl shadow-lg hover:bg-slate-800 uppercase tracking-widest">
-                                        ${doc.status === 'Reçu' ? 'Modifier' : 'Soumettre'}
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderActions(container) {
-            const isAdmin = state.user.role === 'admin';
-            const tasks = isAdmin ? state.clientData.tasks : state.clientData.tasks.filter(t => t.is_visible_client === true || t.is_visible_client === "VRAI");
-            
-            container.innerHTML = `
-                <div class="flex items-center justify-between mb-10">
-                    <div>
-                        <h3 class="text-2xl font-black text-slate-900">Plan Stratégique</h3>
-                        <p class="text-slate-500 text-sm font-medium mt-1">Actions concrètes à implémenter</p>
-                    </div>
-                    ${isAdmin ? `<button onclick="addTaskPrompt()" class="p-4 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all"><i data-lucide="plus"></i></button>` : ''}
-                </div>
-                <div class="grid grid-cols-1 gap-4">
-                    ${tasks.length > 0 ? tasks.map(task => `
-                        <div onclick="toggleTask('${task.id}', '${task.status}')" class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center justify-between group cursor-pointer hover:border-indigo-400 transition-all">
-                            <div class="flex items-center gap-6">
-                                <div class="w-8 h-8 rounded-xl border-2 flex items-center justify-center transition-all ${task.status === 'Fait' ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-200 group-hover:border-indigo-400'}">
-                                    ${task.status === 'Fait' ? '<i data-lucide="check" class="w-5 h-5"></i>' : ''}
-                                </div>
-                                <div>
-                                    <p class="font-bold text-slate-800 transition-all ${task.status === 'Fait' ? 'line-through text-slate-400 opacity-60' : ''}">${task.label}</p>
-                                    <div class="flex gap-2 mt-1">
-                                        <span class="text-[9px] font-black uppercase text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">${task.category || 'Audit'}</span>
-                                        ${isAdmin && !(task.is_visible_client === true || task.is_visible_client === "VRAI") ? `<span class="text-[9px] font-black uppercase text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">Privé</span>` : ''}
-                                    </div>
-                                </div>
-                            </div>
-                            <i data-lucide="chevron-right" class="w-5 h-5 text-slate-200 group-hover:text-indigo-400 transition-colors"></i>
-                        </div>
-                    `).join('') : '<div class="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-slate-400 font-bold uppercase tracking-widest">Aucune action planifiée</div>'}
-                </div>
-            `;
-        }
-
-        function renderPerformance(container) {
-            const kpi = state.clientData.kpis[0] || { leads: 0, consults: 0, interventions: 0 };
-            const rate = kpi.consults > 0 ? ((kpi.interventions / kpi.consults) * 100).toFixed(1) : 0;
-            
-            container.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
-                    <div class="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-sm">
-                        <h4 class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-12">Tunnel de conversion</h4>
-                        <div class="space-y-10">
-                            ${renderKPIBar("Acquisition Leads", kpi.leads, 200, "bg-blue-500")}
-                            ${renderKPIBar("Consultations réalisées", kpi.consults, kpi.leads || 1, "bg-indigo-500")}
-                            ${renderKPIBar("Interventions validées", kpi.interventions, kpi.consults || 1, "bg-emerald-500")}
-                        </div>
-                    </div>
-                    <div class="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center relative overflow-hidden">
-                        <div class="w-32 h-32 bg-emerald-50 text-emerald-600 rounded-[2.5rem] flex items-center justify-center mb-8 ring-8 ring-emerald-50/50 shadow-inner">
-                            <i data-lucide="trending-up" class="w-16 h-16"></i>
-                        </div>
-                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2">Conversion globale</p>
-                        <h4 class="text-8xl font-black text-slate-900 mb-2">${rate}<span class="text-4xl text-emerald-500">%</span></h4>
-                        <div class="px-6 py-2 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest mt-4">Performance optimale</div>
-                    </div>
-                </div>
-            `;
-        }
-
-        function renderKPIBar(l, v, m, c) {
-            const p = Math.min((v/m)*100, 100);
-            return `
-                <div>
-                    <div class="flex justify-between items-end mb-3">
-                        <span class="text-xs font-black text-slate-700 uppercase tracking-widest">${l}</span>
-                        <span class="text-xl font-black text-slate-900">${v}</span>
-                    </div>
-                    <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
-                        <div class="${c} h-full rounded-full transition-all duration-[1.5s]" style="width: ${p}%"></div>
-                    </div>
-                </div>
-            `;
-        }
-
-        // --- ACTIONS ---
-
-        async function handleDocAction(docId) {
-            const link = prompt("Entrez le lien vers le document (Drive, Dropbox, etc.) :");
-            if (!link) return;
-            const res = await sendToAPI('UPDATE_DOC', { id: docId, link });
-            if (res.success) {
-                const doc = state.clientData.docs.find(d => d.id.toString() === docId.toString());
-                if (doc) { doc.status = 'Reçu'; doc.link = link; }
-                renderContent();
-            }
-        }
-
-        async function toggleTask(taskId, currentStatus) {
-            const newStatus = currentStatus === 'Fait' ? 'Attente' : 'Fait';
-            const res = await sendToAPI('UPDATE_TASK', { id: taskId, status: newStatus });
-            if (res.success) {
-                const task = state.clientData.tasks.find(t => t.id.toString() === taskId.toString());
-                if (task) task.status = newStatus;
-                renderContent();
-                lucide.createIcons();
-            }
-        }
-
-        // --- UTILITAIRES ---
-
-        function setLoading(val) {
-            state.isLoading = val;
-            document.getElementById('loading-overlay').classList.toggle('hidden', !val);
-        }
-
-        function showToast(msg) {
-            const t = document.getElementById('toast');
-            if (msg) t.innerText = msg;
-            t.className = "show";
-            setTimeout(() => t.className = t.className.replace("show", ""), 3000);
-        }
-
-        function updateUserUI() {
-            document.getElementById('user-display-name').innerText = state.user.name;
-            document.getElementById('user-role-badge').innerText = state.user.role === 'admin' ? 'Consultant SELL IT' : 'Cabinet Client';
-            document.getElementById('user-avatar').innerText = state.user.name.substring(0, 2).toUpperCase();
-        }
-
-        function showAuthScreen() {
-            document.getElementById('auth-section').classList.remove('hidden');
-            document.getElementById('main-app').classList.add('hidden');
-        }
-
-        function handleLoginError(msg) {
-            const el = document.getElementById('login-error');
-            el.innerText = msg;
-            el.classList.remove('hidden');
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('sellit_token');
-            location.reload();
-        }
-
-        document.getElementById('login-form').onsubmit = async (e) => {
-            e.preventDefault();
-            state.token = document.getElementById('token-input').value.trim();
-            localStorage.setItem('sellit_token', state.token);
-            await initApp();
-        };
-
-        function getMockData(t, cid) {
-            const isAdmin = t.toLowerCase().includes('admin');
-            return { user: { role: isAdmin ? 'admin' : 'user', name: 'Mode Démo' }, clients: [] };
-        }
-
+        function setLoading(v) { document.getElementById('loading-overlay').classList.toggle('hidden', !v); }
+        function showToast(m) { const t = document.getElementById('toast'); t.innerText = m; t.className = "show"; setTimeout(() => t.className = "", 3000); }
+        function updateUserUI() { document.getElementById('user-display-name').innerText = state.user.name; document.getElementById('user-role-badge').innerText = state.user.role === 'admin' ? 'Consultant' : 'Client'; document.getElementById('user-avatar').innerText = state.user.name.substring(0, 2).toUpperCase(); }
+        function showAuthScreen() { document.getElementById('auth-section').classList.remove('hidden'); }
+        function handleLoginError(m) { const el = document.getElementById('login-error'); el.innerText = m; el.classList.remove('hidden'); }
+        function handleLogout() { localStorage.removeItem('sellit_token'); location.reload(); }
+        document.getElementById('login-form').onsubmit = async (e) => { e.preventDefault(); state.token = document.getElementById('token-input').value.trim(); localStorage.setItem('sellit_token', state.token); await initApp(); };
+        function getMockData(t, cid) { const isA = t.toLowerCase().includes('admin'); return { user: { role: isA ? 'admin' : 'user', name: 'Mode Démo' }, clients: [] }; }
     </script>
 </body>
 </html>
