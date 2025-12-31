@@ -19,81 +19,89 @@
         .font-serif { font-family: 'Playfair Display', serif; }
         .font-sans { font-family: 'Montserrat', sans-serif; }
 
-        /* Fond Signature Luxe - Texture adoucie pour la lisibilité */
+        /* Fond Signature Luxe */
         .bg-luxury {
-            background-color: #080808;
+            background-color: #050505;
             background-image: url("https://www.transparenttextures.com/patterns/stardust.png"); 
             background-blend-mode: overlay;
         }
 
-        /* Effet Platinum sur le texte - Plus contrasté */
+        /* Effet Platinum & Accents */
         .text-platinum {
-            background: linear-gradient(to bottom, #ffffff 20%, #cccccc 100%);
+            background: linear-gradient(to bottom, #ffffff 20%, #a0a0a0 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
         }
 
-        /* Glassmorphism - Opacité augmentée pour lire le texte par dessus le fond */
+        /* Glassmorphism Dynamique */
         .glass-card {
-            background: rgba(255, 255, 255, 0.05);
+            background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .glass-card:hover {
+            background: rgba(255, 255, 255, 0.06);
+            border-color: rgba(255, 255, 255, 0.2);
+            box-shadow: 0 0 40px rgba(99, 102, 241, 0.1);
         }
 
         .glass-sidebar {
-            background: rgba(5, 5, 5, 0.9);
-            backdrop-filter: blur(25px);
+            background: rgba(8, 8, 8, 0.95);
+            backdrop-filter: blur(30px);
             border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Navigation active - Plus visible */
+        /* Navigation active */
         .nav-link.active {
             color: #ffffff;
-            background: rgba(255, 255, 255, 0.08);
-            border-left: 3px solid #ffffff;
+            background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
+            border-left: 3px solid #6366f1;
         }
+        .nav-link.active i { color: #818cf8; }
 
         /* Animations */
         @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(8px); }
+            from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in { animation: fadeInUp 0.4s ease-out forwards; }
 
-        /* Loader */
-        .loader {
-            border-top-color: #ffffff;
-            animation: spinner 0.8s linear infinite;
-        }
-        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        .progress-glow-indigo { box-shadow: 0 0 15px rgba(99, 102, 241, 0.5); }
+        .progress-glow-emerald { box-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
 
         #toast {
             visibility: hidden;
-            min-width: 250px;
+            min-width: 280px;
             background: #ffffff;
             color: #000;
             text-align: center;
-            border-radius: 4px;
-            padding: 16px;
+            border-radius: 2px;
+            padding: 18px;
             position: fixed;
             z-index: 100;
             left: 50%;
-            bottom: 30px;
+            bottom: 40px;
             transform: translateX(-50%);
             font-size: 11px;
             font-weight: 800;
-            letter-spacing: 0.15em;
+            letter-spacing: 0.2em;
             text-transform: uppercase;
-            box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
-        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
-        @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: #080808; }
-        ::-webkit-scrollbar-thumb { background: #222; border-radius: 10px; }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+
+        /* Custom Switch */
+        .switch { position: relative; display: inline-block; width: 32px; height: 18px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 34px; }
+        .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
+        input:checked + .slider { background-color: #6366f1; }
+        input:checked + .slider:before { transform: translateX(14px); }
     </style>
 
     <script>
@@ -101,46 +109,47 @@
             theme: {
                 extend: {
                     colors: {
-                        onyx: '#0a0a0a',
-                        charcoal: '#141414',
-                        silver: '#C0C0C0',
+                        onyx: '#080808',
+                        charcoal: '#111111',
+                        accent: '#6366f1',
+                        success: '#10b981',
                     }
                 }
             }
         }
     </script>
 </head>
-<body class="bg-luxury text-slate-200 font-sans antialiased overflow-x-hidden selection:bg-white/20 selection:text-white">
+<body class="bg-luxury text-slate-200 font-sans antialiased overflow-x-hidden">
 
     <div id="toast">Données Synchronisées</div>
 
     <!-- LOADER -->
     <div id="loading-overlay" class="fixed inset-0 z-[70] flex items-center justify-center bg-black/95 hidden">
         <div class="text-center">
-            <div class="loader w-12 h-12 border-2 border-white/10 rounded-full mx-auto mb-6"></div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.5em] text-white">Initialisation</p>
+            <div class="loader w-14 h-14 border-2 border-white/5 rounded-full mx-auto mb-6"></div>
+            <p class="text-[10px] font-bold uppercase tracking-[0.6em] text-indigo-400">Accès au Protocole</p>
         </div>
     </div>
 
-    <!-- ACCÈS SÉCURISÉ (LOGIN) -->
+    <!-- ACCÈS PARTENAIRE (LOGIN) -->
     <div id="auth-section" class="fixed inset-0 z-50 flex items-center justify-center bg-onyx p-6 hidden">
-        <div class="hero-bg-image absolute inset-0 opacity-25 pointer-events-none">
+        <div class="hero-bg-image absolute inset-0 opacity-20 pointer-events-none grayscale">
             <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2000&auto=format&fit=crop" class="w-full h-full object-cover">
         </div>
         <div class="relative w-full max-w-sm">
-            <div class="text-center mb-12">
-                <h1 class="text-4xl font-serif font-semibold tracking-[0.2em] text-white italic">SELL IT.</h1>
-                <div class="w-16 h-px bg-white/20 mx-auto mt-6"></div>
+            <div class="text-center mb-16 animate-fade-in">
+                <h1 class="text-5xl font-serif font-semibold tracking-[0.1em] text-white italic">SELL IT.</h1>
+                <div class="w-20 h-0.5 bg-white/20 mx-auto mt-6"></div>
             </div>
             
-            <form id="login-form" class="space-y-6 glass-card p-10 rounded-lg shadow-2xl">
+            <form id="login-form" class="space-y-8 glass-card p-12 rounded-sm shadow-2xl animate-fade-in">
                 <div class="text-left">
-                    <label class="block text-[10px] font-bold uppercase tracking-[0.2em] text-slate-400 mb-4 px-1">Clé d'accès protocole</label>
-                    <input type="text" id="token-input" class="w-full bg-white/5 border border-white/10 px-6 py-4 text-base text-white placeholder:text-gray-700 focus:border-white/60 focus:bg-white/10 outline-none transition-all duration-300 rounded-sm" placeholder="Saisir votre token" required>
+                    <label class="block text-[10px] font-black uppercase tracking-[0.4em] text-slate-500 mb-4">Accès Partenaire</label>
+                    <input type="text" id="token-input" class="w-full bg-white/[0.03] border border-white/10 px-6 py-5 text-lg text-white placeholder:text-gray-800 focus:border-indigo-500/50 outline-none transition-all duration-500 rounded-sm font-light tracking-widest" placeholder="CLÉ D'ACCÈS" required>
                 </div>
-                <div id="login-error" class="hidden text-[11px] text-red-400 font-bold uppercase tracking-widest text-center py-3 bg-red-950/20 border border-red-900/30"></div>
-                <button type="submit" class="w-full py-5 bg-white text-black text-[11px] font-black uppercase tracking-[0.3em] hover:bg-slate-200 transition-all duration-300 shadow-xl">
-                    Ouvrir la session
+                <div id="login-error" class="hidden text-[11px] text-red-400 font-bold uppercase tracking-widest text-center py-4 bg-red-950/30 border border-red-900/40"></div>
+                <button type="submit" class="w-full py-6 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] hover:bg-slate-200 transition-all duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                    Se connecter
                 </button>
             </form>
         </div>
@@ -152,26 +161,26 @@
         <!-- SIDEBAR ÉLITE -->
         <aside class="w-full md:w-80 glass-sidebar flex flex-col z-40 sticky top-0 h-screen">
             <div class="p-10">
-                <div class="flex flex-col mb-16">
-                    <span class="text-2xl font-serif font-semibold tracking-wider text-white italic">SELL IT.</span>
-                    <span class="text-[9px] font-sans font-bold uppercase tracking-[0.4em] text-slate-500 mt-2 border-t border-white/10 pt-2">Elite Delivery</span>
+                <div class="flex flex-col mb-20 group cursor-pointer" onclick="exitSupervision()">
+                    <span class="text-3xl font-serif font-semibold tracking-wider text-white italic">SELL IT.</span>
+                    <span class="text-[9px] font-sans font-extrabold uppercase tracking-[0.5em] text-slate-600 mt-2 border-t border-white/5 pt-2">Expertise Chirurgicale</span>
                 </div>
 
-                <div id="sidebar-content" class="space-y-3">
+                <div id="sidebar-content" class="space-y-4">
                     <!-- Navigation Dynamique -->
                 </div>
             </div>
 
-            <div class="mt-auto p-10 border-t border-white/10 bg-black/20">
-                <div class="flex items-center gap-4 mb-10">
-                    <div id="user-avatar" class="w-12 h-12 border border-white/20 bg-white/5 text-white flex items-center justify-center text-sm font-serif italic rounded-sm shadow-inner"></div>
+            <div class="mt-auto p-10 border-t border-white/5 bg-black/40">
+                <div class="flex items-center gap-5 mb-12">
+                    <div id="user-avatar" class="w-14 h-14 border border-white/10 bg-white/5 text-white flex items-center justify-center text-lg font-serif italic rounded-sm shadow-inner"></div>
                     <div class="flex-1 min-w-0">
-                        <p id="user-display-name" class="text-[12px] font-extrabold text-white truncate uppercase tracking-widest mb-1"></p>
-                        <p id="user-role-badge" class="text-[9px] font-bold text-slate-500 uppercase tracking-widest"></p>
+                        <p id="user-display-name" class="text-[13px] font-black text-white truncate uppercase tracking-widest mb-1"></p>
+                        <p id="user-role-badge" class="text-[10px] font-bold text-slate-500 uppercase tracking-widest"></p>
                     </div>
                 </div>
-                <button onclick="handleLogout()" class="text-[10px] font-extrabold text-slate-500 hover:text-white transition-colors uppercase tracking-[0.2em] flex items-center gap-3 group">
-                    <i class="ph-bold ph-power text-lg group-hover:text-red-400 transition-colors"></i> Déconnexion
+                <button onclick="handleLogout()" class="text-[11px] font-black text-slate-600 hover:text-red-400 transition-all uppercase tracking-[0.3em] flex items-center gap-3 group">
+                    <i class="ph-bold ph-power text-xl group-hover:scale-110 transition-transform"></i> Déconnexion
                 </button>
             </div>
         </aside>
@@ -179,14 +188,15 @@
         <!-- MAIN AREA -->
         <main class="flex-1 overflow-y-auto">
             <!-- Bandeau de Supervision Admin -->
-            <div id="supervision-bar" class="bg-white text-black px-10 py-3 text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-between hidden shadow-2xl">
+            <div id="supervision-bar" class="bg-white text-black px-10 py-3 text-[11px] font-black uppercase tracking-[0.3em] flex items-center justify-between hidden shadow-2xl">
                 <div class="flex items-center gap-4">
-                    <i class="ph-fill ph-eye text-lg"></i> CONSULTANT : <span id="supervised-client-name" class="font-serif italic lowercase tracking-normal text-sm ml-2">Cabinet</span>
+                    <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
+                    <i class="ph-fill ph-eye text-lg"></i> SUPERVISION : <span id="supervised-client-name" class="font-serif italic lowercase tracking-normal text-sm ml-2 font-bold">Dossier</span>
                 </div>
-                <button onclick="exitSupervision()" class="bg-black text-white px-4 py-1.5 rounded-sm text-[9px] hover:bg-slate-800 transition-colors">QUITTER</button>
+                <button onclick="exitSupervision()" class="bg-black text-white px-5 py-1.5 rounded-sm transition-colors text-[9px] font-black uppercase tracking-widest">Quitter</button>
             </div>
 
-            <div class="p-10 md:p-20 max-w-7xl mx-auto w-full">
+            <div class="p-10 md:p-24 max-w-7xl mx-auto w-full">
                 <div id="page-header" class="mb-24"></div>
                 <div id="page-content"></div>
             </div>
@@ -194,7 +204,6 @@
     </div>
 
     <script>
-        // --- CONFIGURATION ---
         const API_URL = "https://script.google.com/macros/s/AKfycbwIuA8URYOwtTqTggsR-hDP7e9atQ9Sd0BvZbXqX59-Y9czYc0Me0Cgrnlyf0b87wCW/exec"; 
 
         let state = {
@@ -209,185 +218,66 @@
 
         const PHASES = ["Cadrage", "Analyse", "Organisation", "Performance"];
 
-        window.onload = async () => { 
-            if (state.token) await initApp(); 
-            else showAuthScreen(); 
-        };
+        window.onload = async () => { if (state.token) await initApp(); else showAuthScreen(); };
 
         async function initApp() {
             setLoading(true);
             const data = await fetchFromAPI();
             setLoading(false);
-
-            if (!data || data.error) {
-                handleLoginError(data?.error || "SESSION EXPIRÉE");
-                return;
-            }
-
+            if (!data || data.error) { handleLoginError(data?.error || "SESSION EXPIRÉE"); return; }
             state.user = data.user;
             state.clients = data.clients || [];
-            
-            if (state.user.role === 'admin') {
-                state.activeTab = 'portfolio';
-                state.currentClient = null;
-            } else {
-                state.currentClient = data.client;
-                state.clientData = { docs: data.docs || [], tasks: data.tasks || [], kpis: data.kpis || [] };
-                state.activeTab = 'dashboard';
-            }
-
+            if (state.user.role === 'admin') { state.activeTab = 'portfolio'; state.currentClient = null; } 
+            else { state.currentClient = data.client; state.clientData = { docs: data.docs || [], tasks: data.tasks || [], kpis: data.kpis || [] }; state.activeTab = 'dashboard'; }
             document.getElementById('auth-section').classList.add('hidden');
             document.getElementById('main-app').classList.remove('hidden');
-            
-            updateUserUI(); 
-            refreshUI();
+            updateUserUI(); refreshUI();
         }
 
         async function fetchFromAPI(clientId = null) {
             try {
                 let url = `${API_URL}?token=${state.token}${clientId ? `&client_id=${clientId}` : ''}`;
-                const res = await fetch(url); 
-                return await res.json();
+                const res = await fetch(url); return await res.json();
             } catch (e) { return { error: "ERREUR RÉSEAU" }; }
         }
 
         async function sendToAPI(action, payload) {
             setLoading(true);
             try {
-                const res = await fetch(API_URL, { 
-                    method: 'POST', 
-                    body: JSON.stringify({ token: state.token, action, payload }) 
-                });
-                const resData = await res.json(); 
-                setLoading(false);
-                if (resData.success) showToast("Synchronisé"); 
-                return resData;
-            } catch (e) { 
-                setLoading(false); 
-                showToast("ÉCHEC"); 
-                return { error: e.message }; 
-            }
+                const res = await fetch(API_URL, { method: 'POST', body: JSON.stringify({ token: state.token, action, payload }) });
+                const resData = await res.json(); setLoading(false);
+                if (resData.success) showToast("Synchronisé"); return resData;
+            } catch (e) { setLoading(false); showToast("ÉCHEC"); return { error: e.message }; }
         }
 
-        // --- NAVIGATION ---
-        function switchTab(tabId) { 
-            state.activeTab = tabId; 
-            refreshUI(); 
-        }
-        
+        function switchTab(tabId) { state.activeTab = tabId; refreshUI(); }
         async function enterSupervision(clientId) {
-            setLoading(true); 
-            const data = await fetchFromAPI(clientId); 
-            setLoading(false);
-            if (data && !data.error) { 
-                state.currentClient = data.client; 
-                state.clientData = { docs: data.docs || [], tasks: data.tasks || [], kpis: data.kpis || [] }; 
-                state.activeTab = 'dashboard'; 
-                refreshUI(); 
-            }
+            setLoading(true); const data = await fetchFromAPI(clientId); setLoading(false);
+            if (data && !data.error) { state.currentClient = data.client; state.clientData = { docs: data.docs || [], tasks: data.tasks || [], kpis: data.kpis || [] }; state.activeTab = 'dashboard'; refreshUI(); }
         }
-        
-        function exitSupervision() { 
-            state.currentClient = null; 
-            state.activeTab = 'portfolio'; 
-            state.clientData = { docs: [], tasks: [], kpis: [] }; 
-            refreshUI(); 
-        }
+        function exitSupervision() { state.currentClient = null; state.activeTab = 'portfolio'; state.clientData = { docs: [], tasks: [], kpis: [] }; refreshUI(); }
 
-        function refreshUI() { 
-            renderSidebar(); 
-            renderHeader(); 
-            renderContent(); 
-        }
+        function refreshUI() { renderSidebar(); renderHeader(); renderContent(); }
 
-        // --- RENDU UI ---
         function renderSidebar() {
             const container = document.getElementById('sidebar-content');
             const isAdmin = state.user.role === 'admin';
             const isSup = isAdmin && state.currentClient !== null;
             let html = '';
-
-            if (isAdmin) {
-                html += `
-                    <div class="pb-10">
-                        <label class="block text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-6 px-4">Master View</label>
-                        <button onclick="exitSupervision()" class="nav-link w-full flex items-center gap-4 px-5 py-4 text-[12px] font-bold text-slate-400 hover:text-white transition-all uppercase tracking-widest ${state.activeTab === 'portfolio' ? 'active' : ''}">
-                            <i class="ph-bold ph-folder-simple-user text-xl"></i> Portfolio
-                        </button>
-                    </div>
-                `;
-            }
-
-            if (!isAdmin || isSup) {
-                html += `
-                    <div class="pt-8 border-t border-white/10">
-                        <label class="block text-[10px] font-black text-slate-600 uppercase tracking-[0.4em] mb-6 px-4">Client Dashboard</label>
-                        <div class="space-y-2">
-                            ${renderNavLink('dashboard', 'ph-layout', 'Vue d\'ensemble')}
-                            ${renderNavLink('onboarding', 'ph-files', 'Onboarding')}
-                            ${renderNavLink('actions', 'ph-target', 'Stratégie')}
-                            ${renderNavLink('performance', 'ph-chart-line-up', 'Performance')}
-                        </div>
-                    </div>
-                `;
-            }
-
+            if (isAdmin) html += `<div class="pb-10"><label class="block text-[10px] font-black text-slate-600 uppercase tracking-[0.5em] mb-6 px-5">Gestion Portfolio</label><button onclick="exitSupervision()" class="nav-link w-full flex items-center gap-5 px-5 py-4 text-[13px] font-extrabold text-slate-500 hover:text-white transition-all uppercase tracking-widest ${state.activeTab === 'portfolio' ? 'active' : ''}"><i class="ph-bold ph-squares-four text-2xl"></i> Portfolio</button></div>`;
+            if (!isAdmin || isSup) html += `<div class="pt-10 border-t border-white/5"><label class="block text-[10px] font-black text-slate-600 uppercase tracking-[0.5em] mb-6 px-5">Suivi Livraison</label><div class="space-y-3">${renderNavLink('dashboard', 'ph-chart-polar', 'Tableau de bord')}${renderNavLink('onboarding', 'ph-hard-drive', 'Checklist')}${renderNavLink('actions', 'ph-target', 'Actions')}${renderNavLink('performance', 'ph-lightning', 'KPIs')}</div></div>`;
             container.innerHTML = html;
             document.getElementById('supervision-bar').classList.toggle('hidden', !isSup);
             if (isSup) document.getElementById('supervised-client-name').innerText = state.currentClient.name;
         }
 
-        function renderNavLink(id, icon, label) { 
-            const active = state.activeTab === id ? 'active' : '';
-            return `
-                <button onclick="switchTab('${id}')" class="nav-link w-full flex items-center gap-4 px-5 py-4 text-[12px] font-extrabold text-slate-400 hover:text-white transition-all uppercase tracking-widest ${active}">
-                    <i class="ph-bold ${icon} text-xl"></i> ${label}
-                </button>
-            `; 
-        }
+        function renderNavLink(id, icon, label) { return `<button onclick="switchTab('${id}')" class="nav-link w-full flex items-center gap-5 px-5 py-4 text-[13px] font-black text-slate-500 hover:text-white transition-all uppercase tracking-widest ${state.activeTab === id ? 'active' : ''}"><i class="ph-bold ${icon} text-2xl"></i> ${label}</button>`; }
 
         function renderHeader() {
             const h = document.getElementById('page-header');
-            h.className = "mb-20 animate-fade-in";
-            
-            if (state.activeTab === 'portfolio') {
-                h.innerHTML = `
-                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-10">
-                        <div>
-                            <span class="text-[10px] font-black text-slate-500 uppercase tracking-[0.6em] mb-4 block">Private Equity Hub</span>
-                            <h2 class="text-6xl font-serif text-white italic leading-tight">Master Portfolio.</h2>
-                        </div>
-                        <div class="glass-card px-10 py-5 text-[11px] font-black text-white uppercase tracking-[0.2em] shadow-xl">
-                            ${state.clients.length} Cabinets Sous Gestion
-                        </div>
-                    </div>
-                `;
-            } else if (state.currentClient) {
-                const prog = (state.currentClient.current_phase / 4) * 100;
-                h.innerHTML = `
-                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-12">
-                        <div class="max-w-2xl">
-                            <div class="flex items-center gap-4 mb-6">
-                                <span class="text-[10px] font-black uppercase tracking-[0.5em] text-white/30 px-3 py-1 border border-white/10">ID ${state.currentClient.id}</span>
-                            </div>
-                            <h2 class="text-7xl font-serif text-white leading-tight italic">${state.currentClient.name}</h2>
-                        </div>
-                        <div class="w-full md:w-[400px]">
-                            <div class="flex justify-between items-end mb-6">
-                                <div class="flex flex-col">
-                                    <span class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mb-1">Audit Phase ${state.currentClient.current_phase}</span>
-                                    <span class="text-sm font-bold text-white uppercase tracking-widest">${PHASES[state.currentClient.current_phase-1]}</span>
-                                </div>
-                                <span class="text-3xl font-serif italic text-white">${Math.round(prog)}%</span>
-                            </div>
-                            <div class="w-full bg-white/10 h-1.5 relative rounded-full overflow-hidden">
-                                <div class="bg-white h-full absolute transition-all duration-[2s] ease-out" style="width: ${prog}%"></div>
-                            </div>
-                            ${state.user.role === 'admin' ? `<button onclick="updateClientPhase()" class="mt-4 text-[9px] font-black text-white uppercase tracking-widest hover:underline opacity-50 hover:opacity-100 transition-opacity">Modifier l'étape stratégique</button>` : ''}
-                        </div>
-                    </div>
-                `;
-            }
+            h.className = "mb-24 animate-fade-in";
+            if (state.activeTab === 'portfolio') h.innerHTML = `<div class="flex flex-col md:flex-row md:items-end justify-between gap-12"><div><span class="text-[11px] font-black text-indigo-500 uppercase tracking-[0.6em] mb-6 block">Gestion de Cabinet</span><h2 class="text-7xl font-serif text-white italic leading-tight">Master Portfolio.</h2></div><div class="glass-card px-12 py-6 text-[12px] font-black text-white uppercase tracking-[0.3em] border-l-4 border-indigo-600 shadow-2xl bg-indigo-500/5">${state.clients.length} Cabinets Sous Gestion</div></div>`;
+            else if (state.currentClient) h.innerHTML = `<div class="flex flex-col md:flex-row md:items-end justify-between gap-12"><div class="max-w-3xl"><div class="flex items-center gap-6 mb-6"><span class="text-[11px] font-black uppercase tracking-[0.6em] text-white/30 px-4 py-1.5 border border-white/10 bg-white/5">PARTENAIRE ID-${state.currentClient.id}</span></div><h2 class="text-8xl font-serif text-white leading-tight italic tracking-tight">${state.currentClient.name}</h2></div><div class="w-full md:w-[450px]"><div class="flex justify-between items-end mb-8"><div class="flex flex-col"><span class="text-[11px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-2">Phase d'Audit ${state.currentClient.current_phase}</span><span class="text-lg font-black text-white uppercase tracking-widest">${PHASES[state.currentClient.current_phase-1]}</span></div><span class="text-4xl font-serif italic text-white">${Math.round((state.currentClient.current_phase/4)*100)}%</span></div><div class="w-full bg-white/5 h-2 relative rounded-full overflow-hidden shadow-inner"><div class="bg-gradient-to-r from-indigo-600 to-white h-full absolute transition-all duration-[2.5s] ease-out progress-glow-indigo" style="width: ${(state.currentClient.current_phase/4)*100}%"></div></div>${state.user.role === 'admin' ? `<button onclick="updateClientPhase()" class="mt-6 text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] hover:text-white transition-all underline decoration-indigo-500/30 underline-offset-8">Ajuster la Phase d'Audit</button>` : ''}</div></div>`;
         }
 
         function renderContent() {
@@ -402,16 +292,17 @@
 
         function renderPortfolio(container) { 
             container.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                     ${state.clients.map(c => `
-                        <div onclick="enterSupervision('${c.id}')" class="group glass-card p-12 hover:bg-white/[0.08] hover:border-white/20 transition-all duration-500 cursor-pointer relative shadow-2xl">
-                            <div class="mb-12 text-white/20 group-hover:text-white transition-all duration-500">
-                                <i class="ph-thin ph-office-chair text-6xl"></i>
+                        <div onclick="enterSupervision('${c.id}')" class="group glass-card p-14 hover:bg-indigo-500/5 hover:border-indigo-500/30 transition-all duration-700 cursor-pointer relative shadow-2xl overflow-hidden">
+                            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-600/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-indigo-600/10 transition-all"></div>
+                            <div class="mb-14 text-indigo-500/40 group-hover:text-indigo-400 transition-all duration-700">
+                                <i class="ph-thin ph-briefcase-metal text-7xl"></i>
                             </div>
-                            <h3 class="text-3xl font-serif text-white italic mb-3 truncate">${c.name}</h3>
-                            <p class="text-[10px] font-bold text-slate-500 uppercase tracking-[0.3em] mb-10">Phase ${c.current_phase} / Protocole Actif</p>
-                            <div class="flex items-center justify-between pt-10 border-t border-white/5 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] group-hover:text-white transition-colors">
-                                <span>Ouvrir le dossier</span>
+                            <h3 class="text-3xl font-serif text-white italic mb-4 truncate tracking-wide">${c.name}</h3>
+                            <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mb-12">Phase ${c.current_phase} — Audit Actif</p>
+                            <div class="flex items-center justify-between pt-12 border-t border-white/5 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] group-hover:text-white transition-colors">
+                                <span>Accéder au dossier</span>
                                 <i class="ph-bold ph-arrow-up-right text-lg transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"></i>
                             </div>
                         </div>
@@ -424,36 +315,37 @@
             c.innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
                     <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-12">
-                        <div class="glass-card p-12 shadow-xl">
-                            <i class="ph-thin ph-fingerprint text-4xl text-white/30 mb-8"></i>
-                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-4">Statut de Livraison</p>
-                            <p class="text-4xl font-serif text-white italic">Audit Stratégique</p>
+                        <div class="glass-card p-14 shadow-2xl border-l-2 border-l-indigo-500">
+                            <i class="ph-thin ph-activity text-5xl text-indigo-500/40 mb-10"></i>
+                            <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Statut Livraison</p>
+                            <p class="text-5xl font-serif text-white italic">En cours</p>
                         </div>
-                        <div class="glass-card p-12 shadow-xl">
-                            <i class="ph-thin ph-compass text-4xl text-white/30 mb-8"></i>
-                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-4">Focus Actuel</p>
-                            <p class="text-4xl font-serif text-white italic">${PHASES[state.currentClient.current_phase-1]}</p>
+                        <div class="glass-card p-14 shadow-2xl border-l-2 border-l-emerald-500">
+                            <i class="ph-thin ph-bullseye text-5xl text-emerald-500/40 mb-10"></i>
+                            <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Focus Actuel</p>
+                            <p class="text-5xl font-serif text-white italic">${PHASES[state.currentClient.current_phase-1]}</p>
                         </div>
-                        <div class="sm:col-span-2 glass-card p-16 relative overflow-hidden border-white/10 shadow-2xl">
+                        <div class="sm:col-span-2 glass-card p-20 relative overflow-hidden shadow-2xl bg-gradient-to-br from-indigo-950/20 to-transparent">
                             <div class="relative z-10">
-                                <h3 class="text-5xl font-serif text-white italic mb-8 leading-[1.2]">Initier la prochaine étape de<br>votre transformation.</h3>
-                                <p class="text-slate-300 text-base font-medium leading-relaxed max-w-xl mb-12">Chaque phase du protocole SELL IT est conçue pour maximiser votre rentabilité. Accédez à vos actions prioritaires dès maintenant.</p>
-                                <button onclick="switchTab('actions')" class="px-12 py-5 border-2 border-white text-white text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-500">
-                                    Découvrir le Protocole
+                                <h3 class="text-6xl font-serif text-white italic mb-10 leading-tight">Priorités de la<br>phase actuelle.</h3>
+                                <p class="text-slate-400 text-lg font-medium leading-relaxed max-w-2xl mb-14">Chaque action du protocole est calibrée pour votre transformation. Accédez au plan stratégique pour initier les opérations.</p>
+                                <button onclick="switchTab('actions')" class="px-14 py-6 bg-white text-black text-[13px] font-black uppercase tracking-[0.4em] hover:bg-indigo-50 transition-all duration-500 shadow-3xl">
+                                    Voir les Actions
                                 </button>
                             </div>
-                            <div class="absolute -right-20 -bottom-20 opacity-[0.03] rotate-12">
-                                <i class="ph-thin ph-crown text-[300px]"></i>
+                            <div class="absolute -right-20 -bottom-20 opacity-[0.04] rotate-12">
+                                <i class="ph-thin ph-crown text-[400px] text-white"></i>
                             </div>
                         </div>
                     </div>
-                    <div class="glass-card p-12 flex flex-col items-center justify-center text-center shadow-xl">
-                         <div class="w-32 h-32 border border-white/10 rounded-full flex items-center justify-center mb-12 shadow-2xl bg-white/5">
-                            <i class="ph-thin ph-paper-plane-tilt text-5xl text-white"></i>
+                    <div class="glass-card p-14 flex flex-col items-center justify-center text-center shadow-2xl border-t-4 border-t-indigo-600/30">
+                         <div class="w-40 h-40 border border-white/5 rounded-full flex items-center justify-center mb-14 shadow-3xl bg-indigo-500/5 ring-1 ring-white/10 relative">
+                            <div class="absolute inset-0 bg-indigo-500/10 blur-2xl rounded-full"></div>
+                            <i class="ph-thin ph-paper-plane-tilt text-6xl text-white relative z-10"></i>
                          </div>
-                         <h4 class="text-2xl font-serif text-white italic mb-6">Expertise Directe</h4>
-                         <p class="text-[12px] text-slate-500 font-bold leading-loose uppercase tracking-[0.2em] mb-12">Ligne de communication directe avec votre consultant dédié.</p>
-                         <a href="https://wa.me/33600000000" target="_blank" class="w-full py-5 bg-white/5 border border-white/20 text-white text-[10px] font-black uppercase tracking-[0.3em] hover:bg-white hover:text-black transition-all duration-500 shadow-lg">Lancer WhatsApp</a>
+                         <h4 class="text-3xl font-serif text-white italic mb-8 uppercase tracking-widest">Support</h4>
+                         <p class="text-[13px] text-slate-500 font-bold leading-loose uppercase tracking-[0.3em] mb-14">Ligne de communication directe avec votre consultant SELL IT.</p>
+                         <a href="https://wa.me/33600000000" target="_blank" class="w-full py-6 bg-indigo-600/10 border border-indigo-500/30 text-indigo-400 text-[12px] font-black uppercase tracking-[0.4em] hover:bg-indigo-600 hover:text-white transition-all duration-500 shadow-xl">WhatsApp Direct</a>
                     </div>
                 </div>
             `; 
@@ -461,37 +353,42 @@
 
         function renderOnboarding(c) { 
             c.innerHTML = `
-                <div class="glass-card shadow-2xl rounded-sm">
-                    <div class="p-16 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-10">
+                <div class="glass-card shadow-2xl border-t-2 border-t-white/10">
+                    <div class="p-20 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-14 bg-white/[0.01]">
                         <div>
-                            <h3 class="text-5xl font-serif text-white italic mb-4">Collecte Documentaire.</h3>
-                            <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em]">Optimisation des Actifs Cliniques</p>
+                            <h3 class="text-6xl font-serif text-white italic mb-4">Checklist.</h3>
+                            <p class="text-[12px] font-black text-indigo-400 uppercase tracking-[0.5em]">Collecte des Actifs du Cabinet</p>
                         </div>
-                        <div class="text-center md:text-right px-10 py-6 border-l border-white/10">
-                            <span class="text-6xl font-serif text-white italic leading-none">${state.clientData.docs.filter(d => d.status === 'Reçu').length}<span class="text-2xl text-slate-600 mx-2">/</span>${state.clientData.docs.length}</span>
-                            <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] mt-4">Pièces Validées</p>
+                        <div class="text-center md:text-right px-14 py-8 border-l border-white/10">
+                            <span class="text-8xl font-serif text-white italic leading-none">${state.clientData.docs.filter(d => d.status === 'Reçu').length}<span class="text-3xl text-slate-700 mx-4">/</span>${state.clientData.docs.length}</span>
+                            <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] mt-6">Éléments Validés</p>
                         </div>
                     </div>
                     <div class="divide-y divide-white/10">
-                        ${state.clientData.docs.map(doc => `
-                            <div class="p-12 flex flex-col sm:flex-row items-center justify-between hover:bg-white/[0.04] transition-all duration-300 gap-10">
-                                <div class="flex items-center gap-12">
-                                    <div class="w-16 h-16 flex items-center justify-center border border-white/10 rounded-sm">
-                                        <i class="ph-thin ph-file-text text-4xl ${doc.status === 'Reçu' ? 'text-white' : 'text-slate-700'}"></i>
+                        ${state.clientData.docs.map(doc => {
+                            const isRec = doc.status === 'Reçu';
+                            return `
+                            <div class="p-14 flex flex-col sm:flex-row items-center justify-between hover:bg-white/[0.04] transition-all duration-500 gap-12 group">
+                                <div class="flex items-center gap-14">
+                                    <div class="w-20 h-20 flex items-center justify-center border border-white/10 rounded-sm bg-black/40 shadow-inner group-hover:border-indigo-500/50 transition-colors">
+                                        <i class="ph-thin ph-file-pdf text-5xl ${isRec ? 'text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'text-slate-800'}"></i>
                                     </div>
                                     <div>
-                                        <p class="text-2xl font-serif text-white italic mb-2 tracking-wide">${doc.label}</p>
-                                        <p class="text-[10px] font-black ${doc.status === 'Reçu' ? 'text-white bg-white/10' : 'text-slate-600 bg-black/20'} uppercase tracking-[0.4em] inline-block px-3 py-1">${doc.status}</p>
+                                        <p class="text-3xl font-serif text-white italic mb-3 tracking-wide">${doc.label}</p>
+                                        <div class="flex items-center gap-4">
+                                            <span class="text-[11px] font-black ${isRec ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-600 bg-black/40'} border border-white/5 uppercase tracking-[0.5em] px-5 py-2">${doc.status}</span>
+                                            ${isRec ? '<span class="text-[10px] text-slate-500 italic uppercase">Document Reçu</span>' : ''}
+                                        </div>
                                     </div>
                                 </div>
                                 <div class="flex items-center gap-6">
-                                    ${doc.link ? `<a href="${doc.link}" target="_blank" class="w-14 h-14 flex items-center justify-center border border-white/20 text-white hover:bg-white hover:text-black transition-all rounded-sm shadow-lg"><i class="ph-bold ph-magnifying-glass text-xl"></i></a>` : ''}
-                                    <button onclick="handleDocAction('${doc.id}')" class="px-10 py-4 bg-white/5 border border-white/20 text-[11px] font-black uppercase tracking-[0.3em] text-white hover:bg-white hover:text-black transition-all duration-500 shadow-xl">
-                                        ${doc.status === 'Reçu' ? 'Mettre à jour' : 'Transmettre'}
+                                    ${doc.link ? `<a href="${doc.link}" target="_blank" class="w-16 h-16 flex items-center justify-center border border-white/10 text-white hover:bg-indigo-600 hover:border-indigo-600 transition-all shadow-xl"><i class="ph-bold ph-magnifying-glass text-2xl"></i></a>` : ''}
+                                    <button onclick="handleDocAction('${doc.id}')" class="px-12 py-5 bg-white/5 border border-white/20 text-[12px] font-black uppercase tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-500 shadow-2xl">
+                                        ${isRec ? 'Mettre à jour' : 'Transmettre'}
                                     </button>
                                 </div>
                             </div>
-                        `).join('')}
+                        `}).join('')}
                     </div>
                 </div>
             `; 
@@ -502,64 +399,68 @@
             const tasks = isAdmin ? state.clientData.tasks : state.clientData.tasks.filter(t => t.is_visible_client === true || t.is_visible_client === "VRAI"); 
             
             c.innerHTML = `
-                <div class="flex flex-col md:flex-row md:items-end justify-between mb-20 gap-10">
+                <div class="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-12">
                     <div>
-                        <h3 class="text-5xl font-serif text-white italic mb-4">Plan Stratégique.</h3>
-                        <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em]">Actions Prioritaires du Protocole</p>
+                        <h3 class="text-6xl font-serif text-white italic mb-4">Plan d'Action Stratégique.</h3>
+                        <p class="text-[12px] font-black text-indigo-400 uppercase tracking-[0.5em]">Déploiement des Opérations</p>
                     </div>
                 </div>
-                <div class="space-y-10">
+                <div class="space-y-12">
                     ${isAdmin ? `
-                        <div class="glass-card p-12 border-dashed border-white/20 mb-16 shadow-2xl">
-                            <div class="flex flex-col gap-10">
-                                <div class="flex items-center gap-10 border-b border-white/10 pb-6">
+                        <div class="glass-card p-14 border-dashed border-indigo-500/30 mb-20 shadow-3xl bg-indigo-500/5 relative">
+                            <div class="absolute top-0 left-0 w-1 h-full bg-indigo-600"></div>
+                            <div class="flex flex-col gap-12">
+                                <div class="flex items-center gap-12 border-b border-white/5 pb-8">
                                     <input type="text" id="inline-task-label" 
-                                        class="flex-1 bg-transparent py-4 font-serif italic text-3xl text-white placeholder:text-slate-800 outline-none focus:placeholder:text-slate-700 transition-all" 
-                                        placeholder="Énoncer l'action stratégique..."
+                                        class="flex-1 bg-transparent py-5 font-serif italic text-4xl text-white placeholder:text-slate-800 outline-none focus:placeholder:text-indigo-900 transition-all tracking-tight" 
+                                        placeholder="Définir une action stratégique..."
                                         onkeydown="if(event.key === 'Enter') handleInlineTaskAdd()">
-                                    <button onclick="handleInlineTaskAdd()" class="w-20 h-20 bg-white text-black flex items-center justify-center hover:bg-slate-200 transition-all shadow-2xl rounded-sm group">
-                                        <i class="ph-bold ph-plus text-2xl group-hover:scale-125 transition-transform"></i>
+                                    <button onclick="handleInlineTaskAdd()" class="w-24 h-24 bg-white text-black flex items-center justify-center hover:bg-indigo-50 transition-all shadow-3xl rounded-sm group relative overflow-hidden">
+                                        <i class="ph-bold ph-plus text-3xl group-hover:scale-125 transition-transform"></i>
                                     </button>
                                 </div>
-                                <div class="flex items-center justify-between text-[11px] font-black uppercase tracking-[0.4em]">
-                                    <div class="flex items-center gap-10">
-                                        <select id="inline-task-category" class="bg-black/40 text-white px-6 py-2 border border-white/10 outline-none cursor-pointer hover:border-white transition-colors rounded-sm">
+                                <div class="flex items-center justify-between text-[11px] font-black uppercase tracking-[0.5em]">
+                                    <div class="flex items-center gap-12">
+                                        <select id="inline-task-category" class="bg-black/60 text-indigo-400 px-8 py-3 border border-indigo-500/30 outline-none cursor-pointer hover:border-indigo-400 transition-all font-bold">
                                             <option value="Audit">Audit</option>
                                             <option value="Analyse">Analyse</option>
                                             <option value="Livrable">Livrable</option>
+                                            <option value="Coaching">Coaching</option>
                                         </select>
-                                        <label class="flex items-center gap-6 cursor-pointer text-slate-400 hover:text-white transition-all group">
-                                            <span>Visibilité Partenaire</span>
-                                            <input type="checkbox" id="inline-task-visible" checked class="w-5 h-5 accent-white">
+                                        <label class="flex items-center gap-8 cursor-pointer text-slate-500 hover:text-white transition-all group">
+                                            <span>Visibilité Client</span>
+                                            <label class="switch">
+                                                <input type="checkbox" id="inline-task-visible" checked>
+                                                <span class="slider"></span>
+                                            </label>
                                         </label>
                                     </div>
-                                    <span class="text-slate-600 font-medium italic lowercase tracking-normal">Press Enter to Validate</span>
+                                    <span class="text-slate-700 font-bold italic tracking-normal italic">Valider avec Entrée</span>
                                 </div>
                             </div>
                         </div>
                     ` : ''}
-                    <div class="grid grid-cols-1 gap-8">
+                    <div class="grid grid-cols-1 gap-10">
                         ${tasks.length > 0 ? tasks.map(t => {
                             const isDone = t.status === 'Fait';
                             const isVisible = t.is_visible_client === true || t.is_visible_client === "VRAI";
                             return `
-                            <div onclick="toggleTask('${t.id}', '${t.status}')" class="glass-card p-10 flex items-center justify-between group cursor-pointer hover:bg-white/[0.06] transition-all duration-500 border-white/10 shadow-xl">
-                                <div class="flex items-center gap-12">
-                                    <div class="w-10 h-10 border-2 border-white/20 flex items-center justify-center transition-all group-hover:border-white rounded-sm ${isDone ? 'bg-white text-black border-white' : ''}">
-                                        ${isDone ? '<i class="ph-bold ph-check text-xl"></i>' : ''}
+                            <div onclick="toggleTask('${t.id}', '${t.status}')" class="glass-card p-12 flex items-center justify-between group cursor-pointer hover:bg-indigo-500/[0.03] transition-all duration-700 border-white/5 shadow-2xl relative">
+                                <div class="flex items-center gap-16">
+                                    <div class="w-14 h-14 border-2 border-white/10 flex items-center justify-center transition-all group-hover:border-indigo-500 rounded-sm bg-black/20 ${isDone ? 'bg-indigo-600 border-indigo-600 shadow-[0_0_20px_rgba(99,102,241,0.4)]' : ''}">
+                                        ${isDone ? '<i class="ph-bold ph-check text-2xl text-white"></i>' : ''}
                                     </div>
                                     <div>
-                                        <div class="flex items-center gap-6 mb-3">
-                                            <span class="text-[10px] font-black uppercase tracking-[0.3em] text-white/40 border border-white/5 px-3 py-1 bg-white/5">${t.category || 'Audit'}</span>
-                                            ${isAdmin && !isVisible ? `<span class="text-[10px] font-black uppercase tracking-[0.3em] text-amber-500 border border-amber-900/50 px-3 py-1 bg-amber-950/20">Confidentiel</span>` : ''}
+                                        <div class="flex items-center gap-8 mb-4">
+                                            <span class="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400/80 border border-indigo-500/20 px-4 py-1.5 bg-indigo-500/5">${t.category || 'Audit'}</span>
+                                            ${isAdmin && !isVisible ? `<span class="text-[10px] font-black uppercase tracking-[0.4em] text-amber-500 border border-amber-600/30 px-4 py-1.5 bg-amber-900/10">Usage Interne</span>` : ''}
                                         </div>
-                                        <p class="text-2xl font-serif italic text-white tracking-wide ${isDone ? 'opacity-20 line-through' : ''}">${t.label}</p>
+                                        <p class="text-3xl font-serif italic text-white tracking-wide ${isDone ? 'opacity-20 line-through' : ''}">${t.label}</p>
                                     </div>
                                 </div>
-                                <i class="ph-bold ph-arrow-right text-slate-800 group-hover:text-white group-hover:translate-x-2 transition-all duration-500 text-2xl"></i>
+                                <i class="ph-bold ph-arrow-right text-slate-800 group-hover:text-white group-hover:translate-x-4 transition-all duration-700 text-3xl"></i>
                             </div>
-                        `}).join('') : '<div class="text-center py-20 text-slate-600 font-bold uppercase tracking-[0.5em] border border-white/5 glass-card">Aucune Action Planifiée</div>'}
-                    </div>
+                        `}).join('') : '<div class="text-center py-24 text-slate-700 font-black uppercase tracking-[0.6em] border border-white/5 glass-card bg-black/20">Aucune action enregistrée</div>'}
                 </div>
             `; 
         }
@@ -568,37 +469,42 @@
             const k = state.clientData.kpis[0] || { leads: 0, consults: 0, interventions: 0 }; 
             const r = k.consults > 0 ? ((k.interventions / k.consults) * 100).toFixed(1) : 0; 
             c.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-16">
-                    <div class="glass-card p-16 shadow-2xl">
-                        <h4 class="text-[11px] font-black text-slate-500 uppercase tracking-[0.6em] mb-20 text-center">Protocol Transformation Path</h4>
-                        <div class="space-y-16">
-                            ${renderKPIBar("Acquisition Leads", k.leads, 200)}
-                            ${renderKPIBar("Consultations Stratégiques", k.consults, k.leads || 1)}
-                            ${renderKPIBar("Interventions Validées", k.interventions, k.consults || 1)}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
+                    <div class="glass-card p-20 shadow-3xl border-t-2 border-t-indigo-600/20">
+                        <h4 class="text-[12px] font-black text-slate-500 uppercase tracking-[0.6em] mb-20 text-center">Indicateurs de Performance</h4>
+                        <div class="space-y-20">
+                            ${renderKPIBar("Volume Leads", k.leads, 200, "indigo")}
+                            ${renderKPIBar("Consultations", k.consults, k.leads || 1, "white")}
+                            ${renderKPIBar("Interventions", k.interventions, k.consults || 1, "emerald")}
                         </div>
                     </div>
-                    <div class="glass-card p-16 flex flex-col items-center justify-center text-center relative overflow-hidden shadow-2xl">
-                        <div class="w-40 h-40 border border-white/10 rounded-full flex items-center justify-center mb-12 shadow-inner bg-white/5 ring-1 ring-white/10">
-                            <i class="ph-thin ph-diamonds-four text-6xl text-white"></i>
+                    <div class="glass-card p-20 flex flex-col items-center justify-center text-center relative overflow-hidden shadow-3xl bg-gradient-to-tr from-emerald-950/10 to-transparent border-t-2 border-t-emerald-600/20">
+                        <div class="w-48 h-48 border border-white/5 rounded-full flex items-center justify-center mb-16 shadow-inner bg-emerald-500/5 ring-1 ring-emerald-500/20 relative">
+                            <div class="absolute inset-0 bg-emerald-500/10 blur-3xl opacity-50 rounded-full animate-pulse"></div>
+                            <i class="ph-thin ph-diamonds-four text-8xl text-emerald-400 relative z-10"></i>
                         </div>
-                        <h4 class="text-9xl font-serif italic text-platinum mb-6 leading-none">${r}%</h4>
-                        <p class="text-[12px] font-black text-slate-500 uppercase tracking-[0.5em]">Taux de Closing Global</p>
-                        <div class="absolute inset-0 bg-gradient-to-t from-white/[0.02] to-transparent pointer-events-none"></div>
+                        <h4 class="text-[12rem] font-serif italic text-platinum mb-8 leading-none drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">${Math.round(r)}<span class="text-4xl text-emerald-400 ml-2">%</span></h4>
+                        <p class="text-[14px] font-black text-slate-400 uppercase tracking-[0.6em]">Taux de Transformation</p>
                     </div>
                 </div>
             `; 
         }
 
-        function renderKPIBar(l, v, m) { 
+        function renderKPIBar(l, v, m, color) { 
             const p = Math.min((v/m)*100, 100); 
+            const colors = {
+                indigo: "from-indigo-600 to-indigo-400 progress-glow-indigo",
+                white: "from-slate-400 to-white progress-glow-white",
+                emerald: "from-emerald-600 to-emerald-400 progress-glow-emerald"
+            };
             return `
                 <div class="group">
-                    <div class="flex justify-between items-end mb-6">
-                        <span class="text-[12px] font-extrabold text-white uppercase tracking-[0.2em]">${l}</span>
-                        <span class="text-3xl font-serif italic text-white">${v}</span>
+                    <div class="flex justify-between items-end mb-8">
+                        <span class="text-[14px] font-black text-white uppercase tracking-[0.3em]">${l}</span>
+                        <span class="text-4xl font-serif italic text-white">${v}</span>
                     </div>
-                    <div class="w-full bg-white/5 h-1.5 relative rounded-full overflow-hidden">
-                        <div class="bg-white h-full absolute transition-all duration-[2.5s] delay-300 shadow-[0_0_15px_rgba(255,255,255,0.5)]" style="width: ${p}%"></div>
+                    <div class="w-full bg-white/5 h-2.5 relative rounded-full overflow-hidden shadow-inner">
+                        <div class="bg-gradient-to-r ${colors[color]} h-full absolute transition-all duration-[2.5s] delay-300" style="width: ${p}%"></div>
                     </div>
                 </div>`; 
         }
@@ -608,21 +514,13 @@
             const link = prompt("Saisir l'URL du document :"); 
             if (!link) return; 
             const res = await sendToAPI('UPDATE_DOC', { id, link }); 
-            if (res.success) { 
-                const d = state.clientData.docs.find(x => x.id.toString() === id.toString()); 
-                if (d) { d.status = 'Reçu'; d.link = link; } 
-                renderContent(); 
-            } 
+            if (res.success) { const d = state.clientData.docs.find(x => x.id.toString() === id.toString()); if (d) { d.status = 'Reçu'; d.link = link; } renderContent(); } 
         }
         
         async function toggleTask(id, currentStatus) { 
             const newStatus = currentStatus === 'Fait' ? 'Attente' : 'Fait'; 
             const res = await sendToAPI('UPDATE_TASK', { id, status: newStatus }); 
-            if (res.success) { 
-                const t = state.clientData.tasks.find(x => x.id.toString() === id.toString()); 
-                if (t) t.status = newStatus; 
-                renderContent(); 
-            } 
+            if (res.success) { const t = state.clientData.tasks.find(x => x.id.toString() === id.toString()); if (t) t.status = newStatus; renderContent(); } 
         }
 
         async function handleInlineTaskAdd() {
@@ -632,21 +530,14 @@
             const label = labelInput.value.trim();
             if (!label) return;
             const res = await sendToAPI('ADD_TASK', { client_id: state.currentClient.id, label, category: cat.value, is_visible_client: vis.checked });
-            if (res.success) { 
-                const d = await fetchFromAPI(state.currentClient.id); 
-                state.clientData.tasks = d.tasks || []; 
-                renderContent(); 
-            }
+            if (res.success) { const d = await fetchFromAPI(state.currentClient.id); state.clientData.tasks = d.tasks || []; renderContent(); }
         }
 
         async function updateClientPhase() {
-            const p = prompt("Niveau du protocole (1-4) :", state.currentClient.current_phase); 
+            const p = prompt("Niveau de Phase (1-4) :", state.currentClient.current_phase); 
             if (!p || p < 1 || p > 4) return;
             const res = await sendToAPI('UPDATE_CLIENT_PHASE', { client_id: state.currentClient.id, phase: parseInt(p) });
-            if (res.success) { 
-                state.currentClient.current_phase = parseInt(p); 
-                refreshUI(); 
-            }
+            if (res.success) { state.currentClient.current_phase = parseInt(p); refreshUI(); }
         }
 
         // --- UTILS ---
@@ -654,7 +545,7 @@
         function showToast(m) { const t = document.getElementById('toast'); if(m) t.innerText = m; t.className = "show"; setTimeout(() => t.className = "", 3000); }
         function updateUserUI() { 
             document.getElementById('user-display-name').innerText = state.user.name; 
-            document.getElementById('user-role-badge').innerText = state.user.role === 'admin' ? 'Strategic Advisor' : 'Partner'; 
+            document.getElementById('user-role-badge').innerText = state.user.role === 'admin' ? 'Strategic Expert' : 'Partner'; 
             document.getElementById('user-avatar').innerText = state.user.name.substring(0, 2).toUpperCase(); 
         }
         function showAuthScreen() { document.getElementById('auth-section').classList.remove('hidden'); }
