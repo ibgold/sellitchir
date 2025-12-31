@@ -32,6 +32,8 @@
         #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
         @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+
+        .quick-add-input:focus { border-color: #4f46e5; outline: none; box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1); }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
@@ -65,7 +67,7 @@
         </div>
     </div>
 
-    <!-- STRUCTURE PRINCIPALE -->
+    <!-- APP STRUCTURE -->
     <div id="main-app" class="flex flex-col md:flex-row min-h-screen hidden">
         <aside class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col z-40 sticky top-0 h-screen">
             <div class="p-8">
@@ -92,7 +94,7 @@
         <main class="flex-1 overflow-y-auto">
             <div id="supervision-bar" class="bg-amber-500 text-white px-8 py-2 text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 hidden">
                 <i data-lucide="eye" class="w-4 h-4"></i> Mode Supervision : <span id="supervised-client-name">Cabinet</span>
-                <button onclick="exitSupervision()" class="ml-4 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors">Quitter</button>
+                <button onclick="exitSupervision()" class="ml-4 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors text-[9px]">Quitter</button>
             </div>
             <div class="p-8 md:p-12 max-w-7xl mx-auto w-full">
                 <div id="page-header" class="mb-12"></div>
@@ -190,24 +192,80 @@
         function renderPortfolio(container) { container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">${state.clients.map(c => `<div onclick="enterSupervision('${c.id}')" class="group bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all cursor-pointer relative overflow-hidden"><div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 mb-6 transition-colors"><i data-lucide="building-2"></i></div><h3 class="text-2xl font-black text-slate-900 mb-1 truncate">${c.name}</h3><p class="text-xs font-bold text-slate-400 mb-8 uppercase tracking-widest">Phase ${c.current_phase}/4</p><div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-6"><div class="bg-indigo-600 h-full" style="width: ${(c.current_phase/4)*100}%"></div></div><div class="flex items-center justify-between pt-6 border-t border-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest"><span>Gérer</span><span class="italic">${c.last_audit_date || ''}</span></div></div>`).join('')}</div>`; }
         function renderDashboard(c) { c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-8"><div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8"><div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm"><div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-6"><i data-lucide="activity"></i></div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Statut</p><p class="text-3xl font-black text-slate-900">En cours</p></div><div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm"><div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6"><i data-lucide="target"></i></div><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Focus</p><p class="text-3xl font-black text-slate-900">${PHASES[state.currentClient.current_phase-1]}</p></div><div class="sm:col-span-2 bg-indigo-900 p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden"><div class="relative z-10"><h3 class="text-2xl font-black mb-4 leading-tight">Prochaine étape de<br>votre transformation</h3><p class="text-indigo-200 text-sm mb-8 max-w-md font-medium">Consultez votre plan d'action stratégique.</p><button onclick="switchTab('actions')" class="px-8 py-3 bg-white text-indigo-900 font-black rounded-xl text-xs uppercase tracking-widest shadow-xl">Voir les tâches</button></div></div></div><div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center"><div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mb-6 shadow-inner ring-8 ring-indigo-50/50"><i data-lucide="message-circle"></i></div><h4 class="text-xl font-black text-slate-900 mb-3 uppercase tracking-tighter">Support</h4><p class="text-sm text-slate-500 font-medium mb-8">Votre consultant est disponible.</p><a href="https://wa.me/33600000000" target="_blank" class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl text-xs uppercase tracking-widest flex items-center justify-center gap-2">WhatsApp</a></div></div>`; }
         function renderOnboarding(c) { c.innerHTML = `<div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden"><div class="p-10 border-b border-slate-100 flex justify-between items-center"><div><h3 class="text-2xl font-black text-slate-900">Collecte</h3><p class="text-slate-500 text-sm font-medium mt-1">Préparez vos documents</p></div><div class="bg-slate-50 px-6 py-3 rounded-2xl text-xs font-black text-slate-700">${state.clientData.docs.filter(d => d.status === 'Reçu').length} / ${state.clientData.docs.length} REÇUS</div></div><div class="divide-y divide-slate-100">${state.clientData.docs.map(doc => `<div class="p-8 flex items-center justify-between hover:bg-slate-50 transition-colors"><div class="flex items-center gap-6"><div class="w-14 h-14 rounded-2xl flex items-center justify-center ${doc.status === 'Reçu' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}"><i data-lucide="file-text"></i></div><div><p class="text-lg font-black text-slate-800">${doc.label}</p><p class="text-xs font-bold ${doc.status === 'Reçu' ? 'text-emerald-500' : 'text-amber-500'} uppercase tracking-widest">${doc.status}</p></div></div><div class="flex gap-2">${doc.link ? `<a href="${doc.link}" target="_blank" class="p-3 bg-white border border-slate-200 rounded-xl"><i data-lucide="eye"></i></a>` : ''}<button onclick="handleDocAction('${doc.id}')" class="px-6 py-3 bg-slate-900 text-white text-xs font-black rounded-xl uppercase tracking-widest">${doc.status === 'Reçu' ? 'Modifier' : 'Soumettre'}</button></div></div>`).join('')}</div></div>`; }
-        function renderActions(c) { const isAdmin = state.user.role === 'admin'; const tasks = isAdmin ? state.clientData.tasks : state.clientData.tasks.filter(t => t.is_visible_client === true || t.is_visible_client === "VRAI"); c.innerHTML = `<div class="flex items-center justify-between mb-10"><div><h3 class="text-2xl font-black text-slate-900">Plan Stratégique</h3><p class="text-slate-500 text-sm font-medium mt-1">Actions d'optimisation</p></div>${isAdmin ? `<button onclick="addTaskPrompt()" class="p-4 bg-indigo-600 text-white rounded-2xl shadow-xl shadow-indigo-200"><i data-lucide="plus"></i></button>` : ''}</div><div class="grid grid-cols-1 gap-4">${tasks.map(t => `<div onclick="toggleTask('${t.id}', '${t.status}')" class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center justify-between group cursor-pointer hover:border-indigo-400 transition-all"><div class="flex items-center gap-6"><div class="w-8 h-8 rounded-xl border-2 flex items-center justify-center ${t.status === 'Fait' ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-200'}">${t.status === 'Fait' ? '<i data-lucide="check" class="w-5 h-5"></i>' : ''}</div><div><p class="font-bold text-slate-800 ${t.status === 'Fait' ? 'line-through text-slate-400 opacity-60' : ''}">${t.label}</p><span class="text-[9px] font-black uppercase text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">${t.category || 'Audit'}</span></div></div></div>`).join('')}</div>`; }
+        
+        function renderActions(c) { 
+            const isAdmin = state.user.role === 'admin'; 
+            const tasks = isAdmin ? state.clientData.tasks : state.clientData.tasks.filter(t => t.is_visible_client === true || t.is_visible_client === "VRAI"); 
+            
+            c.innerHTML = `
+                <div class="flex items-center justify-between mb-10">
+                    <div>
+                        <h3 class="text-2xl font-black text-slate-900">Plan Stratégique</h3>
+                        <p class="text-slate-500 text-sm font-medium mt-1">Actions d'optimisation</p>
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 gap-4">
+                    ${isAdmin ? `
+                        <div class="bg-white p-4 rounded-[2rem] border-2 border-dashed border-slate-200 flex items-center gap-4 mb-4 transition-all hover:border-indigo-300">
+                            <div class="flex-1">
+                                <input type="text" id="inline-task-label" 
+                                    class="quick-add-input w-full px-4 py-3 rounded-xl border border-slate-100 bg-slate-50 text-sm font-bold placeholder:text-slate-300" 
+                                    placeholder="Ajouter une tâche et appuyer sur Entrée..."
+                                    onkeydown="if(event.key === 'Enter') handleInlineTaskAdd()">
+                            </div>
+                            <button onclick="handleInlineTaskAdd()" class="p-3 bg-indigo-600 text-white rounded-xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 transition-all">
+                                <i data-lucide="check" class="w-5 h-5"></i>
+                            </button>
+                        </div>
+                    ` : ''}
+                    ${tasks.map(t => `
+                        <div onclick="toggleTask('${t.id}', '${t.status}')" class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center justify-between group cursor-pointer hover:border-indigo-400 transition-all">
+                            <div class="flex items-center gap-6">
+                                <div class="w-8 h-8 rounded-xl border-2 flex items-center justify-center ${t.status === 'Fait' ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-200'}">
+                                    ${t.status === 'Fait' ? '<i data-lucide="check" class="w-5 h-5"></i>' : ''}
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800 ${t.status === 'Fait' ? 'line-through text-slate-400 opacity-60' : ''}">${t.label}</p>
+                                    <span class="text-[9px] font-black uppercase text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">${t.category || 'Audit'}</span>
+                                </div>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `; 
+        }
+
         function renderPerformance(c) { const k = state.clientData.kpis[0] || { leads: 0, consults: 0, interventions: 0 }; const r = k.consults > 0 ? ((k.interventions / k.consults) * 100).toFixed(1) : 0; c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-10"><div class="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-sm"><h4 class="text-xs font-black text-slate-400 uppercase tracking-widest mb-12 text-center">Tunnel</h4><div class="space-y-10">${renderKPIBar("Leads", k.leads, 200, "bg-blue-500")}${renderKPIBar("Consultations", k.consults, k.leads || 1, "bg-indigo-500")}${renderKPIBar("Interventions", k.interventions, k.consults || 1, "bg-emerald-500")}</div></div><div class="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center"><div class="w-32 h-32 bg-emerald-50 text-emerald-600 rounded-[2.5rem] flex items-center justify-center mb-8"><i data-lucide="trending-up" class="w-16 h-16"></i></div><h4 class="text-8xl font-black text-slate-900">${r}<span class="text-4xl text-emerald-500">%</span></h4><p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mt-4">Closing Rate</p></div></div>`; }
         function renderKPIBar(l, v, m, c) { const p = Math.min((v/m)*100, 100); return `<div><div class="flex justify-between items-end mb-3"><span class="text-xs font-black text-slate-700 uppercase">${l}</span><span class="text-xl font-black">${v}</span></div><div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden"><div class="${c} h-full rounded-full transition-all duration-[1.5s]" style="width: ${p}%"></div></div></div>`; }
 
         async function handleDocAction(docId) { const link = prompt("Lien du document :"); if (!link) return; const res = await sendToAPI('UPDATE_DOC', { id: docId, link }); if (res.success) { const doc = state.clientData.docs.find(d => d.id.toString() === docId.toString()); if (doc) { doc.status = 'Reçu'; doc.link = link; } renderContent(); } }
         async function toggleTask(taskId, currentStatus) { const newStatus = currentStatus === 'Fait' ? 'Attente' : 'Fait'; const res = await sendToAPI('UPDATE_TASK', { id: taskId, status: newStatus }); if (res.success) { const task = state.clientData.tasks.find(t => t.id.toString() === taskId.toString()); if (task) task.status = newStatus; renderContent(); lucide.createIcons(); } }
-        async function addTaskPrompt() {
-            const label = prompt("Nom de la tâche :"); if (!label) return;
-            const category = prompt("Catégorie (Analyse, Livrable, etc.) :", "Analyse");
-            const visible = confirm("Rendre visible pour le client ?");
-            const res = await sendToAPI('ADD_TASK', { client_id: state.currentClient.id, label, category, is_visible_client: visible });
+        
+        async function handleInlineTaskAdd() {
+            const input = document.getElementById('inline-task-label');
+            const label = input.value.trim();
+            if (!label) return;
+
+            const res = await sendToAPI('ADD_TASK', { 
+                client_id: state.currentClient.id, 
+                label: label, 
+                category: "Audit", 
+                is_visible_client: true 
+            });
+
             if (res.success) { 
-                // Rechargement des données client pour voir la nouvelle tâche
                 const data = await fetchFromAPI(state.currentClient.id);
                 state.clientData.tasks = data.tasks || [];
-                renderContent(); lucide.createIcons();
+                renderContent(); 
+                lucide.createIcons();
+                // Remettre le focus sur l'input pour un ajout multiple rapide
+                setTimeout(() => {
+                    const newInput = document.getElementById('inline-task-label');
+                    if (newInput) newInput.focus();
+                }, 100);
             }
         }
+
         async function updateClientPhase() {
             const p = prompt("Nouvelle phase (1-4) :", state.currentClient.current_phase); if (!p || p < 1 || p > 4) return;
             const res = await sendToAPI('UPDATE_CLIENT_PHASE', { client_id: state.currentClient.id, phase: parseInt(p) });
