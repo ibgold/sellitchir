@@ -15,36 +15,20 @@
     <script src="https://unpkg.com/@phosphor-icons/web"></script>
 
     <style>
-        /* Système Typographique */
         .font-serif { font-family: 'Playfair Display', serif; }
         .font-sans { font-family: 'Montserrat', sans-serif; }
 
-        /* Fond Signature Luxe */
         .bg-luxury {
             background-color: #050505;
             background-image: url("https://www.transparenttextures.com/patterns/stardust.png"); 
             background-blend-mode: overlay;
         }
 
-        /* Effet Platinum & Accents */
-        .text-platinum {
-            background: linear-gradient(to bottom, #ffffff 20%, #a0a0a0 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Glassmorphism Dynamique */
         .glass-card {
             background: rgba(255, 255, 255, 0.03);
             backdrop-filter: blur(16px);
             border: 1px solid rgba(255, 255, 255, 0.08);
             transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-        }
-
-        .glass-card:hover {
-            background: rgba(255, 255, 255, 0.06);
-            border-color: rgba(255, 255, 255, 0.2);
-            box-shadow: 0 0 40px rgba(99, 102, 241, 0.1);
         }
 
         .glass-sidebar {
@@ -53,7 +37,6 @@
             border-right: 1px solid rgba(255, 255, 255, 0.05);
         }
 
-        /* Navigation active */
         .nav-link.active {
             color: #ffffff;
             background: linear-gradient(90deg, rgba(99, 102, 241, 0.1) 0%, rgba(255, 255, 255, 0.05) 100%);
@@ -61,15 +44,11 @@
         }
         .nav-link.active i { color: #818cf8; }
 
-        /* Animations */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(12px); }
             to { opacity: 1; transform: translateY(0); }
         }
         .animate-fade-in { animation: fadeInUp 0.4s ease-out forwards; }
-
-        .progress-glow-indigo { box-shadow: 0 0 15px rgba(99, 102, 241, 0.5); }
-        .progress-glow-emerald { box-shadow: 0 0 15px rgba(16, 185, 129, 0.5); }
 
         #toast {
             visibility: hidden;
@@ -80,7 +59,7 @@
             border-radius: 2px;
             padding: 18px;
             position: fixed;
-            z-index: 100;
+            z-index: 150;
             left: 50%;
             bottom: 40px;
             transform: translateX(-50%);
@@ -95,7 +74,6 @@
         @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 40px; opacity: 1; } }
         @keyframes fadeout { from { bottom: 40px; opacity: 1; } to { bottom: 0; opacity: 0; } }
 
-        /* Custom Switch */
         .switch { position: relative; display: inline-block; width: 32px; height: 18px; }
         .switch input { opacity: 0; width: 0; height: 0; }
         .slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.1); transition: .4s; border-radius: 34px; }
@@ -103,12 +81,16 @@
         input:checked + .slider { background-color: #6366f1; }
         input:checked + .slider:before { transform: translateX(14px); }
 
-        /* Modal Overlay */
         #modal-overlay {
-            background: rgba(0,0,0,0.85);
-            backdrop-filter: blur(20px);
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(25px);
             transition: opacity 0.3s ease;
         }
+
+        /* Custom Scrollbar for Textareas */
+        .custom-scroll::-webkit-scrollbar { width: 4px; }
+        .custom-scroll::-webkit-scrollbar-track { background: transparent; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); border-radius: 10px; }
     </style>
 
     <script>
@@ -133,16 +115,16 @@
     <!-- LOADER -->
     <div id="loading-overlay" class="fixed inset-0 z-[70] flex items-center justify-center bg-black/95 hidden">
         <div class="text-center">
-            <div class="loader w-14 h-14 border-2 border-white/5 rounded-full mx-auto mb-6"></div>
-            <p class="text-[10px] font-bold uppercase tracking-[0.6em] text-indigo-400">Accès au Protocole</p>
+            <div class="loader w-14 h-14 border-2 border-white/5 rounded-full mx-auto mb-6" style="border-top-color: #6366f1; animation: spinner 0.8s linear infinite;"></div>
+            <p class="text-[10px] font-bold uppercase tracking-[0.6em] text-indigo-400">Synchronisation Élite</p>
         </div>
     </div>
 
     <!-- MODALE UNIVERSELLE -->
     <div id="modal-overlay" class="fixed inset-0 z-[100] flex items-center justify-center p-6 hidden opacity-0 transition-all duration-300">
-        <div id="modal-card" class="glass-card w-full max-w-lg p-12 shadow-2xl scale-95 transition-all duration-300">
+        <div id="modal-card" class="glass-card w-full max-w-2xl p-12 shadow-2xl scale-95 transition-all duration-300 overflow-y-auto max-h-[90vh] custom-scroll">
             <div id="modal-content">
-                <!-- Contenu injecté dynamiquement -->
+                <!-- Dynamique -->
             </div>
         </div>
     </div>
@@ -164,7 +146,7 @@
                     <input type="text" id="token-input" class="w-full bg-white/[0.03] border border-white/10 px-6 py-5 text-lg text-white placeholder:text-gray-800 focus:border-indigo-500/50 outline-none transition-all duration-500 rounded-sm font-light tracking-widest" placeholder="CLÉ D'ACCÈS" required>
                 </div>
                 <div id="login-error" class="hidden text-[11px] text-red-400 font-bold uppercase tracking-widest text-center py-4 bg-red-950/30 border border-red-900/40"></div>
-                <button type="submit" class="w-full py-6 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] hover:bg-indigo-50 transition-all duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                <button type="submit" class="w-full py-6 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] hover:bg-slate-200 transition-all duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
                     Se connecter
                 </button>
             </form>
@@ -259,14 +241,6 @@
             } catch (e) { setLoading(false); showToast("ÉCHEC"); return { error: e.message }; }
         }
 
-        // --- NAVIGATION ---
-        function switchTab(tabId) { state.activeTab = tabId; refreshUI(); }
-        async function enterSupervision(clientId) {
-            setLoading(true); const data = await fetchFromAPI(clientId); setLoading(false);
-            if (data && !data.error) { state.currentClient = data.client; state.clientData = { docs: data.docs || [], tasks: data.tasks || [], kpis: data.kpis || [] }; state.activeTab = 'dashboard'; refreshUI(); }
-        }
-        function exitSupervision() { state.currentClient = null; state.activeTab = 'portfolio'; state.clientData = { docs: [], tasks: [], kpis: [] }; refreshUI(); }
-
         // --- MODALE SYSTEM ---
         function openModal(html) {
             const overlay = document.getElementById('modal-overlay');
@@ -324,52 +298,15 @@
         }
 
         function renderPortfolio(container) { 
-            container.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
-                    ${state.clients.map(c => `
-                        <div onclick="enterSupervision('${c.id}')" class="group glass-card p-14 hover:bg-indigo-500/5 hover:border-indigo-500/30 transition-all duration-700 cursor-pointer relative shadow-2xl overflow-hidden">
-                            <div class="mb-14 text-indigo-500/40 group-hover:text-indigo-400 transition-all duration-700"><i class="ph-thin ph-briefcase-metal text-7xl"></i></div>
-                            <h3 class="text-3xl font-serif text-white italic mb-4 truncate tracking-wide">${c.name}</h3>
-                            <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mb-12">Phase ${c.current_phase} — Audit Actif</p>
-                            <div class="flex items-center justify-between pt-12 border-t border-white/5 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] group-hover:text-white transition-colors">
-                                <span>Accéder au dossier</span>
-                                <i class="ph-bold ph-arrow-up-right text-lg transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"></i>
-                            </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `; 
+            container.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">${state.clients.map(c => `<div onclick="enterSupervision('${c.id}')" class="group glass-card p-14 hover:bg-indigo-500/5 hover:border-indigo-500/30 transition-all duration-700 cursor-pointer relative shadow-2xl overflow-hidden"><div class="mb-14 text-indigo-500/40 group-hover:text-indigo-400 transition-all duration-700"><i class="ph-thin ph-briefcase-metal text-7xl"></i></div><h3 class="text-3xl font-serif text-white italic mb-4 truncate tracking-wide">${c.name}</h3><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mb-12">Phase ${c.current_phase} — Audit Actif</p><div class="flex items-center justify-between pt-12 border-t border-white/5 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] group-hover:text-white transition-colors"><span>Accéder au dossier</span><i class="ph-bold ph-arrow-up-right text-lg transition-transform group-hover:-translate-y-1 group-hover:translate-x-1"></i></div></div>`).join('')}</div>`; 
         }
 
         function renderDashboard(c) { 
-            c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-12"><div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-12"><div class="glass-card p-14 border-l-2 border-l-indigo-500"><i class="ph-thin ph-activity text-5xl text-indigo-500/40 mb-10"></i><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Statut Livraison</p><p class="text-5xl font-serif text-white italic">En cours</p></div><div class="glass-card p-14 border-l-2 border-l-emerald-500"><i class="ph-thin ph-bullseye text-5xl text-emerald-500/40 mb-10"></i><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Focus Actuel</p><p class="text-5xl font-serif text-white italic">${PHASES[state.currentClient.current_phase-1]}</p></div><div class="sm:col-span-2 glass-card p-20 relative overflow-hidden shadow-2xl bg-gradient-to-br from-indigo-950/20 to-transparent"><div class="relative z-10"><h3 class="text-6xl font-serif text-white italic mb-10 leading-tight">Priorités de la<br>phase actuelle.</h3><p class="text-slate-400 text-lg font-medium leading-relaxed max-w-2xl mb-14">Chaque action du protocole est calibrée pour votre transformation. Accédez au plan stratégique pour initier les opérations.</p><button onclick="switchTab('actions')" class="px-14 py-6 bg-white text-black text-[13px] font-black uppercase tracking-[0.4em] hover:bg-indigo-50 transition-all shadow-3xl">Voir les Actions</button></div><div class="absolute -right-20 -bottom-20 opacity-[0.04] rotate-12"><i class="ph-thin ph-crown text-[400px] text-white"></i></div></div></div><div class="glass-card p-14 flex flex-col items-center justify-center text-center"><div class="w-40 h-40 border border-white/5 rounded-full flex items-center justify-center mb-14 bg-indigo-500/5 ring-1 ring-white/10 relative"><div class="absolute inset-0 bg-indigo-500/10 blur-2xl rounded-full"></div><i class="ph-thin ph-paper-plane-tilt text-6xl text-white relative z-10"></i></div><h4 class="text-3xl font-serif text-white italic mb-8 uppercase tracking-widest">Support</h4><p class="text-[13px] text-slate-500 font-bold leading-loose uppercase tracking-[0.3em] mb-14">Ligne de communication directe avec votre consultant dédié.</p><a href="https://wa.me/33600000000" target="_blank" class="w-full py-6 bg-indigo-600/10 border border-indigo-500/30 text-indigo-400 text-[12px] font-black uppercase tracking-[0.4em] hover:bg-indigo-600 hover:text-white transition-all shadow-xl">WhatsApp Direct</a></div></div>`; 
+            c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-12"><div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-12"><div class="glass-card p-14 border-l-2 border-l-indigo-500"><i class="ph-thin ph-activity text-5xl text-indigo-500/40 mb-10"></i><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Statut Livraison</p><p class="text-5xl font-serif text-white italic">En cours</p></div><div class="glass-card p-14 border-l-2 border-l-emerald-500"><i class="ph-thin ph-bullseye text-5xl text-emerald-500/40 mb-10"></i><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Focus Actuel</p><p class="text-5xl font-serif text-white italic">${PHASES[state.currentClient.current_phase-1]}</p></div><div class="sm:col-span-2 glass-card p-20 relative overflow-hidden shadow-2xl bg-gradient-to-br from-indigo-950/20 to-transparent"><div class="relative z-10"><h3 class="text-6xl font-serif text-white italic mb-10 leading-tight">Priorités de la<br>phase actuelle.</h3><p class="text-slate-400 text-lg font-medium leading-relaxed max-w-2xl mb-14">Chaque action du protocole est calibrée pour votre transformation. Accédez au plan stratégique pour initier les opérations.</p><button onclick="switchTab('actions')" class="px-14 py-6 bg-white text-black text-[13px] font-black uppercase tracking-[0.4em] hover:bg-indigo-50 transition-all shadow-3xl">Voir les Actions</button></div><div class="absolute -right-20 -bottom-20 opacity-[0.04] rotate-12"><i class="ph-thin ph-crown text-[400px] text-white"></i></div></div></div><div class="glass-card p-14 flex flex-col items-center justify-center text-center shadow-2xl border-t-4 border-t-indigo-600/30"><div class="w-40 h-40 border border-white/5 rounded-full flex items-center justify-center mb-14 bg-indigo-500/5 ring-1 ring-white/10 relative"><div class="absolute inset-0 bg-indigo-500/10 blur-2xl rounded-full"></div><i class="ph-thin ph-paper-plane-tilt text-6xl text-white relative z-10"></i></div><h4 class="text-3xl font-serif text-white italic mb-8 uppercase tracking-widest">Support</h4><p class="text-[13px] text-slate-500 font-bold leading-loose uppercase tracking-[0.3em] mb-14">Ligne de communication directe avec votre consultant dédié.</p><a href="https://wa.me/33600000000" target="_blank" class="w-full py-6 bg-indigo-600/10 border border-indigo-500/30 text-indigo-400 text-[12px] font-black uppercase tracking-[0.4em] hover:bg-indigo-600 hover:text-white transition-all shadow-xl">WhatsApp Direct</a></div></div>`; 
         }
 
         function renderOnboarding(c) { 
-            c.innerHTML = `
-                <div class="glass-card shadow-2xl border-t-2 border-t-white/10">
-                    <div class="p-20 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-14 bg-white/[0.01]">
-                        <div><h3 class="text-6xl font-serif text-white italic mb-4">Checklist.</h3><p class="text-[12px] font-black text-indigo-400 uppercase tracking-[0.5em]">Collecte des Actifs du Cabinet</p></div>
-                        <div class="text-center md:text-right px-14 py-8 border-l border-white/10"><span class="text-8xl font-serif text-white italic leading-none">${state.clientData.docs.filter(d => d.status === 'Reçu').length}<span class="text-3xl text-slate-700 mx-4">/</span>${state.clientData.docs.length}</span><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] mt-6">Éléments Validés</p></div>
-                    </div>
-                    <div class="divide-y divide-white/10">
-                        ${state.clientData.docs.map(doc => `
-                            <div class="p-14 flex flex-col sm:flex-row items-center justify-between hover:bg-white/[0.04] transition-all gap-12 group">
-                                <div class="flex items-center gap-14">
-                                    <div class="w-20 h-20 flex items-center justify-center border border-white/10 bg-black/40 group-hover:border-indigo-500/50 transition-colors"><i class="ph-thin ph-file-pdf text-5xl ${doc.status === 'Reçu' ? 'text-emerald-400' : 'text-slate-800'}"></i></div>
-                                    <div><p class="text-3xl font-serif text-white italic mb-3 tracking-wide">${doc.label}</p><span class="text-[11px] font-black ${doc.status === 'Reçu' ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-600 bg-black/40'} border border-white/5 uppercase tracking-[0.5em] px-5 py-2">${doc.status}</span></div>
-                                </div>
-                                <div class="flex items-center gap-6">
-                                    ${doc.link ? `<a href="${doc.link}" target="_blank" class="w-16 h-16 flex items-center justify-center border border-white/10 text-white hover:bg-indigo-600 hover:border-indigo-600 transition-all rounded-sm"><i class="ph-bold ph-magnifying-glass text-2xl"></i></a>` : ''}
-                                    <button onclick="handleDocActionUI('${doc.id}', '${doc.label}')" class="px-12 py-5 bg-white/5 border border-white/20 text-[12px] font-black uppercase tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all">
-                                        ${doc.status === 'Reçu' ? 'MAJ' : 'Transmettre'}
-                                    </button>
-                                </div>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `; 
+            c.innerHTML = `<div class="glass-card shadow-2xl border-t-2 border-t-white/10"><div class="p-20 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-14 bg-white/[0.01]"><div><h3 class="text-6xl font-serif text-white italic mb-4">Checklist.</h3><p class="text-[12px] font-black text-indigo-400 uppercase tracking-[0.5em]">Collecte des Actifs du Cabinet</p></div><div class="text-center md:text-right px-14 py-8 border-l border-white/10"><span class="text-8xl font-serif text-white italic leading-none">${state.clientData.docs.filter(d => d.status === 'Reçu').length}<span class="text-3xl text-slate-700 mx-4">/</span>${state.clientData.docs.length}</span><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] mt-6">Éléments Validés</p></div></div><div class="divide-y divide-white/10">${state.clientData.docs.map(doc => `<div class="p-14 flex flex-col sm:flex-row items-center justify-between hover:bg-white/[0.04] transition-all gap-12 group"><div class="flex items-center gap-14"><div class="w-20 h-20 flex items-center justify-center border border-white/10 bg-black/40 group-hover:border-indigo-500/50 transition-colors"><i class="ph-thin ph-file-pdf text-5xl ${doc.status === 'Reçu' ? 'text-emerald-400' : 'text-slate-800'}"></i></div><div><p class="text-3xl font-serif text-white italic mb-3 tracking-wide">${doc.label}</p><span class="text-[11px] font-black ${doc.status === 'Reçu' ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-600 bg-black/40'} border border-white/5 uppercase tracking-[0.5em] px-5 py-2">${doc.status}</span></div></div><div class="flex items-center gap-6">${doc.link ? `<a href="${doc.link}" target="_blank" class="w-16 h-16 flex items-center justify-center border border-white/10 text-white hover:bg-indigo-600 hover:border-indigo-600 transition-all rounded-sm"><i class="ph-bold ph-magnifying-glass text-2xl"></i></a>` : ''}<button onclick="handleDocActionUI('${doc.id}', '${doc.label}')" class="px-12 py-5 bg-white/5 border border-white/20 text-[12px] font-black uppercase tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all">${doc.status === 'Reçu' ? 'MAJ' : 'Transmettre'}</button></div></div>`).join('')}</div></div>`; 
         }
 
         function renderActions(c) { 
@@ -378,14 +315,14 @@
             c.innerHTML = `<div class="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-12"><div><h3 class="text-6xl font-serif text-white italic mb-4">Plan d'Action.</h3><p class="text-[12px] font-black text-indigo-400 uppercase tracking-[0.5em]">Déploiement des Opérations Stratégiques</p></div></div><div class="space-y-12">
                     ${isAdmin ? `<div class="glass-card p-14 border-dashed border-indigo-500/30 mb-20 shadow-3xl bg-indigo-500/5 relative"><div class="absolute top-0 left-0 w-1 h-full bg-indigo-600"></div><div class="flex flex-col gap-12"><div class="flex items-center gap-12 border-b border-white/5 pb-8"><input type="text" id="inline-task-label" class="flex-1 bg-transparent py-5 font-serif italic text-4xl text-white placeholder:text-slate-800 outline-none focus:placeholder:text-indigo-900 transition-all" placeholder="Définir une action stratégique..." onkeydown="if(event.key === 'Enter') handleInlineTaskAdd()"><button onclick="handleInlineTaskAdd()" class="w-24 h-24 bg-white text-black flex items-center justify-center hover:bg-indigo-50 transition-all rounded-sm group"><i class="ph-bold ph-plus text-3xl group-hover:scale-125 transition-transform"></i></button></div><div class="flex items-center justify-between text-[11px] font-black uppercase tracking-[0.5em]"><div class="flex items-center gap-12"><select id="inline-task-category" class="bg-black/60 text-indigo-400 px-8 py-3 border border-indigo-500/30 outline-none cursor-pointer hover:border-indigo-400 transition-all font-bold"><option value="Audit">Audit</option><option value="Analyse">Analyse</option><option value="Livrable">Livrable</option><option value="Coaching">Coaching</option></select><label class="flex items-center gap-8 cursor-pointer text-slate-500 hover:text-white transition-all"><span>Visibilité Client</span><label class="switch"><input type="checkbox" id="inline-task-visible" checked><span class="slider"></span></label></label></div><span class="text-slate-700 font-bold italic tracking-normal italic">Valider avec Entrée</span></div></div></div>` : ''}
                     <div class="grid grid-cols-1 gap-10">
-                        ${tasks.length > 0 ? tasks.map(t => `<div onclick="toggleTask('${t.id}', '${t.status}')" class="glass-card p-12 flex items-center justify-between group cursor-pointer hover:bg-indigo-500/[0.03] transition-all duration-700 border-white/5"><div class="flex items-center gap-16"><div class="w-14 h-14 border-2 border-white/10 flex items-center justify-center transition-all group-hover:border-indigo-500 rounded-sm bg-black/20 ${t.status === 'Fait' ? 'bg-indigo-600 border-indigo-600' : ''}">${t.status === 'Fait' ? '<i class="ph-bold ph-check text-2xl text-white"></i>' : ''}</div><div><div class="flex items-center gap-8 mb-4"><span class="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400/80 border border-indigo-500/20 px-4 py-1.5 bg-indigo-500/5">${t.category || 'Audit'}</span>${isAdmin && !(t.is_visible_client === true || t.is_visible_client === "VRAI") ? `<span class="text-[10px] font-black uppercase tracking-[0.4em] text-amber-500 border border-amber-600/30 px-4 py-1.5 bg-amber-900/10">Usage Interne</span>` : ''}</div><p class="text-3xl font-serif italic text-white tracking-wide ${t.status === 'Fait' ? 'opacity-20 line-through' : ''}">${t.label}</p></div></div><i class="ph-bold ph-arrow-right text-slate-800 group-hover:text-white group-hover:translate-x-4 transition-all duration-700 text-3xl"></i></div>`).join('') : '<div class="text-center py-24 text-slate-700 font-black uppercase tracking-[0.6em] border border-white/5 glass-card bg-black/20">Aucune action enregistrée</div>'}
+                        ${tasks.length > 0 ? tasks.map(t => `<div onclick="openStrategyCanvas('${t.id}')" class="glass-card p-12 flex items-center justify-between group cursor-pointer hover:bg-indigo-500/[0.03] transition-all duration-700 border-white/5 shadow-2xl relative"><div class="flex items-center gap-16"><div onclick="event.stopPropagation(); toggleTask('${t.id}', '${t.status}')" class="w-14 h-14 border-2 border-white/10 flex items-center justify-center transition-all group-hover:border-indigo-500 rounded-sm bg-black/20 ${t.status === 'Fait' ? 'bg-indigo-600 border-indigo-600 shadow-[0_0_20px_rgba(99,102,241,0.4)]' : ''}">${t.status === 'Fait' ? '<i class="ph-bold ph-check text-2xl text-white"></i>' : ''}</div><div><div class="flex items-center gap-8 mb-4"><span class="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400/80 border border-indigo-500/20 px-4 py-1.5 bg-indigo-500/5">${t.category || 'Audit'}</span>${isAdmin && !(t.is_visible_client === true || t.is_visible_client === "VRAI") ? `<span class="text-[10px] font-black uppercase tracking-[0.4em] text-amber-500 border border-amber-600/30 px-4 py-1.5 bg-amber-900/10">Usage Interne</span>` : ''}</div><p class="text-3xl font-serif italic text-white tracking-wide ${t.status === 'Fait' ? 'opacity-20 line-through' : ''}">${t.label}</p></div></div><i class="ph-bold ph-arrow-right text-slate-800 group-hover:text-white group-hover:translate-x-4 transition-all duration-700 text-3xl"></i></div>`).join('') : '<div class="text-center py-24 text-slate-700 font-black uppercase tracking-[0.6em] border border-white/5 glass-card bg-black/20">Aucune action enregistrée</div>'}
                 </div></div>`; 
         }
 
         function renderPerformance(c) { 
             const k = state.clientData.kpis[0] || { leads: 0, consults: 0, interventions: 0 }; 
             const r = k.consults > 0 ? ((k.interventions / k.consults) * 100).toFixed(1) : 0; 
-            c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-20"><div class="glass-card p-20 shadow-3xl"><h4 class="text-[12px] font-black text-slate-500 uppercase tracking-[0.6em] mb-20 text-center">Indicateurs de Performance</h4><div class="space-y-20">${renderKPIBar("Volume Leads", k.leads, 200, "indigo")}${renderKPIBar("Consultations", k.consults, k.leads || 1, "white")}${renderKPIBar("Interventions", k.interventions, k.consults || 1, "emerald")}</div></div><div class="glass-card p-20 flex flex-col items-center justify-center text-center relative overflow-hidden shadow-3xl bg-gradient-to-tr from-emerald-950/10 to-transparent border-t-2 border-t-emerald-600/20"><div class="w-48 h-48 border border-white/5 rounded-full flex items-center justify-center mb-16 bg-emerald-500/5 ring-1 ring-emerald-500/20 relative"><div class="absolute inset-0 bg-emerald-500/10 blur-3xl opacity-50 rounded-full animate-pulse"></div><i class="ph-thin ph-diamonds-four text-8xl text-emerald-400 relative z-10"></i></div><h4 class="text-[12rem] font-serif italic text-platinum mb-8 leading-none drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">${Math.round(r)}<span class="text-4xl text-emerald-400 ml-2">%</span></h4><p class="text-[14px] font-black text-slate-400 uppercase tracking-[0.6em]">Taux de Transformation</p></div></div>`; 
+            c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-20"><div class="glass-card p-20 shadow-3xl"><h4 class="text-[12px] font-black text-slate-500 uppercase tracking-[0.6em] mb-20 text-center">Indicateurs de Performance</h4><div class="space-y-20">${renderKPIBar("Volume Leads", k.leads, 200, "indigo")}${renderKPIBar("Consultations", k.consults, k.leads || 1, "white")}${renderKPIBar("Interventions", k.interventions, k.consults || 1, "emerald")}</div></div><div class="glass-card p-20 flex flex-col items-center justify-center text-center relative overflow-hidden shadow-3xl border-t-2 border-t-emerald-600/20"><div class="w-48 h-48 border border-white/5 rounded-full flex items-center justify-center mb-16 bg-emerald-500/5 ring-1 ring-emerald-500/20 relative"><div class="absolute inset-0 bg-emerald-500/10 blur-3xl opacity-50 rounded-full animate-pulse"></div><i class="ph-thin ph-diamonds-four text-8xl text-emerald-400 relative z-10"></i></div><h4 class="text-[12rem] font-serif italic text-platinum mb-8 leading-none shadow-[0_0_50px_rgba(255,255,255,0.1)]">${Math.round(r)}<span class="text-4xl text-emerald-400 ml-2">%</span></h4><p class="text-[14px] font-black text-slate-400 uppercase tracking-[0.6em]">Taux de Transformation</p></div></div>`; 
         }
 
         function renderKPIBar(l, v, m, color) { 
@@ -394,7 +331,83 @@
             return `<div class="group"><div class="flex justify-between items-end mb-8"><span class="text-[14px] font-black text-white uppercase tracking-[0.3em]">${l}</span><span class="text-4xl font-serif italic text-white">${v}</span></div><div class="w-full bg-white/5 h-2.5 relative rounded-full overflow-hidden shadow-inner"><div class="bg-gradient-to-r ${colors[color]} h-full absolute transition-all duration-[2.5s] delay-300" style="width: ${p}%"></div></div></div>`; 
         }
 
-        // --- ACTIONS AVEC MODALES ---
+        // --- ACTIONS AVEC MODALES & CANVAS ---
+
+        function openStrategyCanvas(taskId) {
+            const task = state.clientData.tasks.find(t => t.id === taskId);
+            if (!task) return;
+
+            const isAdmin = state.user.role === 'admin';
+            
+            let canvasHtml = `
+                <div class="flex items-center justify-between mb-12">
+                    <div>
+                        <span class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-2 block">${task.category} — ID ${task.id}</span>
+                        <h3 class="text-4xl font-serif text-white italic">${task.label}</h3>
+                    </div>
+                    <button onclick="closeModal()" class="text-slate-500 hover:text-white transition-colors"><i class="ph-bold ph-x text-2xl"></i></button>
+                </div>
+
+                <div class="space-y-12">
+                    <div>
+                        <h4 class="text-[11px] font-black text-white uppercase tracking-[0.4em] mb-6 flex items-center gap-3">
+                            <i class="ph-bold ph-notebook text-indigo-500"></i> Brief Stratégique
+                        </h4>
+                        ${isAdmin ? `
+                            <textarea id="canvas-description" class="w-full bg-white/[0.02] border border-white/10 p-8 text-slate-300 text-sm leading-relaxed rounded-sm focus:border-indigo-500/50 outline-none transition-all h-48 custom-scroll" placeholder="Détaillez ici la méthodologie et les points d'attention...">${task.description || ''}</textarea>
+                        ` : `
+                            <div class="glass-card p-8 text-slate-300 text-sm leading-relaxed border-l-4 border-l-indigo-600 bg-indigo-500/5">
+                                ${task.description ? task.description.replace(/\n/g, '<br>') : '<span class="italic text-slate-600">Aucune instruction particulière pour cette action.</span>'}
+                            </div>
+                        `}
+                    </div>
+
+                    <div>
+                        <h4 class="text-[11px] font-black text-white uppercase tracking-[0.4em] mb-6 flex items-center gap-3">
+                            <i class="ph-bold ph-link text-indigo-500"></i> Ressources Associées
+                        </h4>
+                        ${isAdmin ? `
+                            <input type="text" id="canvas-resources" class="w-full bg-white/[0.02] border border-white/10 px-8 py-5 text-sm text-indigo-400 placeholder:text-gray-800 focus:border-indigo-500/50 outline-none transition-all rounded-sm font-light tracking-widest" placeholder="Liens Drive, URL outils..." value="${task.resources || ''}">
+                        ` : `
+                            ${task.resources ? `
+                                <div class="flex gap-4">
+                                    <a href="${task.resources}" target="_blank" class="glass-card flex-1 p-6 flex items-center justify-between group hover:bg-white/[0.05] transition-all">
+                                        <div class="flex items-center gap-6">
+                                            <i class="ph-thin ph-cloud-arrow-down text-4xl text-indigo-400"></i>
+                                            <span class="text-[11px] font-black uppercase tracking-widest">Accéder aux actifs</span>
+                                        </div>
+                                        <i class="ph-bold ph-arrow-right text-slate-700 group-hover:translate-x-2 transition-transform"></i>
+                                    </a>
+                                </div>
+                            ` : '<p class="text-xs italic text-slate-600 px-2">Aucune ressource externe liée.</p>'}
+                        `}
+                    </div>
+
+                    ${isAdmin ? `
+                        <div class="pt-6 border-t border-white/5 flex gap-4">
+                            <button onclick="closeModal()" class="flex-1 py-5 border border-white/10 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all">Abandonner</button>
+                            <button onclick="saveTaskDetails('${taskId}')" class="flex-1 py-5 bg-white text-black text-[11px] font-black uppercase tracking-[0.3em] hover:bg-indigo-50 transition-all shadow-3xl">Enregistrer le Brief</button>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+            openModal(canvasHtml);
+        }
+
+        async function saveTaskDetails(taskId) {
+            const desc = document.getElementById('canvas-description').value.trim();
+            const res = document.getElementById('canvas-resources').value.trim();
+            
+            const task = state.clientData.tasks.find(t => t.id === taskId);
+            if (task) {
+                task.description = desc;
+                task.resources = res;
+            }
+
+            closeModal();
+            await sendToAPI('UPDATE_TASK', { id: taskId, description: desc, resources: res });
+            renderContent();
+        }
 
         function handleDocActionUI(docId, label) {
             openModal(`
@@ -404,8 +417,8 @@
                 </div>
                 <div class="space-y-8">
                     <div class="text-left">
-                        <label class="block text-[10px] font-black uppercase text-slate-500 mb-4 px-1 tracking-widest">Lien sécurisé (Drive, Dropbox, etc.)</label>
-                        <input type="text" id="modal-doc-link" class="w-full bg-white/[0.03] border border-white/10 px-6 py-5 text-sm text-white placeholder:text-gray-800 focus:border-indigo-500/50 outline-none transition-all rounded-sm font-light tracking-widest" placeholder="https://..." value="${state.clientData.docs.find(d => d.id === docId)?.link || ''}">
+                        <label class="block text-[10px] font-black uppercase text-slate-500 mb-4 px-1 tracking-widest">Lien sécurisé</label>
+                        <input type="text" id="modal-doc-link" class="w-full bg-white/[0.03] border border-white/10 px-6 py-5 text-sm text-white placeholder:text-gray-800 focus:border-indigo-500/50 outline-none transition-all rounded-sm" placeholder="https://..." value="${state.clientData.docs.find(d => d.id === docId)?.link || ''}">
                     </div>
                     <div id="modal-error" class="hidden text-[10px] text-red-400 font-bold uppercase tracking-widest text-center py-3 bg-red-950/20 border border-red-900/30">L'URL est requise</div>
                     <div class="grid grid-cols-2 gap-4">
@@ -418,16 +431,10 @@
 
         async function submitDocAction(docId) {
             const link = document.getElementById('modal-doc-link').value.trim();
-            const err = document.getElementById('modal-error');
-            if (!link) { err.classList.remove('hidden'); return; }
-            
+            if (!link) { document.getElementById('modal-error').classList.remove('hidden'); return; }
             closeModal();
             const res = await sendToAPI('UPDATE_DOC', { id: docId, link });
-            if (res.success) {
-                const d = state.clientData.docs.find(x => x.id.toString() === docId.toString());
-                if (d) { d.status = 'Reçu'; d.link = link; }
-                renderContent();
-            }
+            if (res.success) { const d = state.clientData.docs.find(x => x.id.toString() === docId.toString()); if (d) { d.status = 'Reçu'; d.link = link; } renderContent(); }
         }
 
         function handlePhaseUpdateUI() {
@@ -437,26 +444,13 @@
                     <span class="text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-white transition-colors">${name}</span>
                 </button>
             `).join('');
-
-            openModal(`
-                <div class="text-center mb-12">
-                    <h3 class="text-3xl font-serif text-white italic mb-2">Ajuster la Phase d'Audit.</h3>
-                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em]">Étape actuelle : ${state.currentClient.current_phase}</p>
-                </div>
-                <div class="grid grid-cols-2 gap-4 mb-10">
-                    ${optionsHtml}
-                </div>
-                <button onclick="closeModal()" class="w-full py-5 border border-white/10 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all">Abandonner</button>
-            `);
+            openModal(`<div class="text-center mb-12"><h3 class="text-3xl font-serif text-white italic mb-2">Ajuster la Phase d'Audit.</h3></div><div class="grid grid-cols-2 gap-4 mb-10">${optionsHtml}</div><button onclick="closeModal()" class="w-full py-5 border border-white/10 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all">Abandonner</button>`);
         }
 
         async function submitPhaseUpdate(newPhase) {
             closeModal();
             const res = await sendToAPI('UPDATE_CLIENT_PHASE', { client_id: state.currentClient.id, phase: newPhase });
-            if (res.success) {
-                state.currentClient.current_phase = newPhase;
-                refreshUI();
-            }
+            if (res.success) { state.currentClient.current_phase = newPhase; refreshUI(); }
         }
 
         async function toggleTask(id, currentStatus) { 
@@ -472,21 +466,13 @@
             const label = labelInput.value.trim();
             if (!label) return;
             const res = await sendToAPI('ADD_TASK', { client_id: state.currentClient.id, label, category: cat.value, is_visible_client: vis.checked });
-            if (res.success) { 
-                const d = await fetchFromAPI(state.currentClient.id); 
-                state.clientData.tasks = d.tasks || []; 
-                renderContent(); 
-            }
+            if (res.success) { const d = await fetchFromAPI(state.currentClient.id); state.clientData.tasks = d.tasks || []; renderContent(); }
         }
 
         // --- UTILS ---
         function setLoading(v) { document.getElementById('loading-overlay').classList.toggle('hidden', !v); }
         function showToast(m) { const t = document.getElementById('toast'); if(m) t.innerText = m; t.className = "show"; setTimeout(() => t.className = "", 3000); }
-        function updateUserUI() { 
-            document.getElementById('user-display-name').innerText = state.user.name; 
-            document.getElementById('user-role-badge').innerText = state.user.role === 'admin' ? 'Strategic Expert' : 'Partner'; 
-            document.getElementById('user-avatar').innerText = state.user.name.substring(0, 2).toUpperCase(); 
-        }
+        function updateUserUI() { document.getElementById('user-display-name').innerText = state.user.name; document.getElementById('user-role-badge').innerText = state.user.role === 'admin' ? 'Strategic Expert' : 'Partner'; document.getElementById('user-avatar').innerText = state.user.name.substring(0, 2).toUpperCase(); }
         function showAuthScreen() { document.getElementById('auth-section').classList.remove('hidden'); }
         function handleLoginError(m) { const el = document.getElementById('login-error'); el.innerText = m; el.classList.remove('hidden'); }
         function handleLogout() { localStorage.removeItem('sellit_token'); location.reload(); }
