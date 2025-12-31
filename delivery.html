@@ -102,6 +102,13 @@
         .slider:before { position: absolute; content: ""; height: 12px; width: 12px; left: 3px; bottom: 3px; background-color: white; transition: .4s; border-radius: 50%; }
         input:checked + .slider { background-color: #6366f1; }
         input:checked + .slider:before { transform: translateX(14px); }
+
+        /* Modal Overlay */
+        #modal-overlay {
+            background: rgba(0,0,0,0.85);
+            backdrop-filter: blur(20px);
+            transition: opacity 0.3s ease;
+        }
     </style>
 
     <script>
@@ -131,6 +138,15 @@
         </div>
     </div>
 
+    <!-- MODALE UNIVERSELLE -->
+    <div id="modal-overlay" class="fixed inset-0 z-[100] flex items-center justify-center p-6 hidden opacity-0 transition-all duration-300">
+        <div id="modal-card" class="glass-card w-full max-w-lg p-12 shadow-2xl scale-95 transition-all duration-300">
+            <div id="modal-content">
+                <!-- Contenu injecté dynamiquement -->
+            </div>
+        </div>
+    </div>
+
     <!-- ACCÈS PARTENAIRE (LOGIN) -->
     <div id="auth-section" class="fixed inset-0 z-50 flex items-center justify-center bg-onyx p-6 hidden">
         <div class="hero-bg-image absolute inset-0 opacity-20 pointer-events-none grayscale">
@@ -148,7 +164,7 @@
                     <input type="text" id="token-input" class="w-full bg-white/[0.03] border border-white/10 px-6 py-5 text-lg text-white placeholder:text-gray-800 focus:border-indigo-500/50 outline-none transition-all duration-500 rounded-sm font-light tracking-widest" placeholder="CLÉ D'ACCÈS" required>
                 </div>
                 <div id="login-error" class="hidden text-[11px] text-red-400 font-bold uppercase tracking-widest text-center py-4 bg-red-950/30 border border-red-900/40"></div>
-                <button type="submit" class="w-full py-6 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] hover:bg-slate-200 transition-all duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
+                <button type="submit" class="w-full py-6 bg-white text-black text-[12px] font-black uppercase tracking-[0.4em] hover:bg-indigo-50 transition-all duration-500 shadow-[0_0_30px_rgba(255,255,255,0.1)]">
                     Se connecter
                 </button>
             </form>
@@ -158,19 +174,14 @@
     <!-- MAIN APP STRUCTURE -->
     <div id="main-app" class="flex flex-col md:flex-row min-h-screen hidden">
         
-        <!-- SIDEBAR ÉLITE -->
         <aside class="w-full md:w-80 glass-sidebar flex flex-col z-40 sticky top-0 h-screen">
             <div class="p-10">
                 <div class="flex flex-col mb-20 group cursor-pointer" onclick="exitSupervision()">
-                    <span class="text-3xl font-serif font-semibold tracking-wider text-white italic">SELL IT.</span>
+                    <span class="text-3xl font-serif font-semibold tracking-wider text-white italic group-hover:text-indigo-400 transition-colors">SELL IT.</span>
                     <span class="text-[9px] font-sans font-extrabold uppercase tracking-[0.5em] text-slate-600 mt-2 border-t border-white/5 pt-2">Expertise Chirurgicale</span>
                 </div>
-
-                <div id="sidebar-content" class="space-y-4">
-                    <!-- Navigation Dynamique -->
-                </div>
+                <div id="sidebar-content" class="space-y-4"></div>
             </div>
-
             <div class="mt-auto p-10 border-t border-white/5 bg-black/40">
                 <div class="flex items-center gap-5 mb-12">
                     <div id="user-avatar" class="w-14 h-14 border border-white/10 bg-white/5 text-white flex items-center justify-center text-lg font-serif italic rounded-sm shadow-inner"></div>
@@ -185,15 +196,13 @@
             </div>
         </aside>
 
-        <!-- MAIN AREA -->
         <main class="flex-1 overflow-y-auto">
-            <!-- Bandeau de Supervision Admin -->
             <div id="supervision-bar" class="bg-white text-black px-10 py-3 text-[11px] font-black uppercase tracking-[0.3em] flex items-center justify-between hidden shadow-2xl">
                 <div class="flex items-center gap-4">
                     <span class="w-2 h-2 rounded-full bg-indigo-600 animate-pulse"></span>
-                    <i class="ph-fill ph-eye text-lg"></i> SUPERVISION : <span id="supervised-client-name" class="font-serif italic lowercase tracking-normal text-sm ml-2 font-bold">Dossier</span>
+                    <i class="ph-fill ph-eye text-lg text-indigo-600"></i> SUPERVISION : <span id="supervised-client-name" class="font-serif italic text-sm ml-2 font-bold">Dossier</span>
                 </div>
-                <button onclick="exitSupervision()" class="bg-black text-white px-5 py-1.5 rounded-sm transition-colors text-[9px] font-black uppercase tracking-widest">Quitter</button>
+                <button onclick="exitSupervision()" class="bg-black text-white px-5 py-1.5 rounded-sm text-[9px] font-black uppercase tracking-widest hover:bg-slate-900 transition-colors">Fermer</button>
             </div>
 
             <div class="p-10 md:p-24 max-w-7xl mx-auto w-full">
@@ -250,6 +259,7 @@
             } catch (e) { setLoading(false); showToast("ÉCHEC"); return { error: e.message }; }
         }
 
+        // --- NAVIGATION ---
         function switchTab(tabId) { state.activeTab = tabId; refreshUI(); }
         async function enterSupervision(clientId) {
             setLoading(true); const data = await fetchFromAPI(clientId); setLoading(false);
@@ -257,6 +267,29 @@
         }
         function exitSupervision() { state.currentClient = null; state.activeTab = 'portfolio'; state.clientData = { docs: [], tasks: [], kpis: [] }; refreshUI(); }
 
+        // --- MODALE SYSTEM ---
+        function openModal(html) {
+            const overlay = document.getElementById('modal-overlay');
+            const card = document.getElementById('modal-card');
+            document.getElementById('modal-content').innerHTML = html;
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.style.opacity = '1';
+                card.classList.remove('scale-95');
+                card.classList.add('scale-100');
+            }, 10);
+        }
+
+        function closeModal() {
+            const overlay = document.getElementById('modal-overlay');
+            const card = document.getElementById('modal-card');
+            overlay.style.opacity = '0';
+            card.classList.remove('scale-100');
+            card.classList.add('scale-95');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+
+        // --- RENDU UI ---
         function refreshUI() { renderSidebar(); renderHeader(); renderContent(); }
 
         function renderSidebar() {
@@ -264,7 +297,7 @@
             const isAdmin = state.user.role === 'admin';
             const isSup = isAdmin && state.currentClient !== null;
             let html = '';
-            if (isAdmin) html += `<div class="pb-10"><label class="block text-[10px] font-black text-slate-600 uppercase tracking-[0.5em] mb-6 px-5">Gestion Portfolio</label><button onclick="exitSupervision()" class="nav-link w-full flex items-center gap-5 px-5 py-4 text-[13px] font-extrabold text-slate-500 hover:text-white transition-all uppercase tracking-widest ${state.activeTab === 'portfolio' ? 'active' : ''}"><i class="ph-bold ph-squares-four text-2xl"></i> Portfolio</button></div>`;
+            if (isAdmin) html += `<div class="pb-10"><label class="block text-[10px] font-black text-slate-600 uppercase tracking-[0.5em] mb-6 px-5">Gestion Portfolio</label><button onclick="exitSupervision()" class="nav-link w-full flex items-center gap-5 px-5 py-4 text-[13px] font-extrabold text-slate-400 hover:text-white transition-all uppercase tracking-widest ${state.activeTab === 'portfolio' ? 'active' : ''}"><i class="ph-bold ph-squares-four text-2xl"></i> Portfolio</button></div>`;
             if (!isAdmin || isSup) html += `<div class="pt-10 border-t border-white/5"><label class="block text-[10px] font-black text-slate-600 uppercase tracking-[0.5em] mb-6 px-5">Suivi Livraison</label><div class="space-y-3">${renderNavLink('dashboard', 'ph-chart-polar', 'Tableau de bord')}${renderNavLink('onboarding', 'ph-hard-drive', 'Checklist')}${renderNavLink('actions', 'ph-target', 'Actions')}${renderNavLink('performance', 'ph-lightning', 'KPIs')}</div></div>`;
             container.innerHTML = html;
             document.getElementById('supervision-bar').classList.toggle('hidden', !isSup);
@@ -276,8 +309,8 @@
         function renderHeader() {
             const h = document.getElementById('page-header');
             h.className = "mb-24 animate-fade-in";
-            if (state.activeTab === 'portfolio') h.innerHTML = `<div class="flex flex-col md:flex-row md:items-end justify-between gap-12"><div><span class="text-[11px] font-black text-indigo-500 uppercase tracking-[0.6em] mb-6 block">Gestion de Cabinet</span><h2 class="text-7xl font-serif text-white italic leading-tight">Master Portfolio.</h2></div><div class="glass-card px-12 py-6 text-[12px] font-black text-white uppercase tracking-[0.3em] border-l-4 border-indigo-600 shadow-2xl bg-indigo-500/5">${state.clients.length} Cabinets Sous Gestion</div></div>`;
-            else if (state.currentClient) h.innerHTML = `<div class="flex flex-col md:flex-row md:items-end justify-between gap-12"><div class="max-w-3xl"><div class="flex items-center gap-6 mb-6"><span class="text-[11px] font-black uppercase tracking-[0.6em] text-white/30 px-4 py-1.5 border border-white/10 bg-white/5">PARTENAIRE ID-${state.currentClient.id}</span></div><h2 class="text-8xl font-serif text-white leading-tight italic tracking-tight">${state.currentClient.name}</h2></div><div class="w-full md:w-[450px]"><div class="flex justify-between items-end mb-8"><div class="flex flex-col"><span class="text-[11px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-2">Phase d'Audit ${state.currentClient.current_phase}</span><span class="text-lg font-black text-white uppercase tracking-widest">${PHASES[state.currentClient.current_phase-1]}</span></div><span class="text-4xl font-serif italic text-white">${Math.round((state.currentClient.current_phase/4)*100)}%</span></div><div class="w-full bg-white/5 h-2 relative rounded-full overflow-hidden shadow-inner"><div class="bg-gradient-to-r from-indigo-600 to-white h-full absolute transition-all duration-[2.5s] ease-out progress-glow-indigo" style="width: ${(state.currentClient.current_phase/4)*100}%"></div></div>${state.user.role === 'admin' ? `<button onclick="updateClientPhase()" class="mt-6 text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] hover:text-white transition-all underline decoration-indigo-500/30 underline-offset-8">Ajuster la Phase d'Audit</button>` : ''}</div></div>`;
+            if (state.activeTab === 'portfolio') h.innerHTML = `<div class="flex flex-col md:flex-row md:items-end justify-between gap-12"><div><span class="text-[11px] font-black text-indigo-500 uppercase tracking-[0.6em] mb-6 block">Gestion de Cabinet</span><h2 class="text-7xl font-serif text-white italic leading-tight tracking-tighter">Master Portfolio.</h2></div><div class="glass-card px-12 py-6 text-[12px] font-black text-white uppercase tracking-[0.3em] border-l-4 border-indigo-600 shadow-2xl bg-indigo-500/5">${state.clients.length} Cabinets Sous Gestion</div></div>`;
+            else if (state.currentClient) h.innerHTML = `<div class="flex flex-col md:flex-row md:items-end justify-between gap-12"><div class="max-w-3xl"><div class="flex items-center gap-6 mb-6"><span class="text-[11px] font-black uppercase tracking-[0.6em] text-white/30 px-4 py-1.5 border border-white/10 bg-white/5">PARTENAIRE ID-${state.currentClient.id}</span></div><h2 class="text-8xl font-serif text-white leading-tight italic tracking-tight">${state.currentClient.name}</h2></div><div class="w-full md:w-[450px]"><div class="flex justify-between items-end mb-8"><div class="flex flex-col"><span class="text-[11px] font-black text-indigo-400 uppercase tracking-[0.4em] mb-2">Phase d'Audit ${state.currentClient.current_phase}</span><span class="text-lg font-black text-white uppercase tracking-widest">${PHASES[state.currentClient.current_phase-1]}</span></div><span class="text-4xl font-serif italic text-white">${Math.round((state.currentClient.current_phase/4)*100)}%</span></div><div class="w-full bg-white/5 h-2 relative rounded-full overflow-hidden shadow-inner"><div class="bg-gradient-to-r from-indigo-600 to-white h-full absolute transition-all duration-[2.5s] ease-out shadow-[0_0_15px_rgba(99,102,241,0.5)]" style="width: ${(state.currentClient.current_phase/4)*100}%"></div></div>${state.user.role === 'admin' ? `<button onclick="handlePhaseUpdateUI()" class="mt-6 text-[10px] font-black text-indigo-400 uppercase tracking-[0.3em] hover:text-white transition-all underline decoration-indigo-500/30 underline-offset-8">Ajuster la Phase d'Audit</button>` : ''}</div></div>`;
         }
 
         function renderContent() {
@@ -295,10 +328,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-12">
                     ${state.clients.map(c => `
                         <div onclick="enterSupervision('${c.id}')" class="group glass-card p-14 hover:bg-indigo-500/5 hover:border-indigo-500/30 transition-all duration-700 cursor-pointer relative shadow-2xl overflow-hidden">
-                            <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-600/5 rounded-full -mr-16 -mt-16 blur-3xl group-hover:bg-indigo-600/10 transition-all"></div>
-                            <div class="mb-14 text-indigo-500/40 group-hover:text-indigo-400 transition-all duration-700">
-                                <i class="ph-thin ph-briefcase-metal text-7xl"></i>
-                            </div>
+                            <div class="mb-14 text-indigo-500/40 group-hover:text-indigo-400 transition-all duration-700"><i class="ph-thin ph-briefcase-metal text-7xl"></i></div>
                             <h3 class="text-3xl font-serif text-white italic mb-4 truncate tracking-wide">${c.name}</h3>
                             <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.4em] mb-12">Phase ${c.current_phase} — Audit Actif</p>
                             <div class="flex items-center justify-between pt-12 border-t border-white/5 text-[10px] font-black text-slate-500 uppercase tracking-[0.3em] group-hover:text-white transition-colors">
@@ -312,83 +342,31 @@
         }
 
         function renderDashboard(c) { 
-            c.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-12">
-                    <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-12">
-                        <div class="glass-card p-14 shadow-2xl border-l-2 border-l-indigo-500">
-                            <i class="ph-thin ph-activity text-5xl text-indigo-500/40 mb-10"></i>
-                            <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Statut Livraison</p>
-                            <p class="text-5xl font-serif text-white italic">En cours</p>
-                        </div>
-                        <div class="glass-card p-14 shadow-2xl border-l-2 border-l-emerald-500">
-                            <i class="ph-thin ph-bullseye text-5xl text-emerald-500/40 mb-10"></i>
-                            <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Focus Actuel</p>
-                            <p class="text-5xl font-serif text-white italic">${PHASES[state.currentClient.current_phase-1]}</p>
-                        </div>
-                        <div class="sm:col-span-2 glass-card p-20 relative overflow-hidden shadow-2xl bg-gradient-to-br from-indigo-950/20 to-transparent">
-                            <div class="relative z-10">
-                                <h3 class="text-6xl font-serif text-white italic mb-10 leading-tight">Priorités de la<br>phase actuelle.</h3>
-                                <p class="text-slate-400 text-lg font-medium leading-relaxed max-w-2xl mb-14">Chaque action du protocole est calibrée pour votre transformation. Accédez au plan stratégique pour initier les opérations.</p>
-                                <button onclick="switchTab('actions')" class="px-14 py-6 bg-white text-black text-[13px] font-black uppercase tracking-[0.4em] hover:bg-indigo-50 transition-all duration-500 shadow-3xl">
-                                    Voir les Actions
-                                </button>
-                            </div>
-                            <div class="absolute -right-20 -bottom-20 opacity-[0.04] rotate-12">
-                                <i class="ph-thin ph-crown text-[400px] text-white"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="glass-card p-14 flex flex-col items-center justify-center text-center shadow-2xl border-t-4 border-t-indigo-600/30">
-                         <div class="w-40 h-40 border border-white/5 rounded-full flex items-center justify-center mb-14 shadow-3xl bg-indigo-500/5 ring-1 ring-white/10 relative">
-                            <div class="absolute inset-0 bg-indigo-500/10 blur-2xl rounded-full"></div>
-                            <i class="ph-thin ph-paper-plane-tilt text-6xl text-white relative z-10"></i>
-                         </div>
-                         <h4 class="text-3xl font-serif text-white italic mb-8 uppercase tracking-widest">Support</h4>
-                         <p class="text-[13px] text-slate-500 font-bold leading-loose uppercase tracking-[0.3em] mb-14">Ligne de communication directe avec votre consultant SELL IT.</p>
-                         <a href="https://wa.me/33600000000" target="_blank" class="w-full py-6 bg-indigo-600/10 border border-indigo-500/30 text-indigo-400 text-[12px] font-black uppercase tracking-[0.4em] hover:bg-indigo-600 hover:text-white transition-all duration-500 shadow-xl">WhatsApp Direct</a>
-                    </div>
-                </div>
-            `; 
+            c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-3 gap-12"><div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-12"><div class="glass-card p-14 border-l-2 border-l-indigo-500"><i class="ph-thin ph-activity text-5xl text-indigo-500/40 mb-10"></i><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Statut Livraison</p><p class="text-5xl font-serif text-white italic">En cours</p></div><div class="glass-card p-14 border-l-2 border-l-emerald-500"><i class="ph-thin ph-bullseye text-5xl text-emerald-500/40 mb-10"></i><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.5em] mb-4">Focus Actuel</p><p class="text-5xl font-serif text-white italic">${PHASES[state.currentClient.current_phase-1]}</p></div><div class="sm:col-span-2 glass-card p-20 relative overflow-hidden shadow-2xl bg-gradient-to-br from-indigo-950/20 to-transparent"><div class="relative z-10"><h3 class="text-6xl font-serif text-white italic mb-10 leading-tight">Priorités de la<br>phase actuelle.</h3><p class="text-slate-400 text-lg font-medium leading-relaxed max-w-2xl mb-14">Chaque action du protocole est calibrée pour votre transformation. Accédez au plan stratégique pour initier les opérations.</p><button onclick="switchTab('actions')" class="px-14 py-6 bg-white text-black text-[13px] font-black uppercase tracking-[0.4em] hover:bg-indigo-50 transition-all shadow-3xl">Voir les Actions</button></div><div class="absolute -right-20 -bottom-20 opacity-[0.04] rotate-12"><i class="ph-thin ph-crown text-[400px] text-white"></i></div></div></div><div class="glass-card p-14 flex flex-col items-center justify-center text-center"><div class="w-40 h-40 border border-white/5 rounded-full flex items-center justify-center mb-14 bg-indigo-500/5 ring-1 ring-white/10 relative"><div class="absolute inset-0 bg-indigo-500/10 blur-2xl rounded-full"></div><i class="ph-thin ph-paper-plane-tilt text-6xl text-white relative z-10"></i></div><h4 class="text-3xl font-serif text-white italic mb-8 uppercase tracking-widest">Support</h4><p class="text-[13px] text-slate-500 font-bold leading-loose uppercase tracking-[0.3em] mb-14">Ligne de communication directe avec votre consultant dédié.</p><a href="https://wa.me/33600000000" target="_blank" class="w-full py-6 bg-indigo-600/10 border border-indigo-500/30 text-indigo-400 text-[12px] font-black uppercase tracking-[0.4em] hover:bg-indigo-600 hover:text-white transition-all shadow-xl">WhatsApp Direct</a></div></div>`; 
         }
 
         function renderOnboarding(c) { 
             c.innerHTML = `
                 <div class="glass-card shadow-2xl border-t-2 border-t-white/10">
                     <div class="p-20 border-b border-white/10 flex flex-col md:flex-row justify-between items-center gap-14 bg-white/[0.01]">
-                        <div>
-                            <h3 class="text-6xl font-serif text-white italic mb-4">Checklist.</h3>
-                            <p class="text-[12px] font-black text-indigo-400 uppercase tracking-[0.5em]">Collecte des Actifs du Cabinet</p>
-                        </div>
-                        <div class="text-center md:text-right px-14 py-8 border-l border-white/10">
-                            <span class="text-8xl font-serif text-white italic leading-none">${state.clientData.docs.filter(d => d.status === 'Reçu').length}<span class="text-3xl text-slate-700 mx-4">/</span>${state.clientData.docs.length}</span>
-                            <p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] mt-6">Éléments Validés</p>
-                        </div>
+                        <div><h3 class="text-6xl font-serif text-white italic mb-4">Checklist.</h3><p class="text-[12px] font-black text-indigo-400 uppercase tracking-[0.5em]">Collecte des Actifs du Cabinet</p></div>
+                        <div class="text-center md:text-right px-14 py-8 border-l border-white/10"><span class="text-8xl font-serif text-white italic leading-none">${state.clientData.docs.filter(d => d.status === 'Reçu').length}<span class="text-3xl text-slate-700 mx-4">/</span>${state.clientData.docs.length}</span><p class="text-[11px] font-black text-slate-500 uppercase tracking-[0.3em] mt-6">Éléments Validés</p></div>
                     </div>
                     <div class="divide-y divide-white/10">
-                        ${state.clientData.docs.map(doc => {
-                            const isRec = doc.status === 'Reçu';
-                            return `
-                            <div class="p-14 flex flex-col sm:flex-row items-center justify-between hover:bg-white/[0.04] transition-all duration-500 gap-12 group">
+                        ${state.clientData.docs.map(doc => `
+                            <div class="p-14 flex flex-col sm:flex-row items-center justify-between hover:bg-white/[0.04] transition-all gap-12 group">
                                 <div class="flex items-center gap-14">
-                                    <div class="w-20 h-20 flex items-center justify-center border border-white/10 rounded-sm bg-black/40 shadow-inner group-hover:border-indigo-500/50 transition-colors">
-                                        <i class="ph-thin ph-file-pdf text-5xl ${isRec ? 'text-emerald-400 drop-shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'text-slate-800'}"></i>
-                                    </div>
-                                    <div>
-                                        <p class="text-3xl font-serif text-white italic mb-3 tracking-wide">${doc.label}</p>
-                                        <div class="flex items-center gap-4">
-                                            <span class="text-[11px] font-black ${isRec ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-600 bg-black/40'} border border-white/5 uppercase tracking-[0.5em] px-5 py-2">${doc.status}</span>
-                                            ${isRec ? '<span class="text-[10px] text-slate-500 italic uppercase">Document Reçu</span>' : ''}
-                                        </div>
-                                    </div>
+                                    <div class="w-20 h-20 flex items-center justify-center border border-white/10 bg-black/40 group-hover:border-indigo-500/50 transition-colors"><i class="ph-thin ph-file-pdf text-5xl ${doc.status === 'Reçu' ? 'text-emerald-400' : 'text-slate-800'}"></i></div>
+                                    <div><p class="text-3xl font-serif text-white italic mb-3 tracking-wide">${doc.label}</p><span class="text-[11px] font-black ${doc.status === 'Reçu' ? 'text-emerald-400 bg-emerald-400/10' : 'text-slate-600 bg-black/40'} border border-white/5 uppercase tracking-[0.5em] px-5 py-2">${doc.status}</span></div>
                                 </div>
                                 <div class="flex items-center gap-6">
-                                    ${doc.link ? `<a href="${doc.link}" target="_blank" class="w-16 h-16 flex items-center justify-center border border-white/10 text-white hover:bg-indigo-600 hover:border-indigo-600 transition-all shadow-xl"><i class="ph-bold ph-magnifying-glass text-2xl"></i></a>` : ''}
-                                    <button onclick="handleDocAction('${doc.id}')" class="px-12 py-5 bg-white/5 border border-white/20 text-[12px] font-black uppercase tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all duration-500 shadow-2xl">
-                                        ${isRec ? 'Mettre à jour' : 'Transmettre'}
+                                    ${doc.link ? `<a href="${doc.link}" target="_blank" class="w-16 h-16 flex items-center justify-center border border-white/10 text-white hover:bg-indigo-600 hover:border-indigo-600 transition-all rounded-sm"><i class="ph-bold ph-magnifying-glass text-2xl"></i></a>` : ''}
+                                    <button onclick="handleDocActionUI('${doc.id}', '${doc.label}')" class="px-12 py-5 bg-white/5 border border-white/20 text-[12px] font-black uppercase tracking-[0.4em] text-white hover:bg-white hover:text-black transition-all">
+                                        ${doc.status === 'Reçu' ? 'MAJ' : 'Transmettre'}
                                     </button>
                                 </div>
                             </div>
-                        `}).join('')}
+                        `).join('')}
                     </div>
                 </div>
             `; 
@@ -397,126 +375,90 @@
         function renderActions(c) { 
             const isAdmin = state.user.role === 'admin'; 
             const tasks = isAdmin ? state.clientData.tasks : state.clientData.tasks.filter(t => t.is_visible_client === true || t.is_visible_client === "VRAI"); 
-            
-            c.innerHTML = `
-                <div class="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-12">
-                    <div>
-                        <h3 class="text-6xl font-serif text-white italic mb-4">Plan d'Action Stratégique.</h3>
-                        <p class="text-[12px] font-black text-indigo-400 uppercase tracking-[0.5em]">Déploiement des Opérations</p>
-                    </div>
-                </div>
-                <div class="space-y-12">
-                    ${isAdmin ? `
-                        <div class="glass-card p-14 border-dashed border-indigo-500/30 mb-20 shadow-3xl bg-indigo-500/5 relative">
-                            <div class="absolute top-0 left-0 w-1 h-full bg-indigo-600"></div>
-                            <div class="flex flex-col gap-12">
-                                <div class="flex items-center gap-12 border-b border-white/5 pb-8">
-                                    <input type="text" id="inline-task-label" 
-                                        class="flex-1 bg-transparent py-5 font-serif italic text-4xl text-white placeholder:text-slate-800 outline-none focus:placeholder:text-indigo-900 transition-all tracking-tight" 
-                                        placeholder="Définir une action stratégique..."
-                                        onkeydown="if(event.key === 'Enter') handleInlineTaskAdd()">
-                                    <button onclick="handleInlineTaskAdd()" class="w-24 h-24 bg-white text-black flex items-center justify-center hover:bg-indigo-50 transition-all shadow-3xl rounded-sm group relative overflow-hidden">
-                                        <i class="ph-bold ph-plus text-3xl group-hover:scale-125 transition-transform"></i>
-                                    </button>
-                                </div>
-                                <div class="flex items-center justify-between text-[11px] font-black uppercase tracking-[0.5em]">
-                                    <div class="flex items-center gap-12">
-                                        <select id="inline-task-category" class="bg-black/60 text-indigo-400 px-8 py-3 border border-indigo-500/30 outline-none cursor-pointer hover:border-indigo-400 transition-all font-bold">
-                                            <option value="Audit">Audit</option>
-                                            <option value="Analyse">Analyse</option>
-                                            <option value="Livrable">Livrable</option>
-                                            <option value="Coaching">Coaching</option>
-                                        </select>
-                                        <label class="flex items-center gap-8 cursor-pointer text-slate-500 hover:text-white transition-all group">
-                                            <span>Visibilité Client</span>
-                                            <label class="switch">
-                                                <input type="checkbox" id="inline-task-visible" checked>
-                                                <span class="slider"></span>
-                                            </label>
-                                        </label>
-                                    </div>
-                                    <span class="text-slate-700 font-bold italic tracking-normal italic">Valider avec Entrée</span>
-                                </div>
-                            </div>
-                        </div>
-                    ` : ''}
+            c.innerHTML = `<div class="flex flex-col md:flex-row md:items-end justify-between mb-24 gap-12"><div><h3 class="text-6xl font-serif text-white italic mb-4">Plan d'Action.</h3><p class="text-[12px] font-black text-indigo-400 uppercase tracking-[0.5em]">Déploiement des Opérations Stratégiques</p></div></div><div class="space-y-12">
+                    ${isAdmin ? `<div class="glass-card p-14 border-dashed border-indigo-500/30 mb-20 shadow-3xl bg-indigo-500/5 relative"><div class="absolute top-0 left-0 w-1 h-full bg-indigo-600"></div><div class="flex flex-col gap-12"><div class="flex items-center gap-12 border-b border-white/5 pb-8"><input type="text" id="inline-task-label" class="flex-1 bg-transparent py-5 font-serif italic text-4xl text-white placeholder:text-slate-800 outline-none focus:placeholder:text-indigo-900 transition-all" placeholder="Définir une action stratégique..." onkeydown="if(event.key === 'Enter') handleInlineTaskAdd()"><button onclick="handleInlineTaskAdd()" class="w-24 h-24 bg-white text-black flex items-center justify-center hover:bg-indigo-50 transition-all rounded-sm group"><i class="ph-bold ph-plus text-3xl group-hover:scale-125 transition-transform"></i></button></div><div class="flex items-center justify-between text-[11px] font-black uppercase tracking-[0.5em]"><div class="flex items-center gap-12"><select id="inline-task-category" class="bg-black/60 text-indigo-400 px-8 py-3 border border-indigo-500/30 outline-none cursor-pointer hover:border-indigo-400 transition-all font-bold"><option value="Audit">Audit</option><option value="Analyse">Analyse</option><option value="Livrable">Livrable</option><option value="Coaching">Coaching</option></select><label class="flex items-center gap-8 cursor-pointer text-slate-500 hover:text-white transition-all"><span>Visibilité Client</span><label class="switch"><input type="checkbox" id="inline-task-visible" checked><span class="slider"></span></label></label></div><span class="text-slate-700 font-bold italic tracking-normal italic">Valider avec Entrée</span></div></div></div>` : ''}
                     <div class="grid grid-cols-1 gap-10">
-                        ${tasks.length > 0 ? tasks.map(t => {
-                            const isDone = t.status === 'Fait';
-                            const isVisible = t.is_visible_client === true || t.is_visible_client === "VRAI";
-                            return `
-                            <div onclick="toggleTask('${t.id}', '${t.status}')" class="glass-card p-12 flex items-center justify-between group cursor-pointer hover:bg-indigo-500/[0.03] transition-all duration-700 border-white/5 shadow-2xl relative">
-                                <div class="flex items-center gap-16">
-                                    <div class="w-14 h-14 border-2 border-white/10 flex items-center justify-center transition-all group-hover:border-indigo-500 rounded-sm bg-black/20 ${isDone ? 'bg-indigo-600 border-indigo-600 shadow-[0_0_20px_rgba(99,102,241,0.4)]' : ''}">
-                                        ${isDone ? '<i class="ph-bold ph-check text-2xl text-white"></i>' : ''}
-                                    </div>
-                                    <div>
-                                        <div class="flex items-center gap-8 mb-4">
-                                            <span class="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400/80 border border-indigo-500/20 px-4 py-1.5 bg-indigo-500/5">${t.category || 'Audit'}</span>
-                                            ${isAdmin && !isVisible ? `<span class="text-[10px] font-black uppercase tracking-[0.4em] text-amber-500 border border-amber-600/30 px-4 py-1.5 bg-amber-900/10">Usage Interne</span>` : ''}
-                                        </div>
-                                        <p class="text-3xl font-serif italic text-white tracking-wide ${isDone ? 'opacity-20 line-through' : ''}">${t.label}</p>
-                                    </div>
-                                </div>
-                                <i class="ph-bold ph-arrow-right text-slate-800 group-hover:text-white group-hover:translate-x-4 transition-all duration-700 text-3xl"></i>
-                            </div>
-                        `}).join('') : '<div class="text-center py-24 text-slate-700 font-black uppercase tracking-[0.6em] border border-white/5 glass-card bg-black/20">Aucune action enregistrée</div>'}
-                </div>
-            `; 
+                        ${tasks.length > 0 ? tasks.map(t => `<div onclick="toggleTask('${t.id}', '${t.status}')" class="glass-card p-12 flex items-center justify-between group cursor-pointer hover:bg-indigo-500/[0.03] transition-all duration-700 border-white/5"><div class="flex items-center gap-16"><div class="w-14 h-14 border-2 border-white/10 flex items-center justify-center transition-all group-hover:border-indigo-500 rounded-sm bg-black/20 ${t.status === 'Fait' ? 'bg-indigo-600 border-indigo-600' : ''}">${t.status === 'Fait' ? '<i class="ph-bold ph-check text-2xl text-white"></i>' : ''}</div><div><div class="flex items-center gap-8 mb-4"><span class="text-[11px] font-black uppercase tracking-[0.4em] text-indigo-400/80 border border-indigo-500/20 px-4 py-1.5 bg-indigo-500/5">${t.category || 'Audit'}</span>${isAdmin && !(t.is_visible_client === true || t.is_visible_client === "VRAI") ? `<span class="text-[10px] font-black uppercase tracking-[0.4em] text-amber-500 border border-amber-600/30 px-4 py-1.5 bg-amber-900/10">Usage Interne</span>` : ''}</div><p class="text-3xl font-serif italic text-white tracking-wide ${t.status === 'Fait' ? 'opacity-20 line-through' : ''}">${t.label}</p></div></div><i class="ph-bold ph-arrow-right text-slate-800 group-hover:text-white group-hover:translate-x-4 transition-all duration-700 text-3xl"></i></div>`).join('') : '<div class="text-center py-24 text-slate-700 font-black uppercase tracking-[0.6em] border border-white/5 glass-card bg-black/20">Aucune action enregistrée</div>'}
+                </div></div>`; 
         }
 
         function renderPerformance(c) { 
             const k = state.clientData.kpis[0] || { leads: 0, consults: 0, interventions: 0 }; 
             const r = k.consults > 0 ? ((k.interventions / k.consults) * 100).toFixed(1) : 0; 
-            c.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-20">
-                    <div class="glass-card p-20 shadow-3xl border-t-2 border-t-indigo-600/20">
-                        <h4 class="text-[12px] font-black text-slate-500 uppercase tracking-[0.6em] mb-20 text-center">Indicateurs de Performance</h4>
-                        <div class="space-y-20">
-                            ${renderKPIBar("Volume Leads", k.leads, 200, "indigo")}
-                            ${renderKPIBar("Consultations", k.consults, k.leads || 1, "white")}
-                            ${renderKPIBar("Interventions", k.interventions, k.consults || 1, "emerald")}
-                        </div>
-                    </div>
-                    <div class="glass-card p-20 flex flex-col items-center justify-center text-center relative overflow-hidden shadow-3xl bg-gradient-to-tr from-emerald-950/10 to-transparent border-t-2 border-t-emerald-600/20">
-                        <div class="w-48 h-48 border border-white/5 rounded-full flex items-center justify-center mb-16 shadow-inner bg-emerald-500/5 ring-1 ring-emerald-500/20 relative">
-                            <div class="absolute inset-0 bg-emerald-500/10 blur-3xl opacity-50 rounded-full animate-pulse"></div>
-                            <i class="ph-thin ph-diamonds-four text-8xl text-emerald-400 relative z-10"></i>
-                        </div>
-                        <h4 class="text-[12rem] font-serif italic text-platinum mb-8 leading-none drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">${Math.round(r)}<span class="text-4xl text-emerald-400 ml-2">%</span></h4>
-                        <p class="text-[14px] font-black text-slate-400 uppercase tracking-[0.6em]">Taux de Transformation</p>
-                    </div>
-                </div>
-            `; 
+            c.innerHTML = `<div class="grid grid-cols-1 md:grid-cols-2 gap-20"><div class="glass-card p-20 shadow-3xl"><h4 class="text-[12px] font-black text-slate-500 uppercase tracking-[0.6em] mb-20 text-center">Indicateurs de Performance</h4><div class="space-y-20">${renderKPIBar("Volume Leads", k.leads, 200, "indigo")}${renderKPIBar("Consultations", k.consults, k.leads || 1, "white")}${renderKPIBar("Interventions", k.interventions, k.consults || 1, "emerald")}</div></div><div class="glass-card p-20 flex flex-col items-center justify-center text-center relative overflow-hidden shadow-3xl bg-gradient-to-tr from-emerald-950/10 to-transparent border-t-2 border-t-emerald-600/20"><div class="w-48 h-48 border border-white/5 rounded-full flex items-center justify-center mb-16 bg-emerald-500/5 ring-1 ring-emerald-500/20 relative"><div class="absolute inset-0 bg-emerald-500/10 blur-3xl opacity-50 rounded-full animate-pulse"></div><i class="ph-thin ph-diamonds-four text-8xl text-emerald-400 relative z-10"></i></div><h4 class="text-[12rem] font-serif italic text-platinum mb-8 leading-none drop-shadow-[0_0_50px_rgba(255,255,255,0.1)]">${Math.round(r)}<span class="text-4xl text-emerald-400 ml-2">%</span></h4><p class="text-[14px] font-black text-slate-400 uppercase tracking-[0.6em]">Taux de Transformation</p></div></div>`; 
         }
 
         function renderKPIBar(l, v, m, color) { 
             const p = Math.min((v/m)*100, 100); 
-            const colors = {
-                indigo: "from-indigo-600 to-indigo-400 progress-glow-indigo",
-                white: "from-slate-400 to-white progress-glow-white",
-                emerald: "from-emerald-600 to-emerald-400 progress-glow-emerald"
-            };
-            return `
-                <div class="group">
-                    <div class="flex justify-between items-end mb-8">
-                        <span class="text-[14px] font-black text-white uppercase tracking-[0.3em]">${l}</span>
-                        <span class="text-4xl font-serif italic text-white">${v}</span>
-                    </div>
-                    <div class="w-full bg-white/5 h-2.5 relative rounded-full overflow-hidden shadow-inner">
-                        <div class="bg-gradient-to-r ${colors[color]} h-full absolute transition-all duration-[2.5s] delay-300" style="width: ${p}%"></div>
-                    </div>
-                </div>`; 
+            const colors = { indigo: "from-indigo-600 to-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.5)]", white: "from-slate-400 to-white shadow-[0_0_15px_rgba(255,255,255,0.5)]", emerald: "from-emerald-600 to-emerald-400 shadow-[0_0_15px_rgba(16,185,129,0.5)]" };
+            return `<div class="group"><div class="flex justify-between items-end mb-8"><span class="text-[14px] font-black text-white uppercase tracking-[0.3em]">${l}</span><span class="text-4xl font-serif italic text-white">${v}</span></div><div class="w-full bg-white/5 h-2.5 relative rounded-full overflow-hidden shadow-inner"><div class="bg-gradient-to-r ${colors[color]} h-full absolute transition-all duration-[2.5s] delay-300" style="width: ${p}%"></div></div></div>`; 
         }
 
-        // --- ACTIONS ---
-        async function handleDocAction(id) { 
-            const link = prompt("Saisir l'URL du document :"); 
-            if (!link) return; 
-            const res = await sendToAPI('UPDATE_DOC', { id, link }); 
-            if (res.success) { const d = state.clientData.docs.find(x => x.id.toString() === id.toString()); if (d) { d.status = 'Reçu'; d.link = link; } renderContent(); } 
+        // --- ACTIONS AVEC MODALES ---
+
+        function handleDocActionUI(docId, label) {
+            openModal(`
+                <div class="text-center mb-10">
+                    <h3 class="text-3xl font-serif text-white italic mb-2">Transmettre un actif.</h3>
+                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em]">${label}</p>
+                </div>
+                <div class="space-y-8">
+                    <div class="text-left">
+                        <label class="block text-[10px] font-black uppercase text-slate-500 mb-4 px-1 tracking-widest">Lien sécurisé (Drive, Dropbox, etc.)</label>
+                        <input type="text" id="modal-doc-link" class="w-full bg-white/[0.03] border border-white/10 px-6 py-5 text-sm text-white placeholder:text-gray-800 focus:border-indigo-500/50 outline-none transition-all rounded-sm font-light tracking-widest" placeholder="https://..." value="${state.clientData.docs.find(d => d.id === docId)?.link || ''}">
+                    </div>
+                    <div id="modal-error" class="hidden text-[10px] text-red-400 font-bold uppercase tracking-widest text-center py-3 bg-red-950/20 border border-red-900/30">L'URL est requise</div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <button onclick="closeModal()" class="py-5 border border-white/10 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all">Annuler</button>
+                        <button onclick="submitDocAction('${docId}')" class="py-5 bg-white text-black text-[11px] font-black uppercase tracking-[0.3em] hover:bg-slate-200 transition-all">Valider</button>
+                    </div>
+                </div>
+            `);
         }
-        
+
+        async function submitDocAction(docId) {
+            const link = document.getElementById('modal-doc-link').value.trim();
+            const err = document.getElementById('modal-error');
+            if (!link) { err.classList.remove('hidden'); return; }
+            
+            closeModal();
+            const res = await sendToAPI('UPDATE_DOC', { id: docId, link });
+            if (res.success) {
+                const d = state.clientData.docs.find(x => x.id.toString() === docId.toString());
+                if (d) { d.status = 'Reçu'; d.link = link; }
+                renderContent();
+            }
+        }
+
+        function handlePhaseUpdateUI() {
+            let optionsHtml = PHASES.map((name, i) => `
+                <button onclick="submitPhaseUpdate(${i+1})" class="glass-card p-8 flex flex-col items-center gap-4 hover:border-indigo-500 transition-all group ${state.currentClient.current_phase === i+1 ? 'border-indigo-600 bg-indigo-500/5' : ''}">
+                    <span class="text-4xl font-serif italic text-white group-hover:text-indigo-400 transition-colors">${i+1}</span>
+                    <span class="text-[9px] font-black uppercase tracking-widest text-slate-500 group-hover:text-white transition-colors">${name}</span>
+                </button>
+            `).join('');
+
+            openModal(`
+                <div class="text-center mb-12">
+                    <h3 class="text-3xl font-serif text-white italic mb-2">Ajuster la Phase d'Audit.</h3>
+                    <p class="text-[10px] font-black text-indigo-400 uppercase tracking-[0.4em]">Étape actuelle : ${state.currentClient.current_phase}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4 mb-10">
+                    ${optionsHtml}
+                </div>
+                <button onclick="closeModal()" class="w-full py-5 border border-white/10 text-white text-[11px] font-black uppercase tracking-[0.3em] hover:bg-white/5 transition-all">Abandonner</button>
+            `);
+        }
+
+        async function submitPhaseUpdate(newPhase) {
+            closeModal();
+            const res = await sendToAPI('UPDATE_CLIENT_PHASE', { client_id: state.currentClient.id, phase: newPhase });
+            if (res.success) {
+                state.currentClient.current_phase = newPhase;
+                refreshUI();
+            }
+        }
+
         async function toggleTask(id, currentStatus) { 
             const newStatus = currentStatus === 'Fait' ? 'Attente' : 'Fait'; 
             const res = await sendToAPI('UPDATE_TASK', { id, status: newStatus }); 
@@ -530,14 +472,11 @@
             const label = labelInput.value.trim();
             if (!label) return;
             const res = await sendToAPI('ADD_TASK', { client_id: state.currentClient.id, label, category: cat.value, is_visible_client: vis.checked });
-            if (res.success) { const d = await fetchFromAPI(state.currentClient.id); state.clientData.tasks = d.tasks || []; renderContent(); }
-        }
-
-        async function updateClientPhase() {
-            const p = prompt("Niveau de Phase (1-4) :", state.currentClient.current_phase); 
-            if (!p || p < 1 || p > 4) return;
-            const res = await sendToAPI('UPDATE_CLIENT_PHASE', { client_id: state.currentClient.id, phase: parseInt(p) });
-            if (res.success) { state.currentClient.current_phase = parseInt(p); refreshUI(); }
+            if (res.success) { 
+                const d = await fetchFromAPI(state.currentClient.id); 
+                state.clientData.tasks = d.tasks || []; 
+                renderContent(); 
+            }
         }
 
         // --- UTILS ---
