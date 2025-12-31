@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SELL IT | Client Delivery Hub</title>
+    <title>SELL IT | Hub Livraison</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         body { font-family: 'Plus Jakarta Sans', sans-serif; }
-        .sidebar-item.active { background-color: #4f46e5; color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
-        .tab-transition { transition: all 0.2s ease-in-out; }
+        .nav-link.active { background-color: #4f46e5; color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.15); }
+        .nav-link.active i { color: white; }
         .loader { border-top-color: #4f46e5; animation: spinner 0.6s linear infinite; }
         @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
         
         #toast {
             visibility: hidden;
             min-width: 250px;
-            background-color: #1e293b;
+            background-color: #0f172a;
             color: #fff;
             text-align: center;
-            border-radius: 16px;
+            border-radius: 12px;
             padding: 16px;
             position: fixed;
             z-index: 100;
@@ -29,360 +29,352 @@
             transform: translateX(-50%);
             box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
         }
-        #toast.show {
-            visibility: visible;
-            animation: fadein 0.5s, fadeout 0.5s 2.5s;
-        }
+        #toast.show { visibility: visible; animation: fadein 0.5s, fadeout 0.5s 2.5s; }
         @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
         @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
-
-        .custom-select {
-            appearance: none;
-            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
-            background-repeat: no-repeat;
-            background-position: right 1rem center;
-            background-size: 1.25rem;
-        }
     </style>
 </head>
 <body class="bg-slate-50 text-slate-900 min-h-screen">
 
-    <div id="toast">Action enregistrée !</div>
+    <div id="toast">Action enregistrée</div>
 
-    <!-- LOADER -->
     <div id="loading-overlay" class="fixed inset-0 z-[60] flex items-center justify-center bg-white/80 hidden">
         <div class="loader w-12 h-12 border-4 border-slate-200 rounded-full"></div>
     </div>
 
-    <!-- CONNEXION -->
-    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 p-6 hidden">
-        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10">
+    <!-- AUTHENTIFICATION -->
+    <div id="auth-section" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 p-6 hidden">
+        <div class="w-full max-w-md bg-white rounded-[2rem] shadow-2xl p-10">
             <div class="text-center mb-10">
-                <h1 class="text-4xl font-extrabold tracking-tighter text-slate-900 mb-2">SELL IT</h1>
-                <p class="text-slate-500">Accédez à votre espace de livraison</p>
+                <span class="inline-block p-4 bg-indigo-50 text-indigo-600 rounded-2xl mb-4">
+                    <i data-lucide="shield-check" class="w-8 h-8"></i>
+                </span>
+                <h1 class="text-3xl font-black tracking-tight text-slate-900">SELL IT</h1>
+                <p class="text-slate-500 mt-2 font-medium text-sm text-balance">Connectez-vous à votre espace partenaire ou client</p>
             </div>
-            <form id="login-form">
-                <div class="mb-6">
-                    <label class="block text-sm font-bold text-slate-700 mb-2">Token de connexion</label>
-                    <input type="text" id="token-input" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="votre-token" required>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-black uppercase tracking-widest text-slate-400 mb-2 px-1">Clé d'accès unique</label>
+                    <input type="text" id="token-input" class="w-full px-6 py-4 rounded-2xl border border-slate-200 focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all font-medium" placeholder="votre-token-ici" required>
                 </div>
-                <div id="login-error" class="hidden mb-4 text-sm text-red-500 font-semibold text-center"></div>
-                <button type="submit" class="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all">Se connecter</button>
+                <div id="login-error" class="hidden text-xs text-red-500 font-bold text-center bg-red-50 py-3 rounded-xl border border-red-100"></div>
+                <button type="submit" class="w-full py-4 bg-indigo-600 text-white font-extrabold rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all flex items-center justify-center gap-2">
+                    Accéder au Hub <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                </button>
             </form>
         </div>
     </div>
 
-    <!-- APP -->
-    <div id="app-content" class="flex flex-col md:flex-row min-h-screen hidden">
+    <!-- STRUCTURE PRINCIPALE -->
+    <div id="main-app" class="flex flex-col md:flex-row min-h-screen hidden">
         
-        <aside class="w-full md:w-72 bg-white border-r border-slate-200 p-8 flex flex-col z-40">
-            <div class="mb-10">
-                <h1 class="text-3xl font-black tracking-tighter text-indigo-600">SELL IT</h1>
-                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Delivery Hub V1</p>
-            </div>
-
-            <!-- NAVIGATION ADMIN -->
-            <div id="admin-nav-group" class="hidden">
-                <div class="mb-8">
-                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Changer de cabinet</label>
-                    <select onchange="if(this.value) selectClient(this.value)" id="client-quick-select" class="custom-select w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none transition-all cursor-pointer">
-                    </select>
-                </div>
-                <button onclick="goToPortfolio()" id="nav-portfolio" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all mb-4">
-                    <i data-lucide="users" class="w-5 h-5"></i> Portfolio Clients
-                </button>
-            </div>
-
-            <!-- NAVIGATION CABINET (Contextuelle) -->
-            <nav class="flex-1 space-y-2 hidden" id="cabinet-nav-group">
-                <div class="pt-4 pb-2">
-                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest px-5">Menu Cabinet</p>
-                </div>
-                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all">
-                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
-                </button>
-                <button onclick="switchTab('onboarding')" id="nav-onboarding" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all">
-                    <i data-lucide="file-check" class="w-5 h-5"></i> Onboarding
-                </button>
-                <button onclick="switchTab('actions')" id="nav-actions" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all">
-                    <i data-lucide="check-square" class="w-5 h-5"></i> Plan d'Action
-                </button>
-                <button onclick="switchTab('performance')" id="nav-performance" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all">
-                    <i data-lucide="trending-up" class="w-5 h-5"></i> Performance
-                </button>
-            </nav>
-
-            <div class="pt-8 border-t border-slate-100">
-                <div class="flex items-center gap-3 px-5 mb-6">
-                    <div id="user-avatar" class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center font-bold text-xs uppercase"></div>
+        <!-- BARRE LATÉRALE -->
+        <aside class="w-full md:w-80 bg-white border-r border-slate-200 flex flex-col z-40 sticky top-0 h-screen">
+            <div class="p-8">
+                <div class="flex items-center gap-3 mb-10">
+                    <div class="w-10 h-10 bg-indigo-600 rounded-xl flex items-center justify-center text-white shadow-lg shadow-indigo-100">
+                        <i data-lucide="layers" class="w-6 h-6"></i>
+                    </div>
                     <div>
-                        <p id="user-name" class="text-xs font-bold text-slate-900 truncate w-32"></p>
-                        <p id="user-role-label" class="text-[10px] font-medium text-slate-400 uppercase tracking-wider"></p>
+                        <h1 class="text-xl font-black tracking-tighter text-slate-900">SELL IT</h1>
+                        <p class="text-[10px] text-slate-400 font-black uppercase tracking-[0.2em]">Delivery Hub</p>
                     </div>
                 </div>
-                <button onclick="logout()" class="w-full flex items-center gap-4 px-5 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all">
-                    <i data-lucide="log-out" class="w-5 h-5"></i> Déconnexion
+
+                <div id="sidebar-content" class="space-y-1">
+                    <!-- Généré dynamiquement -->
+                </div>
+            </div>
+
+            <div class="mt-auto p-8 border-t border-slate-100 bg-slate-50/50">
+                <div class="flex items-center gap-4 mb-6">
+                    <div id="user-avatar" class="w-10 h-10 bg-white border border-slate-200 text-indigo-600 rounded-xl flex items-center justify-center font-bold shadow-sm"></div>
+                    <div class="flex-1 min-w-0">
+                        <p id="user-display-name" class="text-sm font-bold text-slate-900 truncate"></p>
+                        <p id="user-role-badge" class="text-[10px] font-black text-slate-400 uppercase tracking-widest"></p>
+                    </div>
+                </div>
+                <button onclick="handleLogout()" class="w-full flex items-center justify-between px-5 py-3 text-xs font-black text-red-500 hover:bg-red-50 rounded-xl transition-all border border-transparent hover:border-red-100">
+                    DÉCONNEXION <i data-lucide="log-out" class="w-4 h-4 text-red-400"></i>
                 </button>
             </div>
         </aside>
 
-        <main class="flex-1 overflow-y-auto p-6 md:p-12">
-            <!-- Badge supervision Admin -->
-            <div id="admin-badge" class="hidden mb-6">
-                <span class="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-xs font-bold uppercase tracking-widest">
-                    <i data-lucide="shield-check" class="w-4 h-4"></i> Mode Supervision Administrateur
-                </span>
+        <!-- ZONE DE CONTENU -->
+        <main class="flex-1 overflow-y-auto">
+            <!-- Bandeau supervision -->
+            <div id="supervision-bar" class="bg-amber-500 text-white px-8 py-2 text-[10px] font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 hidden">
+                <i data-lucide="eye" class="w-4 h-4"></i> Mode Supervision : <span id="supervised-client-name">Cabinet</span>
+                <button onclick="exitSupervision()" class="ml-4 bg-white/20 hover:bg-white/30 px-3 py-1 rounded-lg transition-colors">Quitter</button>
             </div>
-            <div id="view-header" class="mb-10"></div>
-            <div id="tab-content" class="tab-transition"></div>
+
+            <div class="p-8 md:p-12 max-w-7xl mx-auto w-full">
+                <div id="page-header" class="mb-12"></div>
+                <div id="page-content" class="tab-transition"></div>
+            </div>
         </main>
     </div>
 
     <script>
         // --- CONFIGURATION ---
-        const API_URL = ""; // COLER VOTRE URL ICI
+        // URL de votre script Google Apps Script
+        const API_URL = "https://script.google.com/macros/s/AKfycbwIuA8URYOwtTqTggsR-hDP7e9atQ9Sd0BvZbXqX59-Y9czYc0Me0Cgrnlyf0b87wCW/exec"; 
 
         let state = {
             token: localStorage.getItem('sellit_token') || null,
-            user: null,
+            user: null, 
             clients: [], 
             currentClient: null, 
             activeTab: 'portfolio',
-            data: { docs: [], tasks: [], kpis: [] } 
+            clientData: { docs: [], tasks: [], kpis: [] },
+            isLoading: false
         };
+
+        const PHASES = ["Cadrage", "Analyse", "Organisation", "Performance"];
 
         window.onload = async () => {
             if (state.token) await initApp();
-            else showLogin();
+            else showAuthScreen();
         };
 
-        function showToast(message) {
-            const t = document.getElementById('toast');
-            t.innerText = message || "Action enregistrée !";
-            t.className = "show";
-            setTimeout(() => { t.className = t.className.replace("show", ""); }, 3000);
-        }
-
-        async function showLoading(show) {
-            document.getElementById('loading-overlay').classList.toggle('hidden', !show);
-        }
-
         async function initApp() {
-            showLoading(true);
-            const initialData = await fetchData(state.token);
-            showLoading(false);
+            setLoading(true);
+            const data = await fetchFromAPI();
+            setLoading(false);
 
-            if (!initialData || initialData.error) {
-                if (initialData?.error) {
-                    const errorEl = document.getElementById('login-error');
-                    errorEl.innerText = initialData.error;
-                    errorEl.classList.remove('hidden');
-                }
-                return showLogin();
+            if (!data || data.error) {
+                handleLoginError(data?.error || "Session expirée");
+                return;
             }
 
-            state.user = initialData.user;
-            state.clients = initialData.clients || [];
+            state.user = data.user;
+            state.clients = data.clients || [];
             
-            document.getElementById('user-name').innerText = state.user.name;
-            document.getElementById('user-role-label').innerText = state.user.role === 'admin' ? 'Consultant SELL IT' : 'Client';
-            document.getElementById('user-avatar').innerText = state.user.name.substring(0,2);
-
+            // Redirection selon le rôle
             if (state.user.role === 'admin') {
-                document.getElementById('admin-nav-group').classList.remove('hidden');
-                updateClientSelect();
                 state.activeTab = 'portfolio';
                 state.currentClient = null;
             } else {
-                state.currentClient = initialData.client;
-                state.data = initialData;
+                state.currentClient = data.client;
+                state.clientData = { docs: data.docs || [], tasks: data.tasks || [], kpis: data.kpis || [] };
                 state.activeTab = 'dashboard';
-                document.getElementById('cabinet-nav-group').classList.remove('hidden');
             }
 
-            document.getElementById('login-screen').classList.add('hidden');
-            document.getElementById('app-content').classList.remove('hidden');
-            render();
+            document.getElementById('auth-section').classList.add('hidden');
+            document.getElementById('main-app').classList.remove('hidden');
+            
+            updateUserUI();
+            refreshUI();
         }
 
-        function updateClientSelect() {
-            const select = document.getElementById('client-quick-select');
-            if (!select) return;
-            select.innerHTML = '<option value="">Choisir un cabinet...</option>' + 
-                state.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
-        }
+        // --- COMMUNICATIONS API ---
 
-        async function fetchData(token, clientId = null) {
-            if (!API_URL) return getMockData(token, clientId);
+        async function fetchFromAPI(clientId = null) {
             try {
-                const url = `${API_URL}?token=${token}${clientId ? `&client_id=${clientId}` : ''}`;
+                let url = `${API_URL}?token=${state.token}`;
+                if (clientId) url += `&client_id=${clientId}`;
                 const res = await fetch(url);
-                return await res.json();
-            } catch (e) { return { error: "Erreur de connexion serveur" }; }
+                const json = await res.json();
+                return json;
+            } catch (e) { 
+                console.error("API Error:", e);
+                return { error: "Problème de connexion au serveur Apps Script" }; 
+            }
         }
 
-        async function postData(action, payload) {
-            if (!API_URL) { showToast("Démo : Action simulée"); return { success: true }; }
-            showLoading(true);
+        async function sendToAPI(action, payload) {
+            setLoading(true);
             try {
                 const res = await fetch(API_URL, {
                     method: 'POST',
-                    body: JSON.stringify({ token: state.token, action: action, payload: payload })
+                    body: JSON.stringify({ token: state.token, action, payload })
                 });
-                const result = await res.json();
-                showLoading(false);
-                if (result.success) showToast();
-                return result;
-            } catch (e) { showLoading(false); showToast("Erreur API"); return { error: e.message }; }
+                const resData = await res.json();
+                setLoading(false);
+                if (resData.success) showToast("Données synchronisées");
+                return resData;
+            } catch (e) { 
+                setLoading(false); 
+                showToast("Erreur de sauvegarde"); 
+                return { error: e.message }; 
+            }
         }
 
         // --- NAVIGATION ---
 
-        function goToPortfolio() {
-            state.currentClient = null;
-            state.activeTab = 'portfolio';
-            document.getElementById('cabinet-nav-group').classList.add('hidden');
-            const select = document.getElementById('client-quick-select');
-            if (select) select.value = "";
-            render();
-        }
-
         function switchTab(tabId) {
             state.activeTab = tabId;
-            render();
+            refreshUI();
         }
 
-        async function selectClient(clientId) {
-            if (!clientId) return;
-            showLoading(true);
-            const clientData = await fetchData(state.token, clientId);
-            showLoading(false);
+        async function enterSupervision(clientId) {
+            setLoading(true);
+            const data = await fetchFromAPI(clientId);
+            setLoading(false);
 
-            if (clientData && !clientData.error) {
-                state.currentClient = clientData.client;
-                state.data = clientData;
+            if (data && !data.error) {
+                state.currentClient = data.client;
+                state.clientData = { 
+                    docs: data.docs || [], 
+                    tasks: data.tasks || [], 
+                    kpis: data.kpis || [] 
+                };
                 state.activeTab = 'dashboard';
-                document.getElementById('cabinet-nav-group').classList.remove('hidden');
-                render();
-            } else {
-                showToast("Erreur lors du chargement du client");
+                refreshUI();
             }
         }
 
-        // --- INTERACTIONS ---
-
-        async function handleDocSubmit(docId) {
-            const link = prompt("Lien du document :");
-            if (!link) return;
-            const res = await postData('UPDATE_DOC', { id: docId, link: link });
-            if (res.success) {
-                const doc = state.data.docs.find(d => d.id.toString() === docId.toString());
-                if (doc) { doc.status = 'Reçu'; doc.link = link; }
-                render();
-            }
+        function exitSupervision() {
+            state.currentClient = null;
+            state.activeTab = 'portfolio';
+            state.clientData = { docs: [], tasks: [], kpis: [] };
+            refreshUI();
         }
 
-        async function handleTaskToggle(taskId, currentStatus) {
-            const newStatus = currentStatus === 'Fait' ? 'Attente' : 'Fait';
-            const res = await postData('UPDATE_TASK', { id: taskId, status: newStatus });
-            if (res.success) {
-                const task = state.data.tasks.find(t => t.id.toString() === taskId.toString());
-                if (task) task.status = newStatus;
-                render();
-            }
+        function goToPortfolio() {
+            if (state.user.role === 'admin') exitSupervision();
         }
 
-        // --- RENDERING ---
+        // --- RENDU UI ---
 
-        function render() {
-            const header = document.getElementById('view-header');
-            const content = document.getElementById('tab-content');
+        function refreshUI() {
+            renderSidebar();
+            renderHeader();
+            renderContent();
+            lucide.createIcons();
+        }
+
+        function renderSidebar() {
+            const container = document.getElementById('sidebar-content');
             const isAdmin = state.user.role === 'admin';
+            const isSupervising = isAdmin && state.currentClient !== null;
             
-            // Badge Supervision
-            const badge = document.getElementById('admin-badge');
-            if (isAdmin && state.activeTab !== 'portfolio') badge.classList.remove('hidden');
-            else badge.classList.add('hidden');
+            let html = '';
 
-            // Header dynamique
+            if (isAdmin) {
+                html += `
+                    <div class="pb-6">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-4 px-5">Espace Consultant</label>
+                        <button onclick="goToPortfolio()" class="nav-link w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all ${state.activeTab === 'portfolio' ? 'active' : ''}">
+                            <i data-lucide="users" class="w-5 h-5"></i> Portfolio Clients
+                        </button>
+                    </div>
+                `;
+            }
+
+            if (!isAdmin || isSupervising) {
+                html += `
+                    <div class="pt-4 border-t border-slate-100">
+                        <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest my-4 px-5">
+                            ${isAdmin ? 'Vue Cabinet : ' + state.currentClient.name : 'Mon Cabinet'}
+                        </label>
+                        <div class="space-y-1">
+                            ${renderNavLink('dashboard', 'layout-dashboard', 'Tableau de bord')}
+                            ${renderNavLink('onboarding', 'file-check', 'Onboarding')}
+                            ${renderNavLink('actions', 'check-square', 'Plan d\'action')}
+                            ${renderNavLink('performance', 'trending-up', 'Performance')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+
+            const supervisionBar = document.getElementById('supervision-bar');
+            if (isSupervising) {
+                supervisionBar.classList.remove('hidden');
+                document.getElementById('supervised-client-name').innerText = state.currentClient.name;
+            } else {
+                supervisionBar.classList.add('hidden');
+            }
+        }
+
+        function renderNavLink(id, icon, label) {
+            const active = state.activeTab === id ? 'active' : '';
+            return `
+                <button onclick="switchTab('${id}')" class="nav-link w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all ${active}">
+                    <i data-lucide="${icon}" class="w-5 h-5"></i> ${label}
+                </button>
+            `;
+        }
+
+        function renderHeader() {
+            const header = document.getElementById('page-header');
             if (state.activeTab === 'portfolio') {
                 header.innerHTML = `
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                    <div class="flex items-center justify-between">
                         <div>
-                            <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Master Dashboard</h2>
-                            <p class="text-slate-500 mt-1">Gestion globale de vos clients</p>
+                            <h2 class="text-4xl font-black text-slate-900 tracking-tight">Master Portfolio</h2>
+                            <p class="text-slate-500 font-medium mt-1">Supervisez l'ensemble des audits actifs</p>
                         </div>
-                        <div class="bg-indigo-50 border border-indigo-100 px-6 py-3 rounded-2xl flex items-center gap-3">
-                            <i data-lucide="users" class="text-indigo-600 w-5 h-5"></i>
-                            <span class="text-sm font-bold text-indigo-700">${state.clients.length} Cabinets</span>
+                        <div class="hidden md:flex items-center gap-2 bg-white px-5 py-3 rounded-2xl border border-slate-200 shadow-sm">
+                            <span class="w-2 h-2 rounded-full bg-green-500"></span>
+                            <span class="text-xs font-black text-slate-700 uppercase tracking-widest">${state.clients.length} Cabinets</span>
                         </div>
                     </div>
                 `;
             } else if (state.currentClient) {
                 const progress = (state.currentClient.current_phase / 4) * 100;
-                const phases = ["Cadrage", "Analyse", "Organisation", "Performance"];
                 header.innerHTML = `
-                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-8">
                         <div>
-                            <div class="flex items-center gap-4 mb-2">
-                                ${isAdmin ? `<button onclick="goToPortfolio()" class="p-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all shadow-sm group"><i data-lucide="arrow-left" class="w-5 h-5 text-slate-400 group-hover:text-indigo-600"></i></button>` : ''}
-                                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Cabinet ${state.currentClient.name}</h2>
+                            <div class="flex items-center gap-3 mb-3">
+                                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-indigo-600 bg-indigo-50 px-3 py-1 rounded-full">Cabinet Client</span>
+                                <span class="text-[10px] font-black uppercase tracking-[0.2em] text-slate-400">ID: ${state.currentClient.id}</span>
                             </div>
-                            <div class="flex items-center gap-3 px-1">
-                                <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
-                                <p class="text-slate-500 text-sm font-medium">${isAdmin ? 'Vue Consultant' : 'Votre Hub Livraison'}</p>
-                            </div>
+                            <h2 class="text-4xl font-black text-slate-900 tracking-tight">${state.currentClient.name}</h2>
                         </div>
-                        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm w-full md:w-80">
-                            <div class="flex justify-between items-center mb-3">
-                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phase ${state.currentClient.current_phase}/4</span>
-                                <span class="text-xs font-bold text-indigo-600">${Math.round(progress)}%</span>
+                        <div class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm w-full md:w-96">
+                            <div class="flex justify-between items-center mb-4">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phase ${state.currentClient.current_phase} : ${PHASES[state.currentClient.current_phase-1]}</span>
+                                <span class="text-xs font-black text-indigo-600">${Math.round(progress)}%</span>
                             </div>
-                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                                <div class="bg-indigo-600 h-full transition-all duration-1000" style="width: ${progress}%"></div>
+                            <div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden">
+                                <div class="bg-indigo-600 h-full rounded-full transition-all duration-1000 ease-out" style="width: ${progress}%"></div>
                             </div>
-                            <p class="mt-3 text-sm font-bold text-slate-700">${phases[state.currentClient.current_phase-1]}</p>
                         </div>
                     </div>
                 `;
             }
-
-            // Sync Sidebar active state
-            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
-            const activeBtn = document.getElementById(`nav-${state.activeTab}`);
-            if (activeBtn) activeBtn.classList.add('active');
-
-            // Render Views
-            if (state.activeTab === 'portfolio') renderPortfolio(content);
-            else if (state.activeTab === 'dashboard') renderDashboard(content);
-            else if (state.activeTab === 'onboarding') renderOnboarding(content);
-            else if (state.activeTab === 'actions') renderActions(content);
-            else if (state.activeTab === 'performance') renderPerformance(content);
-            
-            lucide.createIcons();
         }
+
+        function renderContent() {
+            const container = document.getElementById('page-content');
+            switch (state.activeTab) {
+                case 'portfolio': renderPortfolio(container); break;
+                case 'dashboard': renderDashboard(container); break;
+                case 'onboarding': renderOnboarding(container); break;
+                case 'actions': renderActions(container); break;
+                case 'performance': renderPerformance(container); break;
+            }
+        }
+
+        // --- VUES SPÉCIFIQUES ---
 
         function renderPortfolio(container) {
             container.innerHTML = `
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    ${state.clients.map(client => `
-                        <div onclick="selectClient('${client.id}')" class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-xl hover:shadow-indigo-50 transition-all cursor-pointer group">
-                            <div class="flex justify-between items-start mb-6">
-                                <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
-                                    <i data-lucide="building-2" class="w-7 h-7"></i>
-                                </div>
-                                <span class="text-lg font-black text-indigo-600">${client.current_phase}/4</span>
+                    ${state.clients.map(client => {
+                        const prog = (client.current_phase / 4) * 100;
+                        return `
+                        <div onclick="enterSupervision('${client.id}')" class="group bg-white p-8 rounded-[2.5rem] border border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-2xl hover:shadow-indigo-500/10 transition-all cursor-pointer relative overflow-hidden">
+                            <div class="absolute top-0 right-0 p-6 opacity-0 group-hover:opacity-100 transition-opacity">
+                                <i data-lucide="external-link" class="w-5 h-5 text-indigo-600"></i>
                             </div>
-                            <h3 class="text-2xl font-bold text-slate-900 mb-1">${client.name}</h3>
-                            <p class="text-sm text-slate-400 mb-8 flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3"></i> ${client.last_audit_date || 'N/A'}</p>
-                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-4">
-                                <div class="bg-indigo-600 h-full" style="width: ${(client.current_phase/4)*100}%"></div>
+                            <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-400 group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors mb-6">
+                                <i data-lucide="building-2" class="w-7 h-7"></i>
                             </div>
-                            <div class="text-[11px] font-black text-slate-500 uppercase tracking-tighter pt-4 border-t border-slate-50 group-hover:text-indigo-600 flex justify-between">
-                                <span>Gérer ce cabinet</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            <h3 class="text-2xl font-black text-slate-900 mb-1 truncate">${client.name}</h3>
+                            <p class="text-xs font-bold text-slate-400 mb-8 uppercase tracking-widest">Phase ${client.current_phase}/4 : ${PHASES[client.current_phase-1]}</p>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-6">
+                                <div class="bg-indigo-600 h-full group-hover:scale-x-105 transition-transform origin-left" style="width: ${prog}%"></div>
+                            </div>
+                            <div class="flex items-center justify-between pt-6 border-t border-slate-50 text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                                <span>Gérer le hub</span>
+                                <span class="italic font-medium">${client.last_audit_date || ''}</span>
                             </div>
                         </div>
-                    `).join('')}
+                    `}).join('')}
                 </div>
             `;
         }
@@ -390,52 +382,70 @@
         function renderDashboard(container) {
             const isAdmin = state.user.role === 'admin';
             container.innerHTML = `
-                <div class="grid grid-cols-1 ${isAdmin ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-8">
-                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="activity"></i></div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Statut</p>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                    <div class="md:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-8">
+                        <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
+                            <div class="w-10 h-10 bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center mb-6"><i data-lucide="activity"></i></div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Statut de livraison</p>
+                            <p class="text-3xl font-black text-slate-900">En cours</p>
                         </div>
-                        <p class="text-4xl font-black text-blue-600">Audit en cours</p>
-                    </div>
-                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
-                        <div class="flex items-center gap-4 mb-6">
-                            <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl"><i data-lucide="target"></i></div>
-                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phase actuelle</p>
+                        <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm">
+                            <div class="w-10 h-10 bg-emerald-50 text-emerald-600 rounded-xl flex items-center justify-center mb-6"><i data-lucide="target"></i></div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2">Focus actuel</p>
+                            <p class="text-3xl font-black text-slate-900">${PHASES[state.currentClient.current_phase-1]}</p>
                         </div>
-                        <p class="text-4xl font-black text-slate-800">${state.currentClient?.current_phase || 1}</p>
+                        <div class="sm:col-span-2 bg-indigo-900 p-10 rounded-[2.5rem] text-white shadow-2xl relative overflow-hidden">
+                            <div class="relative z-10">
+                                <h3 class="text-2xl font-black mb-4 leading-tight">Prochaine étape de<br>votre transformation</h3>
+                                <p class="text-indigo-200 text-sm mb-8 max-w-md font-medium">Nous finalisons l'analyse de vos scripts de closing. Restez attentif à votre plan d'action.</p>
+                                <button onclick="switchTab('actions')" class="px-8 py-3 bg-white text-indigo-900 font-black rounded-xl text-xs uppercase tracking-widest shadow-xl">Voir les tâches</button>
+                            </div>
+                            <i data-lucide="sparkles" class="absolute -right-8 -bottom-8 w-48 h-48 text-indigo-800/50 -rotate-12"></i>
+                        </div>
                     </div>
-                    ${!isAdmin ? `<div class="bg-indigo-600 p-8 rounded-3xl text-white shadow-xl flex flex-col justify-between">
-                        <h3 class="font-black text-xl mb-4">Besoin d'aide ?</h3>
-                        <p class="text-indigo-100 text-sm mb-6">Votre consultant SELL IT est disponible via WhatsApp.</p>
-                        <button class="w-full py-3 bg-white text-indigo-600 font-black rounded-xl text-sm hover:bg-slate-50 transition-colors">WhatsApp</button>
-                    </div>` : ''}
+                    
+                    <div class="bg-white p-8 rounded-[2rem] border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
+                         <div class="w-20 h-20 bg-indigo-50 text-indigo-600 rounded-3xl flex items-center justify-center mb-6 shadow-inner ring-8 ring-indigo-50/50">
+                            <i data-lucide="message-circle" class="w-10 h-10"></i>
+                         </div>
+                         <h4 class="text-xl font-black text-slate-900 mb-3 uppercase tracking-tighter">Support Consultant</h4>
+                         <p class="text-sm text-slate-500 font-medium mb-8">Une question sur l'audit ? Votre consultant est disponible.</p>
+                         <button class="w-full py-4 bg-slate-900 text-white font-black rounded-2xl text-xs uppercase tracking-[0.2em] hover:bg-slate-800 shadow-lg">WhatsApp Direct</button>
+                    </div>
                 </div>
             `;
         }
 
         function renderOnboarding(container) {
             container.innerHTML = `
-                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
-                    <div class="p-8 border-b border-slate-100 flex justify-between items-center">
-                        <h3 class="text-2xl font-black">Checklist Onboarding</h3>
-                        <span class="text-xs font-bold text-slate-400">${state.data.docs.filter(d => d.status === 'Reçu').length}/${state.data.docs.length} complétés</span>
+                <div class="bg-white rounded-[2.5rem] border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-10 border-b border-slate-100 flex flex-col md:flex-row justify-between items-center gap-6">
+                        <div>
+                            <h3 class="text-2xl font-black text-slate-900">Collecte Documentaire</h3>
+                            <p class="text-slate-500 text-sm font-medium mt-1">Éléments nécessaires au bon déroulement de l'audit</p>
+                        </div>
+                        <div class="bg-slate-50 px-6 py-3 rounded-2xl border border-slate-100 text-xs font-black text-slate-700">
+                            ${state.clientData.docs.filter(d => d.status === 'Reçu').length} / ${state.clientData.docs.length} REÇUS
+                        </div>
                     </div>
                     <div class="divide-y divide-slate-100">
-                        ${state.data.docs.map(doc => `
-                            <div class="p-8 flex items-center justify-between hover:bg-slate-50 transition-colors">
-                                <div class="flex gap-6">
-                                    <div class="p-4 rounded-2xl ${doc.status === 'Reçu' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}">
-                                        <i data-lucide="file-text"></i>
+                        ${state.clientData.docs.map(doc => `
+                            <div class="p-8 flex flex-col sm:flex-row items-center justify-between hover:bg-slate-50 transition-colors gap-6">
+                                <div class="flex items-center gap-6">
+                                    <div class="w-14 h-14 rounded-2xl flex items-center justify-center ${doc.status === 'Reçu' ? 'bg-emerald-50 text-emerald-600' : 'bg-amber-50 text-amber-600'}">
+                                        <i data-lucide="file-text" class="w-6 h-6"></i>
                                     </div>
                                     <div>
-                                        <p class="text-lg font-bold text-slate-800">${doc.label}</p>
-                                        <p class="text-sm font-medium ${doc.status === 'Reçu' ? 'text-green-500' : 'text-slate-400'}">${doc.status}</p>
+                                        <p class="text-lg font-black text-slate-800">${doc.label}</p>
+                                        <div class="flex items-center gap-2 mt-1">
+                                            <span class="w-2 h-2 rounded-full ${doc.status === 'Reçu' ? 'bg-emerald-500' : 'bg-amber-500'}"></span>
+                                            <span class="text-xs font-bold ${doc.status === 'Reçu' ? 'text-emerald-500' : 'text-amber-500'} uppercase tracking-widest">${doc.status}</span>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="flex gap-2">
-                                    ${doc.link ? `<a href="${doc.link}" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-600 text-sm font-bold rounded-xl hover:bg-slate-200">Voir</a>` : ''}
-                                    <button onclick="handleDocSubmit('${doc.id}')" class="px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl shadow-lg hover:bg-slate-800 transition-all">
+                                <div class="flex items-center gap-3">
+                                    ${doc.link ? `<a href="${doc.link}" target="_blank" class="p-3 bg-white border border-slate-200 text-slate-500 rounded-xl hover:bg-slate-50 shadow-sm"><i data-lucide="eye" class="w-5 h-5"></i></a>` : ''}
+                                    <button onclick="handleDocAction('${doc.id}')" class="px-8 py-3 bg-slate-900 text-white text-xs font-black rounded-xl shadow-lg hover:bg-slate-800 uppercase tracking-widest">
                                         ${doc.status === 'Reçu' ? 'Modifier' : 'Soumettre'}
                                     </button>
                                 </div>
@@ -447,77 +457,152 @@
         }
 
         function renderActions(container) {
-            const filtered = state.user.role === 'admin' ? state.data.tasks : state.data.tasks.filter(t => t.is_visible_client === "VRAI" || t.is_visible_client === true);
+            const isAdmin = state.user.role === 'admin';
+            const tasks = isAdmin ? state.clientData.tasks : state.clientData.tasks.filter(t => t.is_visible_client === true || t.is_visible_client === "VRAI");
+            
             container.innerHTML = `
-                <div class="flex items-center justify-between mb-8">
-                    <h3 class="text-2xl font-black">Plan d'Action</h3>
-                    ${state.user.role === 'admin' ? '<button class="p-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg"><i data-lucide="plus"></i></button>' : ''}
+                <div class="flex items-center justify-between mb-10">
+                    <div>
+                        <h3 class="text-2xl font-black text-slate-900">Plan Stratégique</h3>
+                        <p class="text-slate-500 text-sm font-medium mt-1">Actions concrètes à implémenter</p>
+                    </div>
+                    ${isAdmin ? `<button onclick="addTaskPrompt()" class="p-4 bg-indigo-600 text-white rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all"><i data-lucide="plus"></i></button>` : ''}
                 </div>
-                <div class="space-y-4">
-                    ${filtered.length > 0 ? filtered.map(task => `
-                        <div onclick="handleTaskToggle('${task.id}', '${task.status}')" class="bg-white p-6 rounded-3xl border border-slate-200 flex items-center justify-between shadow-sm cursor-pointer hover:border-indigo-300 transition-all group">
-                            <div class="flex items-center gap-5">
-                                <div class="w-6 h-6 border-2 rounded-lg ${task.status === 'Fait' ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-200 group-hover:border-indigo-400'} flex items-center justify-center transition-colors">
-                                    ${task.status === 'Fait' ? '<i data-lucide="check" class="w-4 h-4"></i>' : ''}
+                <div class="grid grid-cols-1 gap-4">
+                    ${tasks.length > 0 ? tasks.map(task => `
+                        <div onclick="toggleTask('${task.id}', '${task.status}')" class="bg-white p-6 rounded-[2rem] border border-slate-200 shadow-sm flex items-center justify-between group cursor-pointer hover:border-indigo-400 transition-all">
+                            <div class="flex items-center gap-6">
+                                <div class="w-8 h-8 rounded-xl border-2 flex items-center justify-center transition-all ${task.status === 'Fait' ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-200 group-hover:border-indigo-400'}">
+                                    ${task.status === 'Fait' ? '<i data-lucide="check" class="w-5 h-5"></i>' : ''}
                                 </div>
                                 <div>
-                                    <p class="font-bold text-slate-800 ${task.status === 'Fait' ? 'line-through text-slate-400' : ''}">${task.label}</p>
-                                    <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest">${task.category || 'Audit'}</span>
+                                    <p class="font-bold text-slate-800 transition-all ${task.status === 'Fait' ? 'line-through text-slate-400 opacity-60' : ''}">${task.label}</p>
+                                    <div class="flex gap-2 mt-1">
+                                        <span class="text-[9px] font-black uppercase text-indigo-500 bg-indigo-50 px-2 py-0.5 rounded-md">${task.category || 'Audit'}</span>
+                                        ${isAdmin && !(task.is_visible_client === true || task.is_visible_client === "VRAI") ? `<span class="text-[9px] font-black uppercase text-slate-400 bg-slate-100 px-2 py-0.5 rounded-md">Privé</span>` : ''}
+                                    </div>
                                 </div>
                             </div>
-                            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors"></i>
+                            <i data-lucide="chevron-right" class="w-5 h-5 text-slate-200 group-hover:text-indigo-400 transition-colors"></i>
                         </div>
-                    `).join('') : '<p class="text-center py-12 text-slate-400">Aucune tâche disponible.</p>'}
+                    `).join('') : '<div class="text-center py-20 bg-slate-50 rounded-[2rem] border-2 border-dashed border-slate-200 text-slate-400 font-bold uppercase tracking-widest">Aucune action planifiée</div>'}
                 </div>
             `;
         }
 
         function renderPerformance(container) {
-            const kpi = state.data.kpis[0] || { leads: 0, consults: 0, interventions: 0 };
+            const kpi = state.clientData.kpis[0] || { leads: 0, consults: 0, interventions: 0 };
             const rate = kpi.consults > 0 ? ((kpi.interventions / kpi.consults) * 100).toFixed(1) : 0;
+            
             container.innerHTML = `
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-sm">
-                        <h4 class="font-black text-slate-800 mb-10 text-lg uppercase tracking-widest">Pipeline</h4>
-                        <div class="space-y-8">
-                            ${renderBar("Leads", kpi.leads, 200, "bg-blue-500")}
-                            ${renderBar("Consultations", kpi.consults, kpi.leads || 1, "bg-indigo-500")}
-                            ${renderBar("Interventions", kpi.interventions, kpi.consults || 1, "bg-green-500")}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-10">
+                    <div class="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-sm">
+                        <h4 class="text-xs font-black text-slate-400 uppercase tracking-[0.3em] mb-12">Tunnel de conversion</h4>
+                        <div class="space-y-10">
+                            ${renderKPIBar("Acquisition Leads", kpi.leads, 200, "bg-blue-500")}
+                            ${renderKPIBar("Consultations réalisées", kpi.consults, kpi.leads || 1, "bg-indigo-500")}
+                            ${renderKPIBar("Interventions validées", kpi.interventions, kpi.consults || 1, "bg-emerald-500")}
                         </div>
                     </div>
-                    <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
-                        <div class="w-24 h-24 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-6 ring-8 ring-green-50/50"><i data-lucide="trending-up" class="w-10 h-10"></i></div>
-                        <h4 class="text-6xl font-black text-slate-900 mb-2">${rate}%</h4>
-                        <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Taux de Closing</p>
+                    <div class="bg-white p-12 rounded-[3rem] border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center relative overflow-hidden">
+                        <div class="w-32 h-32 bg-emerald-50 text-emerald-600 rounded-[2.5rem] flex items-center justify-center mb-8 ring-8 ring-emerald-50/50 shadow-inner">
+                            <i data-lucide="trending-up" class="w-16 h-16"></i>
+                        </div>
+                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em] mb-2">Conversion globale</p>
+                        <h4 class="text-8xl font-black text-slate-900 mb-2">${rate}<span class="text-4xl text-emerald-500">%</span></h4>
+                        <div class="px-6 py-2 bg-emerald-100 text-emerald-700 rounded-full text-xs font-black uppercase tracking-widest mt-4">Performance optimale</div>
                     </div>
                 </div>
             `;
         }
 
-        function renderBar(l, v, m, c) {
+        function renderKPIBar(l, v, m, c) {
             const p = Math.min((v/m)*100, 100);
-            return `<div><div class="flex justify-between mb-2 text-xs font-black uppercase text-slate-400"><span>${l}</span><span>${v}</span></div><div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden"><div class="${c} h-full transition-all duration-1000" style="width: ${p}%"></div></div></div>`;
+            return `
+                <div>
+                    <div class="flex justify-between items-end mb-3">
+                        <span class="text-xs font-black text-slate-700 uppercase tracking-widest">${l}</span>
+                        <span class="text-xl font-black text-slate-900">${v}</span>
+                    </div>
+                    <div class="w-full bg-slate-100 h-4 rounded-full overflow-hidden">
+                        <div class="${c} h-full rounded-full transition-all duration-[1.5s]" style="width: ${p}%"></div>
+                    </div>
+                </div>
+            `;
         }
 
-        function showLogin() { 
-            document.getElementById('login-screen').classList.remove('hidden'); 
-            document.getElementById('app-content').classList.add('hidden');
-        }
-        function logout() { localStorage.removeItem('sellit_token'); location.reload(); }
+        // --- ACTIONS ---
 
-        document.getElementById('login-form').onsubmit = (e) => {
+        async function handleDocAction(docId) {
+            const link = prompt("Entrez le lien vers le document (Drive, Dropbox, etc.) :");
+            if (!link) return;
+            const res = await sendToAPI('UPDATE_DOC', { id: docId, link });
+            if (res.success) {
+                const doc = state.clientData.docs.find(d => d.id.toString() === docId.toString());
+                if (doc) { doc.status = 'Reçu'; doc.link = link; }
+                renderContent();
+            }
+        }
+
+        async function toggleTask(taskId, currentStatus) {
+            const newStatus = currentStatus === 'Fait' ? 'Attente' : 'Fait';
+            const res = await sendToAPI('UPDATE_TASK', { id: taskId, status: newStatus });
+            if (res.success) {
+                const task = state.clientData.tasks.find(t => t.id.toString() === taskId.toString());
+                if (task) task.status = newStatus;
+                renderContent();
+                lucide.createIcons();
+            }
+        }
+
+        // --- UTILITAIRES ---
+
+        function setLoading(val) {
+            state.isLoading = val;
+            document.getElementById('loading-overlay').classList.toggle('hidden', !val);
+        }
+
+        function showToast(msg) {
+            const t = document.getElementById('toast');
+            if (msg) t.innerText = msg;
+            t.className = "show";
+            setTimeout(() => t.className = t.className.replace("show", ""), 3000);
+        }
+
+        function updateUserUI() {
+            document.getElementById('user-display-name').innerText = state.user.name;
+            document.getElementById('user-role-badge').innerText = state.user.role === 'admin' ? 'Consultant SELL IT' : 'Cabinet Client';
+            document.getElementById('user-avatar').innerText = state.user.name.substring(0, 2).toUpperCase();
+        }
+
+        function showAuthScreen() {
+            document.getElementById('auth-section').classList.remove('hidden');
+            document.getElementById('main-app').classList.add('hidden');
+        }
+
+        function handleLoginError(msg) {
+            const el = document.getElementById('login-error');
+            el.innerText = msg;
+            el.classList.remove('hidden');
+        }
+
+        function handleLogout() {
+            localStorage.removeItem('sellit_token');
+            location.reload();
+        }
+
+        document.getElementById('login-form').onsubmit = async (e) => {
             e.preventDefault();
-            const t = document.getElementById('token-input').value.trim();
-            localStorage.setItem('sellit_token', t);
-            state.token = t;
-            initApp();
+            state.token = document.getElementById('token-input').value.trim();
+            localStorage.setItem('sellit_token', state.token);
+            await initApp();
         };
 
         function getMockData(t, cid) {
-            // Uniquement pour le dev local sans API
-            const isAdmin = t.includes('admin');
+            const isAdmin = t.toLowerCase().includes('admin');
             return { user: { role: isAdmin ? 'admin' : 'user', name: 'Mode Démo' }, clients: [] };
         }
+
     </script>
 </body>
 </html>
