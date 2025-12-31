@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SELL IT | Client Delivery Hub</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .sidebar-item.active { background-color: #4f46e5; color: white; box-shadow: 0 4px 12px rgba(79, 70, 229, 0.2); }
+        .tab-transition { transition: all 0.2s ease-in-out; }
+        .loader { border-top-color: #4f46e5; animation: spinner 0.6s linear infinite; }
+        @keyframes spinner { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        
+        #toast {
+            visibility: hidden;
+            min-width: 250px;
+            background-color: #1e293b;
+            color: #fff;
+            text-align: center;
+            border-radius: 16px;
+            padding: 16px;
+            position: fixed;
+            z-index: 100;
+            left: 50%;
+            bottom: 30px;
+            transform: translateX(-50%);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        #toast.show {
+            visibility: visible;
+            animation: fadein 0.5s, fadeout 0.5s 2.5s;
+        }
+        @keyframes fadein { from { bottom: 0; opacity: 0; } to { bottom: 30px; opacity: 1; } }
+        @keyframes fadeout { from { bottom: 30px; opacity: 1; } to { bottom: 0; opacity: 0; } }
+
+        .custom-select {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%2394a3b8' stroke-width='2'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' d='M19 9l-7 7-7-7'%3E%3C/path%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 1rem center;
+            background-size: 1.25rem;
+        }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-900 min-h-screen">
+
+    <div id="toast">Action enregistrée !</div>
+
+    <!-- LOADER -->
+    <div id="loading-overlay" class="fixed inset-0 z-[60] flex items-center justify-center bg-white/80 hidden">
+        <div class="loader w-12 h-12 border-4 border-slate-200 rounded-full"></div>
+    </div>
+
+    <!-- CONNEXION -->
+    <div id="login-screen" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-950 p-6 hidden">
+        <div class="w-full max-w-md bg-white rounded-3xl shadow-2xl p-10">
+            <div class="text-center mb-10">
+                <h1 class="text-4xl font-extrabold tracking-tighter text-slate-900 mb-2">SELL IT</h1>
+                <p class="text-slate-500">Accédez à votre espace de livraison</p>
+            </div>
+            <form id="login-form">
+                <div class="mb-6">
+                    <label class="block text-sm font-bold text-slate-700 mb-2">Token de connexion</label>
+                    <input type="text" id="token-input" class="w-full px-5 py-4 rounded-2xl border border-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition-all" placeholder="votre-token" required>
+                </div>
+                <div id="login-error" class="hidden mb-4 text-sm text-red-500 font-semibold text-center"></div>
+                <button type="submit" class="w-full py-4 bg-indigo-600 text-white font-bold rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-200 transition-all">Se connecter</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- APP -->
+    <div id="app-content" class="flex flex-col md:flex-row min-h-screen hidden">
+        
+        <aside class="w-full md:w-72 bg-white border-r border-slate-200 p-8 flex flex-col z-40">
+            <div class="mb-10">
+                <h1 class="text-3xl font-black tracking-tighter text-indigo-600">SELL IT</h1>
+                <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Delivery Hub V1</p>
+            </div>
+
+            <!-- NAVIGATION ADMIN -->
+            <div id="admin-nav-group" class="hidden">
+                <div class="mb-8">
+                    <label class="block text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 px-1">Changer de cabinet</label>
+                    <select onchange="if(this.value) selectClient(this.value)" id="client-quick-select" class="custom-select w-full px-4 py-3 bg-slate-50 border border-slate-100 rounded-xl text-xs font-bold text-slate-700 focus:ring-2 focus:ring-indigo-500 outline-none transition-all cursor-pointer">
+                    </select>
+                </div>
+                <button onclick="goToPortfolio()" id="nav-portfolio" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all mb-4">
+                    <i data-lucide="users" class="w-5 h-5"></i> Portfolio Clients
+                </button>
+            </div>
+
+            <!-- NAVIGATION CABINET (Contextuelle) -->
+            <nav class="flex-1 space-y-2 hidden" id="cabinet-nav-group">
+                <div class="pt-4 pb-2">
+                    <p class="text-[10px] font-black text-slate-300 uppercase tracking-widest px-5">Menu Cabinet</p>
+                </div>
+                <button onclick="switchTab('dashboard')" id="nav-dashboard" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all">
+                    <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+                </button>
+                <button onclick="switchTab('onboarding')" id="nav-onboarding" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all">
+                    <i data-lucide="file-check" class="w-5 h-5"></i> Onboarding
+                </button>
+                <button onclick="switchTab('actions')" id="nav-actions" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all">
+                    <i data-lucide="check-square" class="w-5 h-5"></i> Plan d'Action
+                </button>
+                <button onclick="switchTab('performance')" id="nav-performance" class="sidebar-item w-full flex items-center gap-4 px-5 py-4 rounded-2xl text-sm font-bold text-slate-500 hover:bg-slate-50 transition-all">
+                    <i data-lucide="trending-up" class="w-5 h-5"></i> Performance
+                </button>
+            </nav>
+
+            <div class="pt-8 border-t border-slate-100">
+                <div class="flex items-center gap-3 px-5 mb-6">
+                    <div id="user-avatar" class="w-8 h-8 bg-indigo-100 text-indigo-600 rounded-lg flex items-center justify-center font-bold text-xs uppercase"></div>
+                    <div>
+                        <p id="user-name" class="text-xs font-bold text-slate-900 truncate w-32"></p>
+                        <p id="user-role-label" class="text-[10px] font-medium text-slate-400 uppercase tracking-wider"></p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full flex items-center gap-4 px-5 py-3 text-sm font-bold text-red-500 hover:bg-red-50 rounded-2xl transition-all">
+                    <i data-lucide="log-out" class="w-5 h-5"></i> Déconnexion
+                </button>
+            </div>
+        </aside>
+
+        <main class="flex-1 overflow-y-auto p-6 md:p-12">
+            <!-- Badge supervision Admin -->
+            <div id="admin-badge" class="hidden mb-6">
+                <span class="inline-flex items-center gap-2 px-4 py-2 bg-amber-50 text-amber-700 border border-amber-200 rounded-full text-xs font-bold uppercase tracking-widest">
+                    <i data-lucide="shield-check" class="w-4 h-4"></i> Mode Supervision Administrateur
+                </span>
+            </div>
+            <div id="view-header" class="mb-10"></div>
+            <div id="tab-content" class="tab-transition"></div>
+        </main>
+    </div>
+
+    <script>
+        // --- CONFIGURATION ---
+        const API_URL = ""; // COLER VOTRE URL ICI
+
+        let state = {
+            token: localStorage.getItem('sellit_token') || null,
+            user: null,
+            clients: [], 
+            currentClient: null, 
+            activeTab: 'portfolio',
+            data: { docs: [], tasks: [], kpis: [] } 
+        };
+
+        window.onload = async () => {
+            if (state.token) await initApp();
+            else showLogin();
+        };
+
+        function showToast(message) {
+            const t = document.getElementById('toast');
+            t.innerText = message || "Action enregistrée !";
+            t.className = "show";
+            setTimeout(() => { t.className = t.className.replace("show", ""); }, 3000);
+        }
+
+        async function showLoading(show) {
+            document.getElementById('loading-overlay').classList.toggle('hidden', !show);
+        }
+
+        async function initApp() {
+            showLoading(true);
+            const initialData = await fetchData(state.token);
+            showLoading(false);
+
+            if (!initialData || initialData.error) {
+                if (initialData?.error) {
+                    const errorEl = document.getElementById('login-error');
+                    errorEl.innerText = initialData.error;
+                    errorEl.classList.remove('hidden');
+                }
+                return showLogin();
+            }
+
+            state.user = initialData.user;
+            state.clients = initialData.clients || [];
+            
+            document.getElementById('user-name').innerText = state.user.name;
+            document.getElementById('user-role-label').innerText = state.user.role === 'admin' ? 'Consultant SELL IT' : 'Client';
+            document.getElementById('user-avatar').innerText = state.user.name.substring(0,2);
+
+            if (state.user.role === 'admin') {
+                document.getElementById('admin-nav-group').classList.remove('hidden');
+                updateClientSelect();
+                state.activeTab = 'portfolio';
+                state.currentClient = null;
+            } else {
+                state.currentClient = initialData.client;
+                state.data = initialData;
+                state.activeTab = 'dashboard';
+                document.getElementById('cabinet-nav-group').classList.remove('hidden');
+            }
+
+            document.getElementById('login-screen').classList.add('hidden');
+            document.getElementById('app-content').classList.remove('hidden');
+            render();
+        }
+
+        function updateClientSelect() {
+            const select = document.getElementById('client-quick-select');
+            if (!select) return;
+            select.innerHTML = '<option value="">Choisir un cabinet...</option>' + 
+                state.clients.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+        }
+
+        async function fetchData(token, clientId = null) {
+            if (!API_URL) return getMockData(token, clientId);
+            try {
+                const url = `${API_URL}?token=${token}${clientId ? `&client_id=${clientId}` : ''}`;
+                const res = await fetch(url);
+                return await res.json();
+            } catch (e) { return { error: "Erreur de connexion serveur" }; }
+        }
+
+        async function postData(action, payload) {
+            if (!API_URL) { showToast("Démo : Action simulée"); return { success: true }; }
+            showLoading(true);
+            try {
+                const res = await fetch(API_URL, {
+                    method: 'POST',
+                    body: JSON.stringify({ token: state.token, action: action, payload: payload })
+                });
+                const result = await res.json();
+                showLoading(false);
+                if (result.success) showToast();
+                return result;
+            } catch (e) { showLoading(false); showToast("Erreur API"); return { error: e.message }; }
+        }
+
+        // --- NAVIGATION ---
+
+        function goToPortfolio() {
+            state.currentClient = null;
+            state.activeTab = 'portfolio';
+            document.getElementById('cabinet-nav-group').classList.add('hidden');
+            const select = document.getElementById('client-quick-select');
+            if (select) select.value = "";
+            render();
+        }
+
+        function switchTab(tabId) {
+            state.activeTab = tabId;
+            render();
+        }
+
+        async function selectClient(clientId) {
+            if (!clientId) return;
+            showLoading(true);
+            const clientData = await fetchData(state.token, clientId);
+            showLoading(false);
+
+            if (clientData && !clientData.error) {
+                state.currentClient = clientData.client;
+                state.data = clientData;
+                state.activeTab = 'dashboard';
+                document.getElementById('cabinet-nav-group').classList.remove('hidden');
+                render();
+            } else {
+                showToast("Erreur lors du chargement du client");
+            }
+        }
+
+        // --- INTERACTIONS ---
+
+        async function handleDocSubmit(docId) {
+            const link = prompt("Lien du document :");
+            if (!link) return;
+            const res = await postData('UPDATE_DOC', { id: docId, link: link });
+            if (res.success) {
+                const doc = state.data.docs.find(d => d.id.toString() === docId.toString());
+                if (doc) { doc.status = 'Reçu'; doc.link = link; }
+                render();
+            }
+        }
+
+        async function handleTaskToggle(taskId, currentStatus) {
+            const newStatus = currentStatus === 'Fait' ? 'Attente' : 'Fait';
+            const res = await postData('UPDATE_TASK', { id: taskId, status: newStatus });
+            if (res.success) {
+                const task = state.data.tasks.find(t => t.id.toString() === taskId.toString());
+                if (task) task.status = newStatus;
+                render();
+            }
+        }
+
+        // --- RENDERING ---
+
+        function render() {
+            const header = document.getElementById('view-header');
+            const content = document.getElementById('tab-content');
+            const isAdmin = state.user.role === 'admin';
+            
+            // Badge Supervision
+            const badge = document.getElementById('admin-badge');
+            if (isAdmin && state.activeTab !== 'portfolio') badge.classList.remove('hidden');
+            else badge.classList.add('hidden');
+
+            // Header dynamique
+            if (state.activeTab === 'portfolio') {
+                header.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-6">
+                        <div>
+                            <h2 class="text-4xl font-extrabold text-slate-900 tracking-tight">Master Dashboard</h2>
+                            <p class="text-slate-500 mt-1">Gestion globale de vos clients</p>
+                        </div>
+                        <div class="bg-indigo-50 border border-indigo-100 px-6 py-3 rounded-2xl flex items-center gap-3">
+                            <i data-lucide="users" class="text-indigo-600 w-5 h-5"></i>
+                            <span class="text-sm font-bold text-indigo-700">${state.clients.length} Cabinets</span>
+                        </div>
+                    </div>
+                `;
+            } else if (state.currentClient) {
+                const progress = (state.currentClient.current_phase / 4) * 100;
+                const phases = ["Cadrage", "Analyse", "Organisation", "Performance"];
+                header.innerHTML = `
+                    <div class="flex flex-col md:flex-row md:items-center justify-between gap-8">
+                        <div>
+                            <div class="flex items-center gap-4 mb-2">
+                                ${isAdmin ? `<button onclick="goToPortfolio()" class="p-2 bg-white border border-slate-200 hover:bg-slate-50 rounded-xl transition-all shadow-sm group"><i data-lucide="arrow-left" class="w-5 h-5 text-slate-400 group-hover:text-indigo-600"></i></button>` : ''}
+                                <h2 class="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">Cabinet ${state.currentClient.name}</h2>
+                            </div>
+                            <div class="flex items-center gap-3 px-1">
+                                <span class="flex h-2 w-2 rounded-full bg-green-500 animate-pulse"></span>
+                                <p class="text-slate-500 text-sm font-medium">${isAdmin ? 'Vue Consultant' : 'Votre Hub Livraison'}</p>
+                            </div>
+                        </div>
+                        <div class="bg-white p-5 rounded-3xl border border-slate-200 shadow-sm w-full md:w-80">
+                            <div class="flex justify-between items-center mb-3">
+                                <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phase ${state.currentClient.current_phase}/4</span>
+                                <span class="text-xs font-bold text-indigo-600">${Math.round(progress)}%</span>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
+                                <div class="bg-indigo-600 h-full transition-all duration-1000" style="width: ${progress}%"></div>
+                            </div>
+                            <p class="mt-3 text-sm font-bold text-slate-700">${phases[state.currentClient.current_phase-1]}</p>
+                        </div>
+                    </div>
+                `;
+            }
+
+            // Sync Sidebar active state
+            document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+            const activeBtn = document.getElementById(`nav-${state.activeTab}`);
+            if (activeBtn) activeBtn.classList.add('active');
+
+            // Render Views
+            if (state.activeTab === 'portfolio') renderPortfolio(content);
+            else if (state.activeTab === 'dashboard') renderDashboard(content);
+            else if (state.activeTab === 'onboarding') renderOnboarding(content);
+            else if (state.activeTab === 'actions') renderActions(content);
+            else if (state.activeTab === 'performance') renderPerformance(content);
+            
+            lucide.createIcons();
+        }
+
+        function renderPortfolio(container) {
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    ${state.clients.map(client => `
+                        <div onclick="selectClient('${client.id}')" class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm hover:border-indigo-500 hover:shadow-xl hover:shadow-indigo-50 transition-all cursor-pointer group">
+                            <div class="flex justify-between items-start mb-6">
+                                <div class="w-14 h-14 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-indigo-50 group-hover:text-indigo-600 transition-colors">
+                                    <i data-lucide="building-2" class="w-7 h-7"></i>
+                                </div>
+                                <span class="text-lg font-black text-indigo-600">${client.current_phase}/4</span>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-900 mb-1">${client.name}</h3>
+                            <p class="text-sm text-slate-400 mb-8 flex items-center gap-2"><i data-lucide="calendar" class="w-3 h-3"></i> ${client.last_audit_date || 'N/A'}</p>
+                            <div class="w-full bg-slate-100 h-1.5 rounded-full overflow-hidden mb-4">
+                                <div class="bg-indigo-600 h-full" style="width: ${(client.current_phase/4)*100}%"></div>
+                            </div>
+                            <div class="text-[11px] font-black text-slate-500 uppercase tracking-tighter pt-4 border-t border-slate-50 group-hover:text-indigo-600 flex justify-between">
+                                <span>Gérer ce cabinet</span> <i data-lucide="chevron-right" class="w-4 h-4"></i>
+                            </div>
+                        </div>
+                    `).join('')}
+                </div>
+            `;
+        }
+
+        function renderDashboard(container) {
+            const isAdmin = state.user.role === 'admin';
+            container.innerHTML = `
+                <div class="grid grid-cols-1 ${isAdmin ? 'md:grid-cols-2' : 'md:grid-cols-3'} gap-8">
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="p-3 bg-blue-50 text-blue-600 rounded-xl"><i data-lucide="activity"></i></div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Statut</p>
+                        </div>
+                        <p class="text-4xl font-black text-blue-600">Audit en cours</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm">
+                        <div class="flex items-center gap-4 mb-6">
+                            <div class="p-3 bg-indigo-50 text-indigo-600 rounded-xl"><i data-lucide="target"></i></div>
+                            <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Phase actuelle</p>
+                        </div>
+                        <p class="text-4xl font-black text-slate-800">${state.currentClient?.current_phase || 1}</p>
+                    </div>
+                    ${!isAdmin ? `<div class="bg-indigo-600 p-8 rounded-3xl text-white shadow-xl flex flex-col justify-between">
+                        <h3 class="font-black text-xl mb-4">Besoin d'aide ?</h3>
+                        <p class="text-indigo-100 text-sm mb-6">Votre consultant SELL IT est disponible via WhatsApp.</p>
+                        <button class="w-full py-3 bg-white text-indigo-600 font-black rounded-xl text-sm hover:bg-slate-50 transition-colors">WhatsApp</button>
+                    </div>` : ''}
+                </div>
+            `;
+        }
+
+        function renderOnboarding(container) {
+            container.innerHTML = `
+                <div class="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden">
+                    <div class="p-8 border-b border-slate-100 flex justify-between items-center">
+                        <h3 class="text-2xl font-black">Checklist Onboarding</h3>
+                        <span class="text-xs font-bold text-slate-400">${state.data.docs.filter(d => d.status === 'Reçu').length}/${state.data.docs.length} complétés</span>
+                    </div>
+                    <div class="divide-y divide-slate-100">
+                        ${state.data.docs.map(doc => `
+                            <div class="p-8 flex items-center justify-between hover:bg-slate-50 transition-colors">
+                                <div class="flex gap-6">
+                                    <div class="p-4 rounded-2xl ${doc.status === 'Reçu' ? 'bg-green-100 text-green-600' : 'bg-amber-100 text-amber-600'}">
+                                        <i data-lucide="file-text"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-lg font-bold text-slate-800">${doc.label}</p>
+                                        <p class="text-sm font-medium ${doc.status === 'Reçu' ? 'text-green-500' : 'text-slate-400'}">${doc.status}</p>
+                                    </div>
+                                </div>
+                                <div class="flex gap-2">
+                                    ${doc.link ? `<a href="${doc.link}" target="_blank" class="px-4 py-2 bg-slate-100 text-slate-600 text-sm font-bold rounded-xl hover:bg-slate-200">Voir</a>` : ''}
+                                    <button onclick="handleDocSubmit('${doc.id}')" class="px-6 py-2.5 bg-slate-900 text-white text-sm font-bold rounded-xl shadow-lg hover:bg-slate-800 transition-all">
+                                        ${doc.status === 'Reçu' ? 'Modifier' : 'Soumettre'}
+                                    </button>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderActions(container) {
+            const filtered = state.user.role === 'admin' ? state.data.tasks : state.data.tasks.filter(t => t.is_visible_client === "VRAI" || t.is_visible_client === true);
+            container.innerHTML = `
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="text-2xl font-black">Plan d'Action</h3>
+                    ${state.user.role === 'admin' ? '<button class="p-3 bg-indigo-600 text-white rounded-xl hover:bg-indigo-700 transition-colors shadow-lg"><i data-lucide="plus"></i></button>' : ''}
+                </div>
+                <div class="space-y-4">
+                    ${filtered.length > 0 ? filtered.map(task => `
+                        <div onclick="handleTaskToggle('${task.id}', '${task.status}')" class="bg-white p-6 rounded-3xl border border-slate-200 flex items-center justify-between shadow-sm cursor-pointer hover:border-indigo-300 transition-all group">
+                            <div class="flex items-center gap-5">
+                                <div class="w-6 h-6 border-2 rounded-lg ${task.status === 'Fait' ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-200 group-hover:border-indigo-400'} flex items-center justify-center transition-colors">
+                                    ${task.status === 'Fait' ? '<i data-lucide="check" class="w-4 h-4"></i>' : ''}
+                                </div>
+                                <div>
+                                    <p class="font-bold text-slate-800 ${task.status === 'Fait' ? 'line-through text-slate-400' : ''}">${task.label}</p>
+                                    <span class="text-[10px] font-black uppercase text-slate-400 tracking-widest">${task.category || 'Audit'}</span>
+                                </div>
+                            </div>
+                            <i data-lucide="chevron-right" class="w-4 h-4 text-slate-300 group-hover:text-indigo-500 transition-colors"></i>
+                        </div>
+                    `).join('') : '<p class="text-center py-12 text-slate-400">Aucune tâche disponible.</p>'}
+                </div>
+            `;
+        }
+
+        function renderPerformance(container) {
+            const kpi = state.data.kpis[0] || { leads: 0, consults: 0, interventions: 0 };
+            const rate = kpi.consults > 0 ? ((kpi.interventions / kpi.consults) * 100).toFixed(1) : 0;
+            container.innerHTML = `
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-sm">
+                        <h4 class="font-black text-slate-800 mb-10 text-lg uppercase tracking-widest">Pipeline</h4>
+                        <div class="space-y-8">
+                            ${renderBar("Leads", kpi.leads, 200, "bg-blue-500")}
+                            ${renderBar("Consultations", kpi.consults, kpi.leads || 1, "bg-indigo-500")}
+                            ${renderBar("Interventions", kpi.interventions, kpi.consults || 1, "bg-green-500")}
+                        </div>
+                    </div>
+                    <div class="bg-white p-10 rounded-3xl border border-slate-200 shadow-sm flex flex-col items-center justify-center text-center">
+                        <div class="w-24 h-24 bg-green-50 text-green-600 rounded-full flex items-center justify-center mb-6 ring-8 ring-green-50/50"><i data-lucide="trending-up" class="w-10 h-10"></i></div>
+                        <h4 class="text-6xl font-black text-slate-900 mb-2">${rate}%</h4>
+                        <p class="text-slate-400 font-bold uppercase tracking-widest text-xs">Taux de Closing</p>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderBar(l, v, m, c) {
+            const p = Math.min((v/m)*100, 100);
+            return `<div><div class="flex justify-between mb-2 text-xs font-black uppercase text-slate-400"><span>${l}</span><span>${v}</span></div><div class="w-full bg-slate-100 h-3 rounded-full overflow-hidden"><div class="${c} h-full transition-all duration-1000" style="width: ${p}%"></div></div></div>`;
+        }
+
+        function showLogin() { 
+            document.getElementById('login-screen').classList.remove('hidden'); 
+            document.getElementById('app-content').classList.add('hidden');
+        }
+        function logout() { localStorage.removeItem('sellit_token'); location.reload(); }
+
+        document.getElementById('login-form').onsubmit = (e) => {
+            e.preventDefault();
+            const t = document.getElementById('token-input').value.trim();
+            localStorage.setItem('sellit_token', t);
+            state.token = t;
+            initApp();
+        };
+
+        function getMockData(t, cid) {
+            // Uniquement pour le dev local sans API
+            const isAdmin = t.includes('admin');
+            return { user: { role: isAdmin ? 'admin' : 'user', name: 'Mode Démo' }, clients: [] };
+        }
+    </script>
+</body>
+</html>
