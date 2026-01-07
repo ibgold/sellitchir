@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comparateur d'Agenda - Dr Talia</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .transition-all { transition-property: all; transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1); transition-duration: 300ms; }
+        .toggle-checkbox:checked { transform: translateX(100%); border-color: #10B981; }
+        .toggle-checkbox:checked + .toggle-label { background-color: #10B981; }
+        
+        /* Animation Classes */
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .animate-card {
+            animation: slideIn 0.4s ease-out forwards;
+            opacity: 0; /* Hidden by default until animation starts */
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #f1f1f1; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen p-4 md:p-8 text-slate-900 transition-colors duration-500" id="mainBody">
+
+    <div class="max-w-7xl mx-auto">
+        
+        <!-- HEADER & TOGGLE -->
+        <div class="flex flex-col md:flex-row items-center justify-between mb-8 gap-6">
+            <div>
+                <h1 class="text-3xl font-black text-slate-900 tracking-tight mb-1">Audit Organisationnel</h1>
+                <p class="text-slate-500 italic">Comparatif Avant / Après Restructuration</p>
+            </div>
+
+            <!-- Toggle Switch Component -->
+            <div class="flex items-center gap-4 bg-white p-2 rounded-2xl shadow-sm border border-slate-200">
+                <span class="text-sm font-bold text-slate-400 uppercase tracking-wider" id="labelCurrent">Actuel</span>
+                
+                <div class="relative inline-block w-16 mr-2 align-middle select-none transition duration-200 ease-in">
+                    <input type="checkbox" name="toggle" id="toggle" class="toggle-checkbox absolute block w-8 h-8 rounded-full bg-white border-4 border-slate-300 appearance-none cursor-pointer transition-all duration-300 left-0 top-0 z-10"/>
+                    <label for="toggle" class="toggle-label block overflow-hidden h-8 rounded-full bg-slate-200 cursor-pointer transition-colors duration-300"></label>
+                </div>
+                
+                <span class="text-sm font-bold text-slate-900 uppercase tracking-wider" id="labelTarget">Nouveau process</span>
+            </div>
+        </div>
+
+        <!-- STATUS BAR & FINANCIAL METRICS -->
+        <div id="statusBar" class="bg-red-600 text-white p-6 rounded-2xl mb-8 flex flex-col md:flex-row items-center justify-between shadow-lg transition-all duration-500 gap-4">
+            <div class="flex items-center gap-4 w-full md:w-auto">
+                <div id="statusIcon" class="bg-white/20 p-2 rounded-lg transition-transform duration-300">
+                    <!-- SVG Icon injected via JS -->
+                </div>
+                <div>
+                    <p id="statusTitle" class="font-black uppercase tracking-tight text-lg leading-none mb-1">Saturation Mentale</p>
+                    <p id="statusSubtitle" class="text-sm opacity-90 italic">Analyse du parcours réel</p>
+                </div>
+            </div>
+            
+            <!-- Financial Metric Divider (Visual) -->
+            <div class="hidden md:block w-px h-12 bg-white/30"></div>
+
+            <div class="text-center md:text-right w-full md:w-auto bg-black/10 md:bg-transparent p-3 md:p-0 rounded-xl">
+                <p id="financialMetric" class="text-2xl font-black leading-none font-mono">PERTE DE CA</p>
+                <p id="financialLabel" class="text-[10px] uppercase font-bold tracking-widest opacity-80">Impact Mensuel</p>
+            </div>
+        </div>
+
+        <!-- GRID -->
+        <div id="scheduleGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+            <!-- Cards injected via JS -->
+        </div>
+
+        <!-- ANALYSIS FOOTER -->
+        <div id="analysisFooter" class="mt-8 bg-white p-8 rounded-3xl border-2 border-slate-100 shadow-sm transition-all duration-500">
+            <!-- Content injected via JS -->
+        </div>
+
+    </div>
+
+    <script>
+        // --- DATA ---
+        
+        const currentData = [
+            {
+                name: "Lundi",
+                timeline: [
+                    { time: "08h15", label: "Vocaux voiture", type: "inf", icon: "car" },
+                    { time: "09h-12h", label: "Actes Techniques", type: "off" },
+                    { time: "12h-18h", label: "Admin & Urgences", type: "off" },
+                    { time: "18h45", label: "Insta à la danse", type: "inf", icon: "insta" },
+                    { time: "23h00", label: "Pré-consult nuit", type: "inf", icon: "moon" }
+                ]
+            },
+            {
+                name: "Mardi",
+                timeline: [
+                    { time: "09h-16h", label: "Consultations Physiques", type: "off" },
+                    { time: "12h30", label: "Pré-consult entre 2 RDV", type: "inf", icon: "phone" },
+                    { time: "17h00", label: "Visios forcées", type: "off" },
+                    { time: "23h30", label: "Pré-consult nuit", type: "inf", icon: "moon" }
+                ]
+            },
+            {
+                name: "Mercredi",
+                timeline: [
+                    { time: "09h-12h30", label: "Injections (Botox)", type: "off" },
+                    { time: "14h30", label: "Enfants / WhatsApp Infiltré", type: "inf", icon: "baby" },
+                    { time: "16h00", label: "Perso / MP", type: "inf", icon: "bag" },
+                    { time: "22h00", label: "Dossiers oubliés", type: "inf", icon: "ghost" }
+                ]
+            },
+            {
+                name: "Jeudi",
+                timeline: [
+                    { time: "09h-09h45", label: "Trajet École", type: "off", icon: "car" },
+                    { time: "10h-15h30", label: "Mails, Banque, Devis", type: "off" },
+                    { time: "17h00", label: "Insta MP / Vidéos", type: "inf", icon: "insta" },
+                    { time: "23h00", label: "Session Pré-consult", type: "inf", icon: "moon" }
+                ]
+            },
+            {
+                name: "Vendredi",
+                timeline: [
+                    { time: "08h-19h", label: "Bloc Opératoire (Non-stop)", type: "off", icon: "scissors" },
+                    { time: "12h00", label: "Mails entre 2 blocs", type: "inf", icon: "phone" },
+                    { time: "22h00", label: "WhatsApp Post-Op", type: "inf", icon: "phone" }
+                ]
+            },
+            {
+                name: "Weekend",
+                timeline: [
+                    { time: "Sam 09h", label: "Visites Hôpital", type: "off" },
+                    { time: "Tout temps", label: "Instagram MP", type: "inf", icon: "insta" },
+                    { time: "Dim 22h", label: "Prépa Semaine", type: "inf", icon: "file" }
+                ]
+            }
+        ];
+
+        const targetData = [
+            {
+                name: "Lundi",
+                timeline: [
+                    { time: "09h-12h", label: "Actes Techniques (Focus)", type: "ok", icon: "scissors" },
+                    { time: "14h-17h", label: "Admin & Signature (Calme)", type: "ok", icon: "shield" },
+                    { time: "18h00", label: "Fin de journée (Vrai OFF)", type: "free", icon: "home" }
+                ]
+            },
+            {
+                name: "Mardi",
+                timeline: [
+                    { time: "09h-12h30", label: "Téléconsultations", type: "ok", icon: "video", delegate: "RK" },
+                    { time: "12h30", label: "Vraie Pause Déjeuner", type: "free", icon: "coffee" },
+                    { time: "14h-17h", label: "Téléconsultations", type: "ok", icon: "video" }
+                ]
+            },
+            {
+                name: "Mercredi",
+                timeline: [
+                    { time: "09h-12h30", label: "Injections", type: "ok", icon: "zap" },
+                    { time: "13h00", label: "Départ Cabinet", type: "free", icon: "sun" },
+                    { time: "Après-midi", label: "Enfants (0% Pro)", type: "free", icon: "home" }
+                ]
+            },
+            {
+                name: "Jeudi",
+                timeline: [
+                    { time: "09h-16h30", label: "Temps Libre (Zéro Sollicitation)", type: "free", icon: "shield", delegate: "RK" },
+                    { time: "Soir", label: "Famille & Enfants", type: "free", icon: "users" }
+                ]
+            },
+            {
+                name: "Vendredi",
+                timeline: [
+                    { time: "08h-19h", label: "Chirurgie (Focus absolu)", type: "ok", icon: "zap" },
+                    { time: "19h00", label: "Relais Post-Op", type: "ok", icon: "users", delegate: "L" },
+                    { time: "20h00", label: "Repos (Pas de WhatsApp)", type: "free", icon: "home" }
+                ]
+            },
+            {
+                name: "Weekend",
+                timeline: [
+                    { time: "Sam", label: "Zéro MP Insta", type: "free", icon: "shield", delegate: "RK" },
+                    { time: "Dim", label: "Zéro Mails", type: "free", icon: "file", delegate: "CL" },
+                    { time: "48h", label: "Récupération Totale", type: "free", icon: "sun" }
+                ]
+            }
+        ];
+
+        // --- ICONS & STYLES ---
+        const icons = {
+            alert: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3Z"/><path d="M12 9v4"/><path d="M12 17h.01"/></svg>`,
+            check: `<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>`,
+            car: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/></svg>`,
+            moon: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"/></svg>`,
+            phone: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>`,
+            insta: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg>`,
+            baby: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 12h.01"/><path d="M15 12h.01"/><path d="M10 16c.5.3 1.2.5 2 .5s1.5-.2 2-.5"/><path d="M19 6.3a9 9 0 0 1 1.8 3.9 2 2 0 0 1 0 3.6 9 9 0 0 1-17.6 0 2 2 0 0 1 0-3.6A9 9 0 0 1 12 3c2 0 3.5.7 5 1.7"/><path d="M12 3v1"/></svg>`,
+            bag: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4Z"/><path d="M3 6h18"/><path d="M16 10a4 4 0 0 1-8 0"/></svg>`,
+            ghost: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 10h.01"/><path d="M15 10h.01"/><path d="M12 2a8 8 0 0 0-8 8v12l3-3 2.5 2.5L12 19l2.5 2.5L17 19l3 3V10a8 8 0 0 0-8-8z"/></svg>`,
+            scissors: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="3"/><circle cx="6" cy="18" r="3"/><line x1="20" x2="8.12" y1="4" y2="15.88"/><line x1="14.47" x2="20" y1="14.48" y2="20"/><line x1="8.12" x2="12" y1="8.12" y2="12"/></svg>`,
+            shield: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10"/><path d="m9 12 2 2 4-4"/></svg>`,
+            home: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+            sun: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2"/><path d="M12 20v2"/><path d="m4.93 4.93 1.41 1.41"/><path d="m17.66 17.66 1.41 1.41"/><path d="M2 12h2"/><path d="M20 12h2"/><path d="m6.34 17.66-1.41 1.41"/><path d="m19.07 4.93-1.41 1.41"/></svg>`,
+            coffee: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 2v2"/><path d="M14 2v2"/><path d="M16 8a1 1 0 0 1 1 1v8a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V9a1 1 0 0 1 1-1h14a4 4 0 0 1 4 4v1a4 4 0 0 1-4 4h-3"/></svg>`,
+            users: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>`,
+            video: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m22 8-6 4 6 4V8Z"/><rect x="2" y="6" width="14" height="12" rx="2" ry="2"/></svg>`,
+            zap: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>`,
+            file: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/></svg>`,
+            user: `<svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>`
+        };
+
+        const delegates = {
+            "RK": { bg: "bg-purple-100", text: "text-purple-700", label: "RK" },
+            "CL": { bg: "bg-orange-100", text: "text-orange-700", label: "CL" },
+            "L": { bg: "bg-blue-100", text: "text-blue-700", label: "L" }
+        };
+
+        // --- DOM ELEMENTS ---
+        const toggle = document.getElementById('toggle');
+        const statusBar = document.getElementById('statusBar');
+        const statusIcon = document.getElementById('statusIcon');
+        const statusTitle = document.getElementById('statusTitle');
+        const statusSubtitle = document.getElementById('statusSubtitle');
+        const financialMetric = document.getElementById('financialMetric');
+        const financialLabel = document.getElementById('financialLabel');
+        const grid = document.getElementById('scheduleGrid');
+        const footer = document.getElementById('analysisFooter');
+        const labelCurrent = document.getElementById('labelCurrent');
+        const labelTarget = document.getElementById('labelTarget');
+
+        // --- RENDER FUNCTIONS ---
+
+        function renderTimelineItem(item, isCurrent, index) {
+            let bgColor, borderColor, iconColor, textColor, labelColor;
+            let badgeHTML = '';
+
+            if (isCurrent) {
+                // Chaos Styles
+                if (item.type === 'inf') { // Infiltration (Red)
+                    bgColor = 'bg-red-50'; borderColor = 'border-red-500'; iconColor = 'text-red-500'; textColor = 'text-red-400'; labelColor = 'text-red-900';
+                } else { // Official (Gray/Fade)
+                    bgColor = 'bg-slate-100'; borderColor = 'border-slate-300'; iconColor = 'text-slate-400'; textColor = 'text-slate-400'; labelColor = 'text-slate-500';
+                }
+            } else {
+                // Target Styles
+                if (item.type === 'ok') { // Work (Emerald)
+                    bgColor = 'bg-emerald-50'; borderColor = 'border-emerald-500'; iconColor = 'text-emerald-500'; textColor = 'text-emerald-600'; labelColor = 'text-slate-700';
+                } else if (item.type === 'free') { // Free (Blue/Sky)
+                    bgColor = 'bg-sky-50'; borderColor = 'border-sky-400'; iconColor = 'text-sky-500'; textColor = 'text-sky-600'; labelColor = 'text-slate-700';
+                }
+
+                // Delegation Badge
+                if (item.delegate && delegates[item.delegate]) {
+                    const d = delegates[item.delegate];
+                    badgeHTML = `<span class="ml-2 text-[9px] font-black px-1.5 py-0.5 rounded-full ${d.bg} ${d.text} shadow-sm border border-white/50" title="Délégué à ${d.label}">${d.label}</span>`;
+                }
+            }
+
+            const opacity = (isCurrent && item.type === 'off') ? 'opacity-60' : 'opacity-100';
+            // Stagger animation based on index
+            const animationDelay = `${index * 50}ms`;
+
+            return `
+                <div class="p-2 rounded-xl border-l-4 ${bgColor} ${borderColor} ${opacity} shadow-sm transition-all hover:scale-[1.02] mb-3 animate-card" style="animation-delay: ${animationDelay}">
+                    <div class="flex items-center justify-between mb-1">
+                        <p class="text-[10px] font-black uppercase ${textColor}">
+                            ${item.time}
+                        </p>
+                        <div class="flex items-center">
+                            ${badgeHTML}
+                            ${item.icon ? `<span class="${iconColor} ml-1">${icons[item.icon] || ''}</span>` : ''}
+                        </div>
+                    </div>
+                    <p class="text-[11px] leading-tight font-bold ${labelColor}">
+                        ${item.label}
+                    </p>
+                </div>
+            `;
+        }
+
+        function renderDayCard(day, isCurrent, dayIndex) {
+            const borderColor = isCurrent ? 'border-slate-100' : 'border-emerald-50';
+            const hoverColor = isCurrent ? 'hover:border-red-200' : 'hover:border-emerald-200';
+            
+            const timelineHTML = day.timeline.map((item, idx) => renderTimelineItem(item, isCurrent, dayIndex * 2 + idx)).join('');
+            
+            // Jauge
+            const gaugeColor = isCurrent ? 'bg-red-500 animate-pulse' : 'bg-emerald-400';
+            
+            let gaugeHTML = '';
+            for(let i=1; i<=5; i++) {
+                // Modification: isCurrent shows 5 red dots (i <= 5 is always true)
+                const active = isCurrent ? (i <= 5) : (i <= 2);
+                const colorClass = active ? gaugeColor : 'bg-slate-200';
+                gaugeHTML += `<div class="w-2 h-2 rounded-full ${colorClass}"></div>`;
+            }
+
+            return `
+                <div class="flex flex-col gap-4">
+                    <div class="bg-white rounded-3xl border-2 ${borderColor} ${hoverColor} overflow-hidden shadow-sm flex-1 flex flex-col transition-colors duration-300">
+                        <div class="bg-slate-900 text-white p-4 text-center">
+                            <h3 class="font-black text-lg uppercase tracking-widest">${day.name}</h3>
+                        </div>
+                        
+                        <div class="p-3 flex-1 overflow-y-auto">
+                            ${timelineHTML}
+                        </div>
+
+                        <div class="p-3 bg-slate-50 border-t border-slate-100">
+                            <div class="flex justify-between items-center mb-1">
+                                <span class="text-[9px] font-black text-slate-500 uppercase">Charge Mentale</span>
+                                <div class="flex gap-0.5">
+                                    ${gaugeHTML}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderAnalysis(isCurrent) {
+            if (isCurrent) {
+                return `
+                    <h2 class="text-2xl font-black uppercase italic text-slate-900 mb-6 tracking-tight">Analyse de la déperdition</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="flex items-start gap-4 p-5 rounded-3xl bg-red-50 border border-red-100 shadow-inner animate-card" style="animation-delay: 200ms">
+                            <div class="bg-red-500 p-3 rounded-2xl text-white shrink-0 shadow-lg rotate-3">${icons.ghost}</div>
+                            <div>
+                                <p class="font-bold text-red-800 italic text-xl mb-1 tracking-tight">Dossiers "Fantômes"</p>
+                                <p class="text-sm text-red-700/80 leading-relaxed font-medium">
+                                    Manque de centralisation = perte de leads. La mémoire de Talia sature (ex: oublis patients, relances tardives).
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-5 rounded-3xl bg-slate-100 border border-slate-200 shadow-inner animate-card" style="animation-delay: 400ms">
+                            <div class="bg-slate-900 p-3 rounded-2xl text-white shrink-0 shadow-lg -rotate-3">${icons.phone}</div>
+                            <div>
+                                <p class="font-bold text-slate-900 italic text-xl mb-1 tracking-tight">Omniprésence Numérique</p>
+                                <p class="text-sm text-slate-600 leading-relaxed font-medium">
+                                    Plus de sanctuaire. Le smartphone transforme chaque pause en travail. ~20h de "travail invisible" par semaine.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            } else {
+                return `
+                    <h2 class="text-2xl font-black uppercase italic text-slate-900 mb-6 tracking-tight">Gains Structurels & Personnels</h2>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                        <div class="flex items-start gap-4 p-5 rounded-3xl bg-emerald-50 border border-emerald-100 shadow-inner animate-card" style="animation-delay: 200ms">
+                            <div class="bg-emerald-500 p-3 rounded-2xl text-white shrink-0 shadow-lg rotate-3">${icons.zap}</div>
+                            <div>
+                                <p class="font-bold text-emerald-800 italic text-xl mb-1 tracking-tight">Efficacité Commerciale</p>
+                                <p class="text-sm text-emerald-700/80 leading-relaxed font-medium">
+                                    Rukiyé gère 100% du tunnel. CA sécurisé. Plus aucun lead perdu. Processus carré et suivi.
+                                </p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-4 p-5 rounded-3xl bg-sky-50 border border-sky-100 shadow-inner animate-card" style="animation-delay: 400ms">
+                            <div class="bg-sky-500 p-3 rounded-2xl text-white shrink-0 shadow-lg -rotate-3">${icons.home}</div>
+                            <div>
+                                <p class="font-bold text-sky-800 italic text-xl mb-1 tracking-tight">Libération du Chirurgien</p>
+                                <p class="text-sm text-sky-700/80 leading-relaxed font-medium">
+                                    Récupération des soirées, du jeudi et des weekends. Talia se concentre uniquement sur son métier : opérer et conseiller.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+
+        // --- UPDATE LOGIC ---
+
+        function updateView() {
+            const isTarget = toggle.checked;
+            const isCurrent = !isTarget;
+
+            // Update Header & Styles
+            if (isCurrent) {
+                labelCurrent.classList.remove('text-slate-400'); labelCurrent.classList.add('text-slate-900');
+                labelTarget.classList.add('text-slate-400'); labelTarget.classList.remove('text-slate-900');
+                
+                statusBar.classList.remove('bg-emerald-600'); statusBar.classList.add('bg-red-600');
+                statusTitle.innerText = "Saturation Mentale";
+                statusSubtitle.innerText = "Analyse du parcours réel";
+                statusIcon.innerHTML = icons.alert;
+                
+                // Financial Metric Update for Current
+                financialMetric.innerText = "PERTE DE CA";
+                financialMetric.classList.add('text-red-200'); financialMetric.classList.remove('text-emerald-200');
+                financialLabel.innerText = "Impact Mensuel";
+                financialLabel.classList.add('text-red-100'); financialLabel.classList.remove('text-emerald-100');
+
+            } else {
+                labelCurrent.classList.add('text-slate-400'); labelCurrent.classList.remove('text-slate-900');
+                labelTarget.classList.remove('text-slate-400'); labelTarget.classList.add('text-slate-900');
+
+                statusBar.classList.remove('bg-red-600'); statusBar.classList.add('bg-emerald-600');
+                statusTitle.innerText = "Structure Sereine";
+                statusSubtitle.innerText = "Projection post-restructuration";
+                statusIcon.innerHTML = icons.check;
+
+                // Financial Metric Update for Target
+                financialMetric.innerText = "REVENUS SÉCURISÉS";
+                financialMetric.classList.remove('text-red-200'); financialMetric.classList.add('text-emerald-100');
+                financialLabel.innerText = "Capacité de CA augmentée";
+                financialLabel.classList.remove('text-red-100'); financialLabel.classList.add('text-emerald-200');
+            }
+
+            // Render Grid with Index for Animation
+            const dataToRender = isCurrent ? currentData : targetData;
+            grid.innerHTML = dataToRender.map((day, idx) => renderDayCard(day, isCurrent, idx)).join('');
+
+            // Render Analysis
+            footer.innerHTML = renderAnalysis(isCurrent);
+        }
+
+        // --- INIT ---
+        toggle.addEventListener('change', updateView);
+        updateView(); // Initial Render
+
+    </script>
+</body>
+</html>
