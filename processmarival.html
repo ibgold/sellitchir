@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stratégie Sellit - Docteur Marival</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+        
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #fcfcfd;
+            color: #1e293b;
+        }
+
+        .tab-active {
+            color: #2563eb;
+            border-bottom: 2px solid #2563eb;
+            background-color: #f8fafc;
+        }
+
+        .leak-card {
+            border-left: 3px solid #ef4444;
+        }
+
+        .target-card {
+            border-left: 3px solid #3b82f6;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .stat-box {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%);
+        }
+    </style>
+</head>
+<body class="antialiased">
+
+    <div class="max-w-4xl mx-auto px-6 py-12">
+        
+        <!-- header professionnel -->
+        <header class="flex justify-between items-start mb-16 border-b border-slate-100 pb-8">
+            <div>
+                <h1 class="text-2xl font-extrabold tracking-tighter uppercase italic text-slate-900">
+                    Docteur <span class="text-blue-600">Marival</span>
+                </h1>
+                <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-1">Plan d'Accélération Chirurgicale • 2026</p>
+            </div>
+            <div class="text-right">
+                <div class="inline-flex items-center gap-2 px-3 py-1 bg-blue-50 text-blue-700 rounded-full text-[9px] font-black uppercase">
+                    Document Stratégique Sellit
+                </div>
+            </div>
+        </header>
+
+        <!-- Navigation épurée -->
+        <nav class="flex border border-slate-200 rounded-xl overflow-hidden mb-12 bg-white shadow-sm max-w-sm mx-auto">
+            <button onclick="switchTab('audit')" id="tab-audit" class="flex-1 py-3 px-4 text-[10px] font-black uppercase tracking-wider transition-all tab-active">
+                Diagnostic
+            </button>
+            <button onclick="switchTab('process')" id="tab-process" class="flex-1 py-3 px-4 text-[10px] font-black uppercase tracking-wider transition-all text-slate-400 hover:text-slate-600">
+                Nouveau Flux
+            </button>
+        </nav>
+
+        <!-- VUE 1 : DIAGNOSTIC (AUDIT 10 ÉTAPES) -->
+        <main id="view-audit" class="fade-in space-y-6">
+            
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-lg font-bold text-slate-900 uppercase tracking-tight italic">Audit du parcours actuel</h2>
+                <p class="text-sm text-slate-500">Identification des points de fuite et des surcharges opérationnelles.</p>
+            </div>
+
+            <!-- Steps Audit -->
+            <div class="space-y-3">
+                
+                <div class="bg-white border border-slate-200 p-5 rounded-xl leak-card shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded">01</span>
+                            <h4 class="text-xs font-black uppercase tracking-wider text-slate-800 italic underline decoration-red-200 underline-offset-4">Sollicitation entrante</h4>
+                        </div>
+                        <span class="text-[9px] font-bold text-slate-400">Patient / Talia</span>
+                    </div>
+                    <div class="pl-9 space-y-2">
+                        <p class="text-[11px] text-red-600 font-bold leading-relaxed italic">
+                            "Ce n'est pas à la chirurgienne de s'occuper de la gestion de nouveaux clients."<br>
+                            Temps de réponse aléatoire. Aucune capture de coordonnées. Pas de maîtrise du parcours.
+                        </p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-5 rounded-xl leak-card shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded">02</span>
+                            <h4 class="text-xs font-black uppercase tracking-wider text-slate-800 italic underline decoration-red-200 underline-offset-4">Accueil Standard & Envoi MCE</h4>
+                        </div>
+                        <span class="text-[9px] font-bold text-slate-400">Lorraine</span>
+                    </div>
+                    <div class="pl-9 text-[11px] text-red-600 font-bold leading-relaxed italic">
+                        Envoi du lien MCE non systématique. Expérience client dégradée par la friction technique ("trop compliqué").
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-5 rounded-xl leak-card shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded">03</span>
+                            <h4 class="text-xs font-black uppercase tracking-wider text-slate-800 italic underline decoration-red-200 underline-offset-4">Constitution & Soumission MCE</h4>
+                        </div>
+                        <span class="text-[9px] font-bold text-slate-400">Patient</span>
+                    </div>
+                    <div class="pl-9 text-[11px] text-red-600 font-bold leading-relaxed italic">
+                        Zéro maîtrise du momentum. Friction majeure liée aux photos et au paiement de 39€ sans garantie de suite.
+                    </div>
+                </div>
+
+                <div class="bg-slate-900 p-6 rounded-xl shadow-lg border border-slate-800 relative">
+                    <div class="absolute top-4 right-4 bg-red-500 text-white text-[9px] font-black px-2 py-1 rounded uppercase">Attente : 6 semaines</div>
+                    <div class="flex items-center gap-3 mb-3">
+                        <span class="text-[10px] font-black text-slate-500 bg-slate-800 px-2 py-1 rounded">04</span>
+                        <h4 class="text-xs font-black uppercase tracking-wider text-white italic">Analyse Médicale & Réponse</h4>
+                    </div>
+                    <div class="pl-9 text-[11px] text-red-400 font-bold leading-relaxed italic">
+                        Perte totale du momentum commercial. Surcharge administrative nocturne pour le Dr Marival. Envoi de prix passif avec "espoir de retour".
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-5 rounded-xl leak-card shadow-sm">
+                    <div class="flex justify-between items-center mb-1">
+                        <div class="flex items-center gap-3 text-slate-400">
+                            <span class="text-[10px] font-black bg-slate-50 px-2 py-1 rounded">05</span>
+                            <h4 class="text-xs font-black uppercase tracking-wider italic">Programmation & Pré-blocage</h4>
+                        </div>
+                    </div>
+                    <div class="pl-9 text-[10px] text-red-500 font-bold italic">Rupture de fluidité. Rajout de friction administrative.</div>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-5 rounded-xl leak-card shadow-sm">
+                    <div class="flex justify-between items-center mb-1">
+                        <div class="flex items-center gap-3 text-slate-400">
+                            <span class="text-[10px] font-black bg-slate-50 px-2 py-1 rounded">06</span>
+                            <h4 class="text-xs font-black uppercase tracking-wider italic">Préparation Pré-Opératoire</h4>
+                        </div>
+                    </div>
+                    <div class="pl-9 text-[10px] text-red-500 font-bold italic">Étape administrative supplémentaire déconnectée de la dynamique de vente.</div>
+                </div>
+
+                <div class="bg-white border border-slate-100 p-4 rounded-xl opacity-50 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="text-[10px] font-black text-slate-300">07</span>
+                        <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 italic">Rencontre Clinique</h4>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-5 rounded-xl leak-card shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-3">
+                            <span class="text-[10px] font-black text-slate-400 bg-slate-50 px-2 py-1 rounded">08</span>
+                            <h4 class="text-xs font-black uppercase tracking-wider text-slate-800 italic underline decoration-red-200 underline-offset-4">Finalisation Administrative & Financière</h4>
+                        </div>
+                        <span class="text-[9px] font-bold text-slate-400">Camille</span>
+                    </div>
+                    <div class="pl-9 space-y-2 text-[11px] text-red-600 font-bold italic">
+                        <p>• FDD Physique imposé : Perte de temps mutuelle massive.</p>
+                        <p>• ARGENT QUI DORT : Chèques non encaissés immédiatement.</p>
+                        <p>• Risque majeur de défaut de paiement post-opération.</p>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-100 p-4 rounded-xl opacity-50 shadow-sm">
+                    <div class="flex items-center gap-3">
+                        <span class="text-[10px] font-black text-slate-300">09</span>
+                        <h4 class="text-xs font-black uppercase tracking-wider text-slate-400 italic">Acte Opératoire</h4>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-slate-200 p-5 rounded-xl leak-card shadow-sm">
+                    <div class="flex justify-between items-center mb-3">
+                        <div class="flex items-center gap-3 text-red-600">
+                            <span class="text-[10px] font-black bg-red-50 px-2 py-1 rounded border border-red-100">10</span>
+                            <h4 class="text-xs font-black uppercase tracking-wider italic">Post-Opératoire & Suivi Confort</h4>
+                        </div>
+                        <span class="text-[9px] font-black text-red-500 uppercase tracking-tighter">22H30</span>
+                    </div>
+                    <div class="pl-9 text-[11px] text-red-600 font-bold italic leading-relaxed">
+                        Zéro déconnexion : Le Dr Marival assure seule le SAV émotionnel sur son temps personnel (Charge mentale au maximum).
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- VUE 2 : NOUVEAU PROCESS (5 ÉTAPES OPTIMISÉES) -->
+        <main id="view-process" class="hidden fade-in space-y-8">
+            
+            <div class="mb-10 text-center md:text-left">
+                <h2 class="text-lg font-bold text-slate-900 uppercase tracking-tight italic">Le Processus d'Accélération</h2>
+                <p class="text-sm text-slate-500">Optimisation des rôles pour une croissance structurée et une libération du temps.</p>
+            </div>
+
+            <div class="space-y-4">
+                
+                <!-- Étape 1 -->
+                <div class="bg-white border border-slate-200 p-6 rounded-2xl target-card shadow-sm">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">1</div>
+                        <h4 class="text-xs font-black uppercase tracking-[0.1em] text-slate-900 italic">Qualification & Booking Immédiat</h4>
+                        <span class="ml-auto text-[9px] font-bold text-blue-600 px-2 py-0.5 bg-blue-50 rounded">Lorraine & Rukiyé</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8 pl-11">
+                        <div class="space-y-2">
+                            <p class="text-[11px] font-semibold text-slate-700 leading-relaxed">• <strong>Standard :</strong> Filtrage actif (IMC/Budget/Tabac) et remplissage direct du questionnaire au téléphone.</p>
+                            <p class="text-[11px] font-semibold text-slate-700 leading-relaxed">• <strong>Leads digitaux :</strong> Rukiyé rappelle les flux IG/Email sous 1 heure.</p>
+                        </div>
+                        <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                            <p class="text-[10px] font-black text-blue-800 uppercase mb-2">Gain Stratégique</p>
+                            <p class="text-[10px] font-bold text-blue-700 italic">Capture prioritaire du lead et maîtrise du calendrier dès le 1er contact.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 2 -->
+                <div class="bg-white border border-slate-200 p-6 rounded-2xl target-card shadow-sm">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">2</div>
+                        <h4 class="text-xs font-black uppercase tracking-[0.1em] text-slate-900 italic">Téléconsultation Clinique</h4>
+                        <span class="ml-auto text-[9px] font-bold text-blue-600 px-2 py-0.5 bg-blue-50 rounded">Dr Marival</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8 pl-11">
+                        <p class="text-[11px] font-semibold text-slate-700 leading-relaxed italic">
+                            Session de 20-30 min focalisée sur l'expertise et l'émotionnel. <br><strong>Aucune discussion financière</strong> pour préserver la posture d'expert.
+                        </p>
+                        <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                            <p class="text-[10px] font-black text-blue-800 uppercase mb-2">Efficience</p>
+                            <p class="text-[10px] font-bold text-blue-700 italic">Suppression totale du triage administratif et nocturne.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 3 (CORE) -->
+                <div class="bg-white border-2 border-blue-600 p-8 rounded-2xl shadow-xl shadow-blue-100/30 relative">
+                    <div class="absolute -top-3 left-8 bg-blue-600 text-white text-[8px] font-black px-3 py-1 rounded-full uppercase tracking-[0.2em]">Cœur du Closing</div>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="w-8 h-8 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-sm">3</div>
+                        <h4 class="text-sm font-black uppercase tracking-[0.15em] text-blue-700 italic">Closing Méthode CESARE</h4>
+                        <span class="ml-auto text-[9px] font-bold text-blue-600 px-2 py-0.5 bg-blue-50 rounded">Rukiyé</span>
+                    </div>
+                    <div class="pl-12">
+                        <p class="text-[12px] font-bold text-slate-800 leading-relaxed mb-6">
+                            Prise de relais immédiate après le Dr. Annonce tarifaire standardisée, levée des objections et <span class="bg-blue-100 px-1 text-blue-700">encaissement immédiat de l'acompte (1500€)</span> pour bloquer la date finale.
+                        </p>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div class="flex items-center gap-3 text-[10px] font-black text-blue-800 uppercase italic">
+                                <i data-lucide="check-circle" class="w-4 h-4"></i> CA Sécurisé direct
+                            </div>
+                            <div class="flex items-center gap-3 text-[10px] font-black text-blue-800 uppercase italic">
+                                <i data-lucide="zap" class="w-4 h-4"></i> Momentum capturé
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 4 -->
+                <div class="bg-white border border-slate-200 p-6 rounded-2xl target-card shadow-sm">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">4</div>
+                        <h4 class="text-xs font-black uppercase tracking-[0.1em] text-slate-900 italic">Finalisation Digitale</h4>
+                        <span class="ml-auto text-[9px] font-bold text-blue-600 px-2 py-0.5 bg-blue-50 rounded">Rukiyé / Camille</span>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-8 pl-11">
+                        <p class="text-[11px] font-semibold text-slate-700 leading-relaxed italic">
+                            Signature électronique des consentements. Logistique automatisée via WhatsApp dédié. <strong>Suppression de la venue physique administrative.</strong>
+                        </p>
+                        <div class="bg-blue-50/50 p-4 rounded-xl border border-blue-100">
+                            <p class="text-[10px] font-black text-blue-800 uppercase mb-2">Service Client</p>
+                            <p class="text-[10px] font-bold text-blue-700 italic">Dossier administratif complet et verrouillé en 48h.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 5 -->
+                <div class="bg-white border border-slate-200 p-6 rounded-2xl target-card shadow-sm">
+                    <div class="flex items-center gap-4 mb-4">
+                        <div class="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-black text-xs">5</div>
+                        <h4 class="text-xs font-black uppercase tracking-[0.1em] text-slate-900 italic uppercase">Bloc & Excellence de Suivi</h4>
+                        <span class="ml-auto text-[9px] font-bold text-blue-600 px-2 py-0.5 bg-blue-50 rounded">Talia / Lucie</span>
+                    </div>
+                    <div class="pl-11 text-[11px] font-bold text-emerald-700 italic bg-emerald-50/30 p-4 rounded-xl border border-emerald-100">
+                        Suppression définitive du SAV WhatsApp par le chirurgien à 22h30. Libération totale de la charge mentale pour se concentrer sur l'acte chirurgical.
+                    </div>
+                </div>
+            </div>
+
+            <!-- Dashboard Comparison Section -->
+            <div class="mt-16 bg-slate-900 p-12 rounded-[2.5rem] shadow-2xl relative overflow-hidden text-center">
+                <div class="relative z-10 flex flex-col md:flex-row items-center justify-around gap-12 text-white">
+                    <div class="text-center">
+                        <p class="text-[10px] font-black text-slate-500 uppercase tracking-[0.4em] mb-4">Aujourd'hui</p>
+                        <span class="text-4xl font-black text-red-500 line-through italic">10 Étapes</span>
+                        <p class="text-[10px] font-bold text-slate-400 mt-4 italic italic">Saturé & Subi</p>
+                    </div>
+                    <div class="text-blue-500"><i data-lucide="chevrons-right" class="w-10 h-10"></i></div>
+                    <div class="text-center">
+                        <p class="text-[10px] font-black text-blue-400 uppercase tracking-[0.4em] mb-4">Optimisation</p>
+                        <span class="text-6xl font-black text-blue-500 italic tracking-tighter">5 Étapes</span>
+                        <p class="text-[10px] font-bold text-blue-400 mt-4 italic underline underline-offset-4 decoration-2 italic font-black">Maîtrisé & Rentable</p>
+                    </div>
+                </div>
+                <div class="mt-12 inline-flex items-center gap-4 bg-white/5 border border-white/10 px-8 py-4 rounded-2xl text-blue-400 text-sm font-black uppercase tracking-wider italic italic">
+                    <i data-lucide="clock" class="w-5 h-5"></i>
+                    +15 HEURES DE TEMPS MÉDICAL LIBÉRÉ PAR SEMAINE
+                </div>
+            </div>
+        </main>
+
+        <!-- Footer -->
+        <footer class="mt-24 pt-10 border-t border-slate-100 flex justify-between items-center text-[10px] font-extrabold text-slate-300 uppercase tracking-[0.3em]">
+            <p>© 2026 Sellit Consulting</p>
+            <p>Document Confidentiel Dr Marival</p>
+        </footer>
+
+    </div>
+
+    <script>
+        function switchTab(tab) {
+            const auditView = document.getElementById('view-audit');
+            const processView = document.getElementById('view-process');
+            const tabAudit = document.getElementById('tab-audit');
+            const tabProcess = document.getElementById('tab-process');
+
+            if (tab === 'audit') {
+                auditView.classList.remove('hidden');
+                processView.classList.add('hidden');
+                tabAudit.classList.add('tab-active');
+                tabAudit.classList.remove('text-slate-400');
+                tabProcess.classList.remove('tab-active');
+                tabProcess.classList.add('text-slate-400');
+            } else {
+                auditView.classList.add('hidden');
+                processView.classList.remove('hidden');
+                tabProcess.classList.add('tab-active');
+                tabProcess.classList.remove('text-slate-400');
+                tabAudit.classList.remove('tab-active');
+                tabAudit.classList.add('text-slate-400');
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        lucide.createIcons();
+    </script>
+</body>
+</html>
