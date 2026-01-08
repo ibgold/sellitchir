@@ -898,13 +898,17 @@
             container.classList.remove('aspect-[4/5]', 'w-64', 'md:w-80');
             container.classList.add('w-full', 'aspect-video');
             
-            // Replace Content with Video
-            // Using a sample video for demonstration. Replace src with actual file.
+            // Replace Content with YouTube Iframe
             container.innerHTML = `
-                <video autoplay controls playsinline class="w-full h-full rounded-sm shadow-2xl animate-fade-in-up">
-                    <source src="temoignage-alexis.mp4" type="video/mp4">
-                    Votre navigateur ne supporte pas la lecture de vidéos.
-                </video>
+                <iframe 
+                    src="https://www.youtube.com/embed/bHXWeWsJX9I?si=LZebeS2JF3dxBwCp&autoplay=1" 
+                    title="Témoignage Dr Alexis Delobaux" 
+                    frameborder="0" 
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
+                    referrerpolicy="strict-origin-when-cross-origin" 
+                    allowfullscreen
+                    class="w-full h-full rounded-sm shadow-2xl animate-fade-in-up"
+                ></iframe>
             `;
             
             // Remove click listener to prevent re-triggering
