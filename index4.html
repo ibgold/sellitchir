@@ -81,7 +81,8 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            filter: brightness(0.4) contrast(1.1);
+            /* Augmentation de la luminosité pour rendre l'image plus visible */
+            filter: brightness(0.7) contrast(1.1);
         }
 
         /* Platinum/Silver Text Gradient */
@@ -255,8 +256,8 @@
             <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2000&auto=format&fit=crop" alt="Salle d'opération moderne">
         </div>
 
-        <!-- Overlay Gradient for Readability -->
-        <div class="absolute inset-0 bg-gradient-to-b from-black/80 via-black/60 to-black/90 z-0"></div>
+        <!-- Overlay Gradient for Readability - Reduced Opacity -->
+        <div class="absolute inset-0 bg-gradient-to-b from-black/70 via-black/40 to-black/80 z-0"></div>
 
         <div class="container mx-auto text-center relative z-10 max-w-6xl">
             <div class="mb-10 animate-fade-in-up">
@@ -741,7 +742,7 @@
             
             <div class="flex flex-col sm:flex-row items-center justify-center gap-6 md:gap-8">
                 <!-- Main CTA -->
-                <a href="https://calendly.com/" target="_blank" class="px-12 py-5 md:px-16 md:py-6 bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors duration-300 shadow-2xl w-full sm:w-auto">
+                <a href="https://calendly.com/d/cyc7-cjs-j2k/session-privee-membres-bca" id="calendly-cta" target="_blank" class="px-12 py-5 md:px-16 md:py-6 bg-white text-black text-xs font-bold uppercase tracking-widest hover:bg-gray-200 transition-colors duration-300 shadow-2xl w-full sm:w-auto">
                     <span data-key="contact.cta">Réserver l'Audit Stratégique</span>
                 </a>
 
@@ -785,10 +786,10 @@
             <div class="space-y-6 text-sm font-sans text-gray-400 font-light max-h-[70vh] overflow-y-auto">
                 <div>
                     <strong class="block text-gray-300 uppercase tracking-widest text-[10px] mb-2">Éditeur du site</strong>
-                    <p>THE CLOSER SCHOOL (TCS)</p>
-                    <p>Société [Forme Juridique] au capital de [Montant] €</p>
-                    <p>Immatriculée au RCS de [Ville] sous le numéro [Numéro SIRET]</p>
-                    <p>Siège social : [Adresse Complète]</p>
+                    <p>The closers school LLC</p>
+                    <p>Forme juridique : LLC</p>
+                    <p>Numéro d'immatriculation (EIN) : 98-1600450</p>
+                    <p>Siège social : 530-B HARKLE ROAD STE 100<br>87505 Santa Fe, NM - USA</p>
                 </div>
                 
                 <div>
@@ -985,11 +986,98 @@
                 "prog.main.feat3": "Coaching Équipes (6 sessions)",
                 "prog.main.feat4": "Analyse d'appels & Feedback",
                 "prog.main.cta": "Candidater au Programme",
+                "prog.1.desc": "Audit complet + Plan stratégique 60 jours + Scripts sur mesure.",
+                "prog.2.desc": "Implémentation profonde et suivi rigoureux sur 4 mois pour pérenniser la croissance.",
+                "prog.3.desc": "Perfectionnement technique et excellence opérationnelle au bloc.",
+                "prog.4.desc": "Immersion intensive en présentiel pour vos équipes commerciales.",
+                "faq.title": "Questions Fréquentes",
+                "faq.q1": "À propos de The Closer School (TCS)",
+                "faq.a1": "The Closer School est une entreprise de référence spécialisée dans l'audit, la structuration et l'optimisation des systèmes de vente complexes. Nous accompagnons les entreprises pour transformer leur approche commerciale en un actif prévisible.",
+                "faq.q2": "Qu'est-ce que Sell It ?",
+                "faq.a2": "Sell It est la division élite de TCS dédiée exclusivement au secteur médical et chirurgical. C'est une offre sur-mesure pour les chirurgiens et cliniques désireux d'implanter un département commercial de haut niveau, alliant éthique médicale et performance financière.",
+                "faq.q3": "L'audit est-il adapté à une petite clinique ?",
+                "faq.a3": "Absolument. Que vous soyez un chirurgien seul ou une clinique établie, nos protocoles s'adaptent à votre échelle. L'objectif est de maximiser la conversion de vos prospects actuels, quel que soit leur volume.",
+                "faq.q4": "Combien de temps faut-il pour voir des résultats ?",
+                "faq.a4": "Dès la phase d'implémentation (Mois 2), les premiers changements sont visibles. La majorité de nos partenaires constatent une augmentation significative du taux de conversion et du chiffre d'affaires dès le 3ème mois, une fois le coaching assimilé par les équipes.",
+                "faq.contact": "Vous avez une autre question ? <a href='https://wa.me/33600000000' target='_blank' class='text-white border-b border-white/30 hover:border-white pb-1 transition-all'>Contactez-nous directement.</a>",
+                "contact.title": "Nous ne recherchons pas de clients.",
+                "contact.subtitle": "Nous recherchons des partenaires prêts à s'engager.",
+                "contact.desc": "L'implémentation du protocole Sell It exige une rigueur absolue. Si vous êtes prêt à structurer votre clinique comme une entreprise de premier plan, présentez votre candidature.",
+                "contact.cta": "Réserver l'Audit Stratégique",
+                "contact.whatsapp": "Échanger avec Florian",
+                "calendly_url": "https://calendly.com/d/cyc7-cjs-j2k/session-privee-membres-bca"
+            },
+            en: {
+                "nav.method": "The Protocol",
+                "nav.case": "Alexis Case",
+                "nav.programs": "Programs",
+                "nav.access": "Strategic Audit",
+                "hero.title1": "Turn patient interest",
+                "hero.title2": "into predictable capital.",
+                "hero.subtitle": "Build a real sales department within your clinic. Maximize your performance with techniques still unknown in the medical sector. Rigorous protocol and support until results.",
+                "hero.cta": "Apply for an Audit",
+                "hero.cta_secondary": "Discover the protocol",
+                "protocol.super": "The Sell It System",
+                "protocol.title": "Sales is not optional.<br>It is an exact science.",
+                "protocol.text": "Just like in the operating room, sales performance requires protocols, not improvisation. We integrate a complete Operating System (OS) to secure and sustain your growth.",
+                "phase.1.title": "Diagnostic",
+                "phase.1.subtitle": "The Commercial MRI",
+                "phase.1.desc": "Precise identification of breaking points in the patient journey. 'Revenue Gap' report and immediate emergency plan.",
+                "phase.2.title": "Implementation",
+                "phase.2.subtitle": "Structuring the Machine",
+                "phase.2.desc": "Role alignment. Emotional transformation scripts. Post-consultation videos. WhatsApp anti-ghosting templates.",
+                "phase.3.title": "Elite Coaching",
+                "phase.3.subtitle": "Care Partners",
+                "phase.3.desc": "Intensive training for Surgeons & Coordinators. Forensic call analysis. Mastering patient psychology.",
+                "phase.4.title": "Tracking",
+                "phase.4.subtitle": "Data Precision",
+                "phase.4.desc": "Monitoring vital KPIs: Attendance rate, Closing, Cash collected. Real-time medical dashboard.",
+                "phase.5.title": "Optimization",
+                "phase.5.subtitle": "Excellence",
+                "phase.5.desc": "Immediate correction if KPIs drop. Refining the pitch. Scalability to treat more patients.",
+                "case.label": "CASE STUDY — SUCCESS STORY",
+                "case.title": "Dr. Alexis Delobaux",
+                "case.context.title": "The Context",
+                "case.context.desc": "Despite top-tier medical expertise, the sales process was improvised, leading to significant lost opportunities. In just 8 weeks, we executed a complete transition: from total improvisation to a rigorous Data-Driven Protocol.",
+                "case.stat1": "Monthly Revenue",
+                "case.stat2": "Growth",
+                "case.stat3": "Video Sales",
+                "case.quote": "\"Sell It has transformed the very structure of my clinic.\"",
+                "case.timeline.1.date": "October — Month 1",
+                "case.timeline.1.title": "Audit & Deep Diagnostic",
+                "case.timeline.1.desc": "Analysis of revenue leaks and offer restructuring.",
+                "case.timeline.2.date": "November — Month 2",
+                "case.timeline.2.title": "Strategic Implementation",
+                "case.timeline.2.desc": "Script installation, team training, and tracking setup.",
+                "case.timeline.3.date": "December — Month 3",
+                "case.timeline.3.title": "Coaching & Launch",
+                "case.timeline.3.desc": "Operational launch, real-time correction, and record-breaking initial results.",
+                "team.super": "LEADERSHIP",
+                "team.title": "Who are we?",
+                "team.ib.role": "Co-Founder & Head of Strategy",
+                "team.ib.desc": "Expert in complex sales systems architecture and corporate structuring.",
+                "team.flo.role": "Co-Founder & Head of Sales",
+                "team.flo.desc": "Specialist in high-frequency conversion and patient psychology.",
+                "team.background.text": "Our approach was born from a simple observation: surgical excellence is no longer enough. After years of analyzing the world's top-performing clinics, we codified their methods. We are not consultants; we are growth architects specialized in the high-end medical ecosystem.",
+                "testi.1.text": "\"Military rigor that changes everything.\"",
+                "testi.1.author": "Dr. D. — Paris",
+                "testi.2.text": "\"Finally a clear and predictable process.\"",
+                "testi.2.author": "Dr. M. — Lyon",
+                "testi.3.text": "\"My coordinators are literally coming back to life.\"",
+                "testi.3.author": "Clinic R. — Geneva",
+                "prog.title": "Our Programs",
+                "prog.label": "Exclusively for BCA members",
+                "prog.main.desc": "The complete protocol to restructure your sales department in 8 weeks. In-depth audit, tailored strategic plan, conversion scripts, and intensive coaching. Turn your prospects into committed patients.",
+                "prog.main.feat1": "Complete Audit & Strategy",
+                "prog.main.feat2": "Scripts & Sales Assets",
+                "prog.main.feat3": "Team Coaching (6 sessions)",
+                "prog.main.feat4": "Call Analysis & Feedback",
+                "prog.main.cta": "Apply for the Program",
                 "prog.1.desc": "Full Audit + 60-day Strategic Plan + Custom Scripts.",
                 "prog.2.desc": "Deep implementation and rigorous follow-up over 4 months to sustain growth.",
                 "prog.3.desc": "Technical refinement and operational excellence in the OR.",
                 "prog.4.desc": "Intensive in-person immersion for your sales teams.",
-                "faq.title": "Questions Fréquentes",
+                "faq.title": "Frequent Questions",
                 "faq.q1": "About The Closer School (TCS)",
                 "faq.a1": "The Closer School is a leading firm specializing in auditing, structuring, and optimizing complex sales systems. We help companies transform their sales approach into a predictable asset.",
                 "faq.q2": "What is Sell It?",
@@ -998,12 +1086,13 @@
                 "faq.a3": "Absolutely. Whether you are a solo surgeon or an established clinic, our protocols adapt to your scale. The goal is to maximize the conversion of your current prospects, regardless of volume.",
                 "faq.q4": "How long does it take to see results?",
                 "faq.a4": "From the implementation phase (Month 2), the first changes are visible. The majority of our partners see a significant increase in conversion rate and revenue from the 3rd month, once the coaching is assimilated by the teams.",
-                "faq.contact": "Have another question? <a href='https://wa.me/33600000000' target='_blank' class='text-white border-b border-white/30 hover:border-white pb-1 transition-all'>Contactez-nous directement.</a>",
+                "faq.contact": "Have another question? <a href='https://wa.me/33600000000' target='_blank' class='text-white border-b border-white/30 hover:border-white pb-1 transition-all'>Contact us directly.</a>",
                 "contact.title": "We are not looking for clients.",
                 "contact.subtitle": "We are looking for partners ready to commit.",
                 "contact.desc": "Implementing the Sell It protocol requires absolute rigor. If you are ready to structure your clinic like a leading enterprise, submit your application.",
                 "contact.cta": "Book Strategic Audit",
-                "contact.whatsapp": "Chat with Florian"
+                "contact.whatsapp": "Chat with Florian",
+                "calendly_url": "https://calendly.com/d/ctkh-ddv-9xr/private-session-bca-members"
             }
         };
 
@@ -1023,6 +1112,12 @@
                     el.innerHTML = content[currentLang][key];
                 }
             });
+
+            // Update Calendly Link
+            const calendlyLink = document.getElementById('calendly-cta');
+            if(calendlyLink && content[currentLang]["calendly_url"]) {
+                calendlyLink.href = content[currentLang]["calendly_url"];
+            }
         }
     </script>
 </body>
