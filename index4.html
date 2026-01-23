@@ -132,15 +132,15 @@
             background: linear-gradient(to bottom, transparent, rgba(255,255,255,0.3), transparent);
         }
         
-        /* Modal Styles */
-        #legal-modal {
+        /* Modal Styles (Legal) */
+        .modal-overlay {
             transition: opacity 0.3s ease;
         }
-        #legal-modal.hidden {
+        .modal-overlay.hidden {
             opacity: 0;
             pointer-events: none;
         }
-        #legal-modal:not(.hidden) {
+        .modal-overlay:not(.hidden) {
             opacity: 1;
             pointer-events: auto;
         }
@@ -220,7 +220,6 @@
                 
                 <div class="h-6 w-px bg-white/10"></div>
 
-                <!-- Modif: Bouton Langue plus visible -->
                 <button onclick="toggleLang()" class="px-4 py-2 bg-white/5 hover:bg-white/10 border border-white/20 rounded-full text-xs font-bold font-sans uppercase tracking-widest text-white transition-all duration-300 flex items-center gap-2 shadow-[0_0_10px_rgba(255,255,255,0.05)] hover:shadow-[0_0_15px_rgba(255,255,255,0.1)]">
                     <span id="current-lang">EN</span>
                     <i class="ph-bold ph-globe text-lg"></i>
@@ -242,9 +241,9 @@
             <a href="#philosophy" onclick="toggleMenu()" class="text-2xl font-serif text-white italic" data-key="nav.method">The Protocol</a>
             <a href="#case-study" onclick="toggleMenu()" class="text-2xl font-serif text-white italic" data-key="nav.case">Client Case</a>
             <a href="#programs" onclick="toggleMenu()" class="text-2xl font-serif text-white italic" data-key="nav.programs">Programs</a>
+            
             <div class="h-px w-12 bg-white/20"></div>
             
-            <!-- Modif: Bouton Langue Mobile plus visible -->
             <button onclick="toggleLang(); toggleMenu()" class="px-6 py-3 border border-white/20 rounded-full text-sm font-sans uppercase tracking-widest text-white flex items-center gap-2 bg-white/5">
                 <i class="ph ph-globe"></i> Language : <span id="mobile-lang">EN</span>
             </button>
@@ -253,8 +252,8 @@
         </div>
     </nav>
 
-    <!-- Hero Section with Static Image Background -->
-    <header class="relative min-h-screen flex items-center justify-center px-6 pt-20">
+    <!-- Hero Section with Embedded VSL -->
+    <header class="relative min-h-screen flex items-center justify-center px-6 pt-24 pb-12 md:py-24">
         <!-- Static Image Background -->
         <div class="hero-bg-image">
             <img src="https://images.unsplash.com/photo-1551076805-e1869033e561?q=80&w=2000&auto=format&fit=crop" alt="Modern Operating Room">
@@ -275,11 +274,11 @@
                 <span class="not-italic text-white" data-key="hero.title2">into predictable capital.</span>
             </h1>
 
-            <p class="text-sm md:text-lg font-sans text-gray-300 max-w-3xl mx-auto mb-12 md:mb-16 font-light leading-relaxed animate-fade-in-up delay-200" data-key="hero.subtitle">
+            <p class="text-sm md:text-lg font-sans text-gray-300 max-w-3xl mx-auto mb-10 md:mb-12 font-light leading-relaxed animate-fade-in-up delay-200" data-key="hero.subtitle">
                 Build a real sales department within your clinic. Maximize your performance with techniques still unknown in the medical sector. Rigorous protocol and support until results.
             </p>
             
-            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 animate-fade-in-up delay-300">
+            <div class="flex flex-col md:flex-row items-center justify-center gap-6 md:gap-8 animate-fade-in-up delay-300 mb-16">
                 <a href="#contact" class="group relative px-10 py-4 md:px-12 md:py-5 overflow-hidden bg-white text-black rounded-sm transition-all duration-500 hover:bg-gray-200 shadow-[0_0_20px_rgba(255,255,255,0.1)] w-full md:w-auto text-center">
                     <span class="relative z-10 text-xs font-sans font-bold uppercase tracking-widest" data-key="hero.cta">Apply for an Audit</span>
                 </a>
@@ -288,6 +287,24 @@
                     <i class="ph ph-arrow-down text-lg"></i>
                 </a>
             </div>
+
+            <!-- VSL INTEGRATION (Embedded) -->
+            <div class="animate-fade-in-up delay-500 w-full max-w-4xl mx-auto">
+                <div id="main-vsl-container" class="relative w-full aspect-video bg-black/50 border border-white/20 rounded-sm shadow-2xl overflow-hidden group cursor-pointer" onclick="playMainVSL()">
+                    <!-- Thumbnail / Cover -->
+                    <div class="absolute inset-0 bg-cover bg-center transition-transform duration-700 group-hover:scale-105" style="background-image: url('https://images.unsplash.com/photo-1551601651-2a8555f1a136?q=80&w=1200&auto=format&fit=crop'); filter: brightness(0.6);"></div>
+                    <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors duration-300"></div>
+                    
+                    <!-- Play Button (Centered) -->
+                    <div class="absolute inset-0 flex flex-col items-center justify-center z-10">
+                        <div class="w-20 h-20 bg-white/10 backdrop-blur-md rounded-full flex items-center justify-center border border-white/30 play-btn-pulse group-hover:scale-110 transition-transform duration-300 mb-4">
+                            <i class="ph-fill ph-play text-white text-4xl ml-1"></i>
+                        </div>
+                        <span class="text-xs font-sans font-bold uppercase tracking-widest text-white/80 group-hover:text-white transition-colors" data-key="hero.vsl_label">Watch the Vision</span>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </header>
 
@@ -368,7 +385,6 @@
                 </article>
             </div>
 
-            <!-- Modif: CTA Ajouté -->
             <div class="text-center">
                 <a href="#contact" class="inline-block px-10 py-4 border border-white/30 text-white hover:bg-white hover:text-black transition-all duration-500 text-xs font-bold font-sans uppercase tracking-widest rounded-sm">
                     <span data-key="contact.cta">Book Strategic Audit</span>
@@ -485,7 +501,6 @@
                         </div>
                     </div>
 
-                    <!-- Modif: CTA Ajouté -->
                     <div class="mt-8">
                          <a href="#contact" class="px-8 py-3 bg-white text-black text-xs font-bold font-sans uppercase tracking-widest hover:bg-gray-300 transition-all duration-300 rounded-sm">
                             <span data-key="hero.cta">Apply for an Audit</span>
@@ -529,7 +544,6 @@
                 </div>
             </div>
 
-            <!-- Background / Method Text -->
             <div class="max-w-3xl mx-auto px-4 pt-12 border-t border-white/5">
                 <p class="text-base text-gray-400 font-light leading-loose" data-key="team.background.text">
                     Our approach was born from a simple observation: surgical excellence is no longer enough. After years of analyzing the world's top-performing clinics, we codified their methods. We are not consultants; we are growth architects specialized in the high-end medical ecosystem.
@@ -594,7 +608,6 @@
                 </div>
             </div>
 
-            <!-- Modif: Suppression du programme Technique Chir -->
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-4xl mx-auto">
                 <!-- Program 2 (Locked) -->
                 <div class="p-8 border border-white/5 bg-white/[0.01] hover:bg-white/[0.03] transition-all duration-500 flex flex-col justify-between h-full group rounded-sm relative opacity-80 hover:opacity-100">
@@ -632,8 +645,6 @@
             </div>
         </div>
     </section>
-
-    <!-- Modif: Suppression Section Testimonials -->
 
     <!-- FAQ Section -->
     <section class="py-20 md:py-32 bg-charcoal">
@@ -749,7 +760,7 @@
     </footer>
 
     <!-- Legal Modal (Hidden by default) -->
-    <div id="legal-modal" class="hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
+    <div id="legal-modal" class="modal-overlay hidden fixed inset-0 z-[60] flex items-center justify-center p-4">
         <!-- Backdrop -->
         <div class="absolute inset-0 bg-black/90 backdrop-blur-sm" onclick="toggleLegalModal()"></div>
         
@@ -780,13 +791,33 @@
 
     <!-- Scripts -->
     <script>
+        // VSL Configuration - CHANGE YOUR ID HERE
+        const VIMEO_ID = '1157325114'; 
+        
+        // Embedded VSL Logic (Plays in-place)
+        function playMainVSL() {
+            const container = document.getElementById('main-vsl-container');
+            
+            // Replace inner HTML with iframe
+            container.innerHTML = `
+                <iframe 
+                    src="https://player.vimeo.com/video/${VIMEO_ID}?autoplay=1&title=0&byline=0&portrait=0" 
+                    style="position:absolute;top:0;left:0;width:100%;height:100%;" 
+                    frameborder="0" 
+                    allow="autoplay; fullscreen; picture-in-picture" 
+                    allowfullscreen>
+                </iframe>`;
+            
+            // Remove pointer/click event to avoid re-triggering
+            container.classList.remove('cursor-pointer');
+            container.onclick = null;
+        }
+
         // Preloader Logic
         window.addEventListener('load', () => {
             const preloader = document.getElementById('preloader');
-            // Petit délai pour laisser le temps de voir le logo
             setTimeout(() => {
                 preloader.classList.add('preloader-hidden');
-                // Retirer du DOM après la transition
                 setTimeout(() => {
                     preloader.style.display = 'none';
                 }, 800);
@@ -833,7 +864,6 @@
             const item = element.parentElement;
             const content = item.querySelector('.accordion-content');
             
-            // Close all others
             document.querySelectorAll('.accordion-item').forEach(otherItem => {
                 if (otherItem !== item) {
                     otherItem.classList.remove('active');
@@ -842,7 +872,6 @@
                 }
             });
 
-            // Toggle current
             item.classList.toggle('active');
             if (item.classList.contains('active')) {
                 content.style.maxHeight = content.scrollHeight + "px";
@@ -858,14 +887,11 @@
             const container = document.getElementById('alexis-video-container');
             const quoteBox = document.getElementById('alexis-quote-box');
             
-            // Hide the floating quote to not obstruct video
             if(quoteBox) quoteBox.style.opacity = '0';
             
-            // Change Aspect Ratio from 4/5 (portrait) to 16/9 (landscape)
             container.classList.remove('aspect-[4/5]', 'w-64', 'md:w-80');
             container.classList.add('w-full', 'aspect-video');
             
-            // Replace Content with YouTube Iframe
             container.innerHTML = `
                 <iframe 
                     src="https://www.youtube.com/embed/bHXWeWsJX9I?si=LZebeS2JF3dxBwCp&autoplay=1" 
@@ -878,12 +904,11 @@
                 ></iframe>
             `;
             
-            // Remove click listener to prevent re-triggering
             container.onclick = null;
             container.classList.remove('cursor-pointer');
         }
 
-        // Language Logic - Modified to start in EN
+        // Language Logic
         let currentLang = 'en';
         const content = {
             fr: {
@@ -895,7 +920,8 @@
                 "hero.title2": "en capital prévisible.",
                 "hero.subtitle": "Constituez un véritable département commercial au sein de votre clinique. Maximisez vos performances grâce à des techniques encore méconnues du secteur médical. Protocole rigoureux et accompagnement jusqu'aux résultats.",
                 "hero.cta": "Candidater pour un Audit",
-                "hero.cta_secondary": "Découvrir le protocole",
+                "hero.cta_secondary": "Le protocole",
+                "hero.vsl_label": "Voir la Vision",
                 "protocol.super": "Le Système Sell It",
                 "protocol.title": "La vente n'est pas une option.<br>C'est une science exacte.",
                 "protocol.text": "Comme au bloc opératoire, la performance commerciale exige des protocoles, et non de l'improvisation. Nous intégrons un système d'exploitation complet (OS) pour sécuriser et pérenniser votre croissance.",
@@ -975,7 +1001,8 @@
                 "hero.title2": "into predictable capital.",
                 "hero.subtitle": "Build a real sales department within your clinic. Maximize your performance with techniques still unknown in the medical sector. Rigorous protocol and support until results.",
                 "hero.cta": "Apply for an Audit",
-                "hero.cta_secondary": "Discover the protocol",
+                "hero.cta_secondary": "The protocol",
+                "hero.vsl_label": "Watch the Vision",
                 "protocol.super": "The Sell It System",
                 "protocol.title": "Sales is not optional.<br>It is an exact science.",
                 "protocol.text": "Just like in the operating room, sales performance requires protocols, not improvisation. We integrate a complete Operating System (OS) to secure and sustain your growth.",
@@ -1016,9 +1043,9 @@
                 "team.ib.role": "Co-Founder & Head of Strategy",
                 "team.ib.desc": "Expert in complex sales systems architecture and corporate structuring.",
                 "team.flo.role": "Co-Founder & Head of Sales",
-                "team.flo.desc": "Specialist in high-frequency conversion and patient psychology.",
-                "team.background.text": "Our approach was born from a simple observation: surgical excellence is no longer enough. After years of analyzing the world's top-performing clinics, we codified their methods. We are not consultants; we are growth architects specialized in the high-end medical ecosystem.",
-                "prog.title": "Our Programs",
+                "team.flo.desc": "Spécialiste de la conversion haute fréquence et de la psychologie du patient.",
+                "team.background.text": "Notre approche est née d'un constat simple : l'excellence chirurgicale ne suffit plus. Après des années à analyser les cliniques les plus performantes au monde, nous avons codifié leurs méthodes. Nous ne sommes pas des consultants, nous sommes des architectes de croissance spécialisés dans l'écosystème médical haut de gamme.",
+                "prog.title": "Nos Programmes",
                 "prog.label": "Exclusively for BCA members",
                 "prog.main.desc": "The complete protocol to restructure your sales department in 8 weeks. In-depth audit, tailored strategic plan, conversion scripts, and intensive coaching. Turn your prospects into committed patients.",
                 "prog.main.feat1": "Complete Audit & Strategy",
