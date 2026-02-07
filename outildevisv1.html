@@ -2,19 +2,20 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Générateur Devis - Chirurgie V2</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Générateur Devis - Chirurgie V4</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: #f8fafc;
+            background-color: #f1f5f9;
+            -webkit-tap-highlight-color: transparent;
         }
         .clinic-btn.active {
             background-color: #2563eb;
             color: white;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.2), 0 2px 4px -1px rgba(37, 99, 235, 0.1);
             border-color: #2563eb;
         }
         .fade-in {
@@ -29,40 +30,48 @@
             -webkit-appearance: none; 
             margin: 0; 
         }
+        /* Style pour input désactivé */
+        select:disabled {
+            background-color: #e2e8f0;
+            color: #64748b;
+            cursor: not-allowed;
+        }
     </style>
 </head>
-<body class="min-h-screen flex flex-col text-slate-800">
+<body class="min-h-screen flex flex-col text-slate-800 pb-20 md:pb-0">
 
     <!-- Header -->
-    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-20">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-30">
+        <div class="max-w-4xl mx-auto px-4 py-3 md:py-4 flex justify-between items-center">
             <div class="flex items-center gap-3">
-                <div class="bg-blue-600 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-blue-200">
-                    <i class="fa-solid fa-calculator"></i>
+                <div class="bg-blue-600 text-white w-9 h-9 md:w-10 md:h-10 flex items-center justify-center rounded-lg shadow-blue-200 shadow-md">
+                    <i class="fa-solid fa-calculator text-sm md:text-base"></i>
                 </div>
                 <div>
-                    <h1 class="text-lg font-bold text-slate-800 leading-tight">Calculateur Honoraires</h1>
-                    <p class="text-xs text-slate-500 font-medium">Outil Coordinatrice</p>
+                    <h1 class="text-base md:text-lg font-bold text-slate-800 leading-tight">Calculateur Honoraires</h1>
+                    <p class="text-[10px] md:text-xs text-slate-500 font-medium">Outil Coordinatrice</p>
                 </div>
             </div>
-            <div class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-500">
-                Ref: V2-VALIDATED
+            <div class="hidden md:block text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-500">
+                V4-ETOILE
             </div>
         </div>
     </header>
 
     <!-- Main Content -->
-    <main class="flex-grow container max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <main class="flex-grow container max-w-4xl mx-auto px-4 py-4 md:py-8 space-y-4 md:space-y-6">
         
         <!-- Selection Card -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-4 md:p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
                 <!-- Intervention -->
                 <div class="space-y-2">
-                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">1. Intervention</label>
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-solid fa-list-ul text-blue-500"></i> 1. Intervention
+                    </label>
                     <div class="relative">
-                        <select id="interventionSelect" class="block w-full pl-4 pr-10 py-3 text-base border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg border bg-slate-50 transition-shadow cursor-pointer hover:bg-white">
-                            <option value="">-- Sélectionner dans la liste --</option>
+                        <select id="interventionSelect" class="block w-full pl-3 pr-10 py-3 text-base border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg border bg-slate-50 transition-shadow cursor-pointer active:bg-white touch-manipulation">
+                            <option value="">-- Sélectionner --</option>
                             <!-- JS populates this -->
                         </select>
                         <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
@@ -73,68 +82,73 @@
 
                 <!-- Clinique -->
                 <div class="space-y-2">
-                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">2. Clinique</label>
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider flex items-center gap-2">
+                        <i class="fa-regular fa-building text-blue-500"></i> 2. Clinique
+                    </label>
                     <div class="grid grid-cols-3 gap-2">
-                        <button onclick="setClinic('alphand')" id="btn-alphand" class="clinic-btn py-3 px-2 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all duration-200">
-                            Alphand
+                        <button onclick="setClinic('alphand')" id="btn-alphand" class="clinic-btn py-3 px-1 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-600 touch-manipulation transition-all duration-200 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2">
+                            <span class="block md:hidden"><i class="fa-solid fa-a"></i></span>
+                            <span>Alphand</span>
                         </button>
-                        <button onclick="setClinic('etoile')" id="btn-etoile" class="clinic-btn py-3 px-2 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all duration-200">
-                            Étoile
+                        <button onclick="setClinic('etoile')" id="btn-etoile" class="clinic-btn py-3 px-1 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-600 touch-manipulation transition-all duration-200 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2">
+                            <span class="block md:hidden"><i class="fa-solid fa-star text-[10px]"></i></span>
+                            <span>Étoile</span>
                         </button>
-                        <button onclick="setClinic('biarritz')" id="btn-biarritz" class="clinic-btn py-3 px-2 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all duration-200">
-                            Biarritz
+                        <button onclick="setClinic('biarritz')" id="btn-biarritz" class="clinic-btn py-3 px-1 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-600 touch-manipulation transition-all duration-200 flex flex-col md:flex-row items-center justify-center gap-1 md:gap-2">
+                            <span class="block md:hidden"><i class="fa-solid fa-water"></i></span>
+                            <span>Biarritz</span>
                         </button>
                     </div>
                 </div>
             </div>
 
             <!-- Parameters (Collapsible/Contextual) -->
-            <div id="params-panel" class="mt-6 pt-6 border-t border-slate-100 hidden fade-in">
+            <div id="params-panel" class="mt-4 md:mt-6 pt-4 md:pt-6 border-t border-slate-100 hidden fade-in">
                 <div class="flex items-center justify-between mb-3">
-                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Paramètres de calcul</span>
-                    <span class="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full font-medium hidden" id="manual-flag">Modifié manuellement</span>
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Paramètres</span>
                 </div>
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="grid grid-cols-2 gap-3 md:gap-4">
                     <div class="relative group">
-                        <label class="text-[10px] text-slate-400 block mb-1">Durée (min)</label>
-                        <input type="number" id="inputDuration" class="w-full text-sm font-mono border-slate-200 rounded-md bg-slate-50 focus:bg-white focus:ring-blue-500 focus:border-blue-500 p-2 border">
-                        <div class="absolute right-2 top-7 text-xs text-slate-400 pointer-events-none group-focus-within:hidden">min</div>
+                        <label class="text-[10px] text-slate-400 block mb-1 uppercase">Durée</label>
+                        <input type="number" id="inputDuration" class="block w-full text-base border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-blue-500 focus:border-blue-500 p-2.5 border font-mono">
+                        <div class="absolute right-3 top-8 text-xs text-slate-400 pointer-events-none">min</div>
                     </div>
                     <div>
-                        <label class="text-[10px] text-slate-400 block mb-1">Type Hospit.</label>
-                        <select id="inputType" class="w-full text-sm border-slate-200 rounded-md bg-slate-50 focus:bg-white focus:ring-blue-500 focus:border-blue-500 p-2 border h-[38px]">
+                        <label class="text-[10px] text-slate-400 block mb-1 uppercase">Type</label>
+                        <select id="inputType" class="block w-full text-base border-slate-200 rounded-lg bg-slate-50 focus:bg-white focus:ring-blue-500 focus:border-blue-500 p-2.5 border h-[46px] transition-colors">
                             <option value="Ambulatoire">Ambulatoire</option>
                             <option value="Hospit 1 nuit">Hospit 1 nuit</option>
                         </select>
+                        <div id="etoile-msg" class="text-[10px] text-orange-500 mt-1 hidden"><i class="fa-solid fa-circle-info mr-1"></i>Étoile = Ambulatoire unique</div>
                     </div>
-                     <!-- New: Quick reset for HC -->
-                    <div class="col-span-2 flex items-end justify-end">
-                        <button onclick="resetHC()" class="text-xs text-blue-600 hover:text-blue-800 hover:underline mb-2" title="Remettre le prix Biarritz">
-                            <i class="fa-solid fa-rotate-left mr-1"></i>Reset Honoraires
-                        </button>
-                    </div>
+                </div>
+                 <!-- New: Quick reset for HC -->
+                 <div class="mt-3 flex justify-end">
+                    <button onclick="resetHC()" class="text-xs text-blue-600 active:text-blue-800 py-2 px-2 -mr-2" title="Remettre le prix Biarritz">
+                        <i class="fa-solid fa-rotate-left mr-1"></i>Reset Honoraires
+                    </button>
                 </div>
             </div>
         </div>
 
         <!-- Result Card -->
-        <div id="resultCard" class="hidden fade-in">
+        <div id="resultCard" class="hidden fade-in mb-8">
             <div class="bg-white rounded-xl shadow-lg border border-blue-100 overflow-hidden relative">
                 <!-- Top Accent -->
                 <div class="h-1.5 w-full bg-blue-600"></div>
 
-                <div class="p-6">
-                    <div class="flex justify-between items-start mb-6">
+                <div class="p-4 md:p-6">
+                    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 gap-2">
                         <div>
-                            <h2 class="text-xl font-bold text-slate-800" id="resTitle">--</h2>
-                            <div class="flex items-center gap-2 mt-1">
-                                <span class="px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100" id="badgeClinic">--</span>
-                                <span class="px-2 py-0.5 rounded text-xs font-medium bg-slate-50 text-slate-600 border border-slate-100" id="badgeTime">-- min</span>
+                            <h2 class="text-lg md:text-xl font-bold text-slate-800 leading-snug" id="resTitle">--</h2>
+                            <div class="flex flex-wrap items-center gap-2 mt-1">
+                                <span class="px-2 py-0.5 rounded text-[10px] md:text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100 whitespace-nowrap" id="badgeClinic">--</span>
+                                <span class="px-2 py-0.5 rounded text-[10px] md:text-xs font-medium bg-slate-50 text-slate-600 border border-slate-100 whitespace-nowrap" id="badgeTime">-- min</span>
                             </div>
                         </div>
-                        <div class="text-right">
-                            <p class="text-xs text-slate-400 uppercase font-semibold mb-1">Total Estimé</p>
-                            <p class="text-3xl font-bold text-blue-600 tracking-tight" id="resTotal">0 €</p>
+                        <div class="w-full md:w-auto text-right mt-2 md:mt-0 pt-2 md:pt-0 border-t md:border-t-0 border-dashed border-slate-100 flex md:block justify-between items-center">
+                            <p class="text-xs text-slate-400 uppercase font-semibold mb-0 md:mb-1">Total Estimé</p>
+                            <p class="text-2xl md:text-3xl font-bold text-blue-600 tracking-tight" id="resTotal">0 €</p>
                         </div>
                     </div>
 
@@ -142,100 +156,100 @@
                     <div class="space-y-3">
                         
                         <!-- Row: HC -->
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 hover:border-blue-300 hover:shadow-sm transition-all group">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
-                                    <i class="fa-solid fa-user-doctor"></i>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 active:scale-[0.99] transition-transform group touch-manipulation">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600 flex-shrink-0">
+                                    <i class="fa-solid fa-user-doctor text-sm md:text-base"></i>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-700">Honoraires Chirurgien</p>
-                                    <p class="text-xs text-slate-400">Honoraire libre (Base Biarritz)</p>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-slate-700 truncate">Chirurgien</p>
+                                    <p class="text-[10px] md:text-xs text-slate-400 truncate">Honoraire libre</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <input type="number" id="valHC" class="w-24 text-right font-mono font-bold text-slate-700 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none transition-colors" value="0">
-                                <span class="text-slate-400 text-sm w-4">€</span>
-                                <button onclick="copyToClipboard('valHC')" class="w-8 h-8 rounded-full hover:bg-blue-50 text-slate-300 hover:text-blue-600 transition-colors flex items-center justify-center">
+                                <input type="number" id="valHC" class="w-20 md:w-24 text-right font-mono text-base font-bold text-slate-700 bg-transparent border-b border-transparent focus:border-blue-500 focus:outline-none transition-colors p-0 rounded-none" value="0">
+                                <span class="text-slate-400 text-sm hidden md:inline">€</span>
+                                <button onclick="copyToClipboard('valHC')" class="w-10 h-10 -mr-2 rounded-full active:bg-blue-50 text-slate-300 active:text-blue-600 transition-colors flex items-center justify-center touch-manipulation">
                                     <i class="fa-regular fa-copy"></i>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Row: Anesth -->
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 hover:border-teal-300 hover:shadow-sm transition-all group">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600">
-                                    <i class="fa-solid fa-syringe"></i>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 active:scale-[0.99] transition-transform group touch-manipulation">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600 flex-shrink-0">
+                                    <i class="fa-solid fa-syringe text-sm md:text-base"></i>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-700">Frais Anesthésie</p>
-                                    <p class="text-xs text-slate-400" id="descAnesth">--</p>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-slate-700 truncate">Anesthésie</p>
+                                    <p class="text-[10px] md:text-xs text-slate-400 truncate" id="descAnesth">--</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="w-24 text-right font-mono font-bold text-slate-700" id="valAnesth">0</span>
-                                <span class="text-slate-400 text-sm w-4">€</span>
-                                <button onclick="copyToClipboard('valAnesth', true)" class="w-8 h-8 rounded-full hover:bg-teal-50 text-slate-300 hover:text-teal-600 transition-colors flex items-center justify-center">
+                                <span class="w-20 md:w-24 text-right font-mono text-base font-bold text-slate-700 block" id="valAnesth">0</span>
+                                <span class="text-slate-400 text-sm hidden md:inline">€</span>
+                                <button onclick="copyToClipboard('valAnesth', true)" class="w-10 h-10 -mr-2 rounded-full active:bg-teal-50 text-slate-300 active:text-teal-600 transition-colors flex items-center justify-center touch-manipulation">
                                     <i class="fa-regular fa-copy"></i>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Row: Clinic -->
-                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 hover:border-indigo-300 hover:shadow-sm transition-all group">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
-                                    <i class="fa-solid fa-hospital"></i>
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 active:scale-[0.99] transition-transform group touch-manipulation">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600 flex-shrink-0">
+                                    <i class="fa-solid fa-hospital text-sm md:text-base"></i>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-700">Frais Clinique / Bloc</p>
-                                    <p class="text-xs text-slate-400" id="descClinic">--</p>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-slate-700 truncate">Clinique / Bloc</p>
+                                    <p class="text-[10px] md:text-xs text-slate-400 truncate max-w-[120px] md:max-w-none" id="descClinic">--</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="w-24 text-right font-mono font-bold text-slate-700" id="valClinic">0</span>
-                                <span class="text-slate-400 text-sm w-4">€</span>
-                                <button onclick="copyToClipboard('valClinic', true)" class="w-8 h-8 rounded-full hover:bg-indigo-50 text-slate-300 hover:text-indigo-600 transition-colors flex items-center justify-center">
+                                <span class="w-20 md:w-24 text-right font-mono text-base font-bold text-slate-700 block" id="valClinic">0</span>
+                                <span class="text-slate-400 text-sm hidden md:inline">€</span>
+                                <button onclick="copyToClipboard('valClinic', true)" class="w-10 h-10 -mr-2 rounded-full active:bg-indigo-50 text-slate-300 active:text-indigo-600 transition-colors flex items-center justify-center touch-manipulation">
                                     <i class="fa-regular fa-copy"></i>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Row: Stay -->
-                        <div id="rowStay" class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 hover:border-orange-300 hover:shadow-sm transition-all group">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
-                                    <i class="fa-solid fa-bed"></i>
+                        <div id="rowStay" class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 active:scale-[0.99] transition-transform group touch-manipulation">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600 flex-shrink-0">
+                                    <i class="fa-solid fa-bed text-sm md:text-base"></i>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-700">Hébergement</p>
-                                    <p class="text-xs text-slate-400" id="descStay">--</p>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-slate-700 truncate">Hébergement</p>
+                                    <p class="text-[10px] md:text-xs text-slate-400 truncate text-orange-600 font-medium" id="descStay">--</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="w-24 text-right font-mono font-bold text-slate-700" id="valStay">0</span>
-                                <span class="text-slate-400 text-sm w-4">€</span>
-                                <button onclick="copyToClipboard('valStay', true)" class="w-8 h-8 rounded-full hover:bg-orange-50 text-slate-300 hover:text-orange-600 transition-colors flex items-center justify-center">
+                                <span class="w-20 md:w-24 text-right font-mono text-base font-bold text-slate-700 block" id="valStay">0</span>
+                                <span class="text-slate-400 text-sm hidden md:inline">€</span>
+                                <button onclick="copyToClipboard('valStay', true)" class="w-10 h-10 -mr-2 rounded-full active:bg-orange-50 text-slate-300 active:text-orange-600 transition-colors flex items-center justify-center touch-manipulation">
                                     <i class="fa-regular fa-copy"></i>
                                 </button>
                             </div>
                         </div>
 
                         <!-- Row: Implants -->
-                        <div id="rowImplants" class="hidden flex items-center justify-between p-3 rounded-lg bg-pink-50 border border-pink-100 hover:border-pink-300 hover:shadow-sm transition-all group">
-                            <div class="flex items-center gap-4">
-                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-pink-600">
-                                    <i class="fa-solid fa-shapes"></i>
+                        <div id="rowImplants" class="hidden flex items-center justify-between p-3 rounded-lg bg-pink-50 border border-pink-100 active:scale-[0.99] transition-transform group touch-manipulation">
+                            <div class="flex items-center gap-3">
+                                <div class="w-9 h-9 md:w-10 md:h-10 rounded-full bg-white flex items-center justify-center text-pink-600 flex-shrink-0">
+                                    <i class="fa-solid fa-shapes text-sm md:text-base"></i>
                                 </div>
-                                <div>
-                                    <p class="text-sm font-semibold text-slate-700">Prothèses / Implants</p>
-                                    <p class="text-xs text-pink-500">Matériel inclus</p>
+                                <div class="min-w-0">
+                                    <p class="text-sm font-semibold text-slate-700 truncate">Prothèses</p>
+                                    <p class="text-[10px] md:text-xs text-pink-500 truncate">Matériel inclus</p>
                                 </div>
                             </div>
                             <div class="flex items-center gap-2">
-                                <span class="w-24 text-right font-mono font-bold text-slate-700" id="valImplants">0</span>
-                                <span class="text-slate-400 text-sm w-4">€</span>
-                                <button onclick="copyToClipboard('valImplants', true)" class="w-8 h-8 rounded-full hover:bg-white text-pink-300 hover:text-pink-600 transition-colors flex items-center justify-center">
+                                <span class="w-20 md:w-24 text-right font-mono text-base font-bold text-slate-700 block" id="valImplants">0</span>
+                                <span class="text-slate-400 text-sm hidden md:inline">€</span>
+                                <button onclick="copyToClipboard('valImplants', true)" class="w-10 h-10 -mr-2 rounded-full active:bg-white text-pink-300 active:text-pink-600 transition-colors flex items-center justify-center touch-manipulation">
                                     <i class="fa-regular fa-copy"></i>
                                 </button>
                             </div>
@@ -244,38 +258,36 @@
                 </div>
             </div>
             
-            <p class="text-center text-xs text-slate-400 mt-4">
-                * Les prix calculés pour Paris se basent sur les durées théoriques. En cas de dépassement, la clinique facturera le supplément.
+            <p class="text-center text-[10px] text-slate-400 mt-4 px-4">
+                * Les prix calculés pour Paris se basent sur les durées théoriques. Suppléments possibles.
             </p>
         </div>
 
         <!-- Initial State -->
         <div id="emptyState" class="flex flex-col items-center justify-center py-12 text-slate-300">
-            <i class="fa-solid fa-laptop-medical text-6xl mb-4 text-slate-200"></i>
-            <p class="text-sm font-medium">Sélectionnez une intervention pour commencer</p>
+            <i class="fa-solid fa-laptop-medical text-5xl md:text-6xl mb-4 text-slate-200"></i>
+            <p class="text-sm font-medium">Sélectionnez une intervention</p>
         </div>
 
     </main>
 
-    <!-- Toast Notification -->
-    <div id="toast" class="fixed top-4 right-1/2 translate-x-1/2 md:translate-x-0 md:right-4 bg-slate-800 text-white px-4 py-2 rounded-full shadow-xl flex items-center gap-3 transition-all duration-300 opacity-0 -translate-y-10 z-50 pointer-events-none">
-        <i class="fa-solid fa-circle-check text-green-400"></i>
-        <span class="text-sm font-medium">Montant copié</span>
+    <!-- Toast Notification (Top Center Mobile, Top Right Desktop) -->
+    <div id="toast" class="fixed top-4 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-4 bg-slate-900/90 backdrop-blur text-white px-4 py-3 rounded-full shadow-2xl flex items-center gap-3 transition-all duration-300 opacity-0 -translate-y-20 z-50 pointer-events-none">
+        <i class="fa-solid fa-check text-green-400"></i>
+        <span class="text-sm font-medium">Copié dans le presse-papier</span>
     </div>
 
     <script>
         /**
          * DB: Base de données des interventions.
          * Source: Synthèse Interventions.pdf & Grille Biarritz 2026.
-         * * Corrections V2:
-         * - Ablation proth + Mastopexie: HC corrigé à 5500 (vs 5000)
-         * - Ajout Lipo DLA et DLA + Lipo 1 site
+         * Note: Validé pour mobile.
          */
         const db = {
             "Abdominoplastie": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4200, anesth: 550, fso: 726, sejour: 533, implants: 0 } },
             "Abdominoplastie + Cure hernie": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4200, anesth: 550, fso: 726, sejour: 533, implants: 0 } },
             "Ablation de prothèses": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3600, anesth: 400, fso: 145.20, sejour: 408, implants: 0 } },
-            "Ablation prothèses + Mastopexie": { duration: 120, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 726, sejour: 408, implants: 0 } }, // FIXED: 5500
+            "Ablation prothèses + Mastopexie": { duration: 120, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 726, sejour: 408, implants: 0 } },
             "Augmentation Mammaire": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3900, anesth: 450, fso: 435.60, sejour: 408, implants: 680 } },
             "Augmentation Mammaire Composite": { duration: 90, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 750, fso: 726, sejour: 408, implants: 680 } },
             "Blépharoplastie 4 paupières": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 300, fso: 435.60, sejour: 408, implants: 0 } },
@@ -287,8 +299,8 @@
             "Lipoaspiration 1 site": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3600, anesth: 450, fso: 726, sejour: 408, implants: 0 } },
             "Lipoaspiration 2 sites": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 450, fso: 726, sejour: 408, implants: 0 } },
             "Lipoaspiration 3 sites": { duration: 150, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 726, sejour: 408, implants: 0 } },
-            "Lipo DLA": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4800, anesth: 650, fso: 726, sejour: 533, implants: 0 } }, // NEW
-            "DLA + Lipo 1 site": { duration: 150, type: "Hospit 1 nuit", biarritz: { hc: 4900, anesth: 1000, fso: 726, sejour: 533, implants: 0 } }, // NEW (FSO assumed based on similar time)
+            "Lipo DLA": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4800, anesth: 650, fso: 726, sejour: 533, implants: 0 } },
+            "DLA + Lipo 1 site": { duration: 150, type: "Hospit 1 nuit", biarritz: { hc: 4900, anesth: 1000, fso: 726, sejour: 533, implants: 0 } },
             "Lipofilling mammaire >200g": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 650, fso: 726, sejour: 408, implants: 0 } },
             "Mastopexie": { duration: 90, type: "Ambulatoire", biarritz: { hc: 4200, anesth: 500, fso: 580.80, sejour: 408, implants: 0 } },
             "Mastopexie + Implants": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 550, fso: 726, sejour: 408, implants: 680 } },
@@ -320,33 +332,30 @@
                 }
             });
 
-            // Input Listeners
             document.getElementById('inputDuration').addEventListener('input', calculate);
             document.getElementById('inputType').addEventListener('change', calculate);
             document.getElementById('valHC').addEventListener('input', () => {
-                // User manually edited HC
                 updateTotal();
             });
 
-            // Set Initial Clinic
             setClinic('alphand');
         });
 
         function loadInterventionData(key) {
             const data = db[key];
-            
-            // Populate Inputs
             document.getElementById('inputDuration').value = data.duration;
-            document.getElementById('inputType').value = data.type;
             
-            // Reset Manual HC to DB default
+            // Logic to restore type based on clinic
+            if (currentClinic === 'etoile') {
+                document.getElementById('inputType').value = 'Ambulatoire';
+            } else {
+                document.getElementById('inputType').value = data.type;
+            }
+            
             resetHC();
-
-            // UI Reveal
             document.getElementById('emptyState').classList.add('hidden');
             document.getElementById('resultCard').classList.remove('hidden');
             document.getElementById('params-panel').classList.remove('hidden');
-
             calculate();
         }
 
@@ -360,14 +369,28 @@
 
         function setClinic(clinic) {
             currentClinic = clinic;
-            
-            // Visual Updates
             document.querySelectorAll('.clinic-btn').forEach(btn => btn.classList.remove('active'));
             document.getElementById(`btn-${clinic}`).classList.add('active');
             
-            // Badge Update
-            const names = { alphand: "Alphand (Paris)", etoile: "Étoile (Paris)", biarritz: "Biarritz (Côté Basque)" };
+            const names = { alphand: "Alphand", etoile: "Étoile", biarritz: "Biarritz" };
             document.getElementById('badgeClinic').textContent = names[clinic];
+            
+            // Handle Etoile specific Logic (Force Ambulatoire)
+            const typeSelect = document.getElementById('inputType');
+            const etoileMsg = document.getElementById('etoile-msg');
+            
+            if (clinic === 'etoile') {
+                typeSelect.value = 'Ambulatoire';
+                typeSelect.disabled = true;
+                etoileMsg.classList.remove('hidden');
+            } else {
+                typeSelect.disabled = false;
+                etoileMsg.classList.add('hidden');
+                // Restore type if intervention is selected
+                if(currentKey) {
+                   typeSelect.value = db[currentKey].type; 
+                }
+            }
 
             if(currentKey) calculate();
         }
@@ -375,29 +398,20 @@
         function calculate() {
             if (!currentKey) return;
 
-            // Get Inputs
             const duration = parseInt(document.getElementById('inputDuration').value) || 0;
             const type = document.getElementById('inputType').value;
             const data = db[currentKey];
 
-            // 1. Calculate Costs
             let anesth = 0;
             let clinicCost = 0;
             let stay = 0;
             let implants = (data.biarritz && data.biarritz.implants) ? data.biarritz.implants : 0;
 
-            // --- ALPHAND ---
-            // Rule: 750€/h divisible by 30 min blocks.
-            // Anesth: 500€ (1h) then 100€/30min.
             if (currentClinic === 'alphand') {
-                // Round up duration to nearest 30 mins for billing safety
                 const blocks30 = Math.ceil(duration / 30);
                 const billingDuration = blocks30 * 30; 
-                
-                // Clinic: 375€ per 30 mins
                 clinicCost = blocks30 * 375;
 
-                // Anesthesia
                 if (billingDuration <= 60) {
                     anesth = 500;
                 } else {
@@ -405,25 +419,17 @@
                     const extraBlocks = Math.ceil(extraMins / 30);
                     anesth = 500 + (extraBlocks * 100);
                 }
-
-                // Stay
                 stay = (type === "Hospit 1 nuit") ? 650 : 350;
                 
-                // Descriptions
-                document.getElementById('descClinic').textContent = `Bloc (${duration} min arr. à ${billingDuration} min)`;
-                document.getElementById('descAnesth').textContent = "500€ 1ère h + 100€/30min";
-                document.getElementById('descStay').textContent = type;
+                document.getElementById('descClinic').textContent = `Bloc (${billingDuration} min)`;
+                document.getElementById('descAnesth').textContent = "500€ + 100€/30min";
+                document.getElementById('descStay').textContent = type === "Hospit 1 nuit" ? "Nuit" : "Ambulatoire";
                 document.getElementById('rowStay').classList.remove('hidden');
             }
-            
-            // --- ETOILE ---
-            // Rule: 190€ / 15 mins.
             else if (currentClinic === 'etoile') {
-                // Clinic
                 const blocks15 = Math.ceil(duration / 15);
                 clinicCost = blocks15 * 190;
 
-                // Anesthesia (Same as Alphand per user instruction)
                 if (duration <= 60) {
                     anesth = 500;
                 } else {
@@ -431,34 +437,28 @@
                     const extraBlocks = Math.ceil(extraMins / 30);
                     anesth = 500 + (extraBlocks * 100);
                 }
-
-                // Stay: Often included or specific. Set to 0 but keep visible if Nuit?
-                // For safety in tool, we hide stay row or set to 0 unless specified.
-                // Assuming included in high block cost (190/15m = 760/h).
+                // FIXED: Stay forced to 0 for Etoile, but shown as included
                 stay = 0;
                 
-                document.getElementById('descClinic').textContent = `190€ / 15 min (${blocks15} x 15min)`;
+                document.getElementById('descClinic').textContent = `190€ / 15 min`;
                 document.getElementById('descAnesth').textContent = "Idem Alphand";
-                document.getElementById('rowStay').classList.add('hidden');
+                
+                // Show stay as Included
+                document.getElementById('descStay').textContent = "Inclus dans le bloc";
+                document.getElementById('rowStay').classList.remove('hidden');
             }
-
-            // --- BIARRITZ ---
-            // Rule: Fixed Packages
             else if (currentClinic === 'biarritz') {
                 if (data.biarritz) {
                     anesth = data.biarritz.anesth;
                     clinicCost = data.biarritz.fso;
                     stay = data.biarritz.sejour;
-                    // HC is already set in input, we don't overwrite it here to allow manual changes
-                    // unless reset is called.
                 }
-                document.getElementById('descClinic').textContent = "Forfait Salle (FSO)";
+                document.getElementById('descClinic').textContent = "Forfait Salle";
                 document.getElementById('descAnesth').textContent = "Forfait";
                 document.getElementById('descStay').textContent = "Forfait Séjour";
                 document.getElementById('rowStay').classList.remove('hidden');
             }
 
-            // 2. Update DOM
             document.getElementById('resTitle').textContent = currentKey;
             document.getElementById('badgeTime').textContent = duration + " min";
             
@@ -466,7 +466,6 @@
             document.getElementById('valClinic').textContent = formatPrice(clinicCost);
             document.getElementById('valStay').textContent = stay;
 
-            // Implants visibility
             if (implants > 0) {
                 document.getElementById('rowImplants').classList.remove('hidden');
                 document.getElementById('rowImplants').classList.add('flex');
@@ -503,11 +502,29 @@
 
         function copyToClipboard(elementId, isText) {
             let val = isText ? document.getElementById(elementId).textContent : document.getElementById(elementId).value;
-            navigator.clipboard.writeText(val).then(() => {
-                const toast = document.getElementById('toast');
-                toast.classList.remove('opacity-0', '-translate-y-10');
-                setTimeout(() => toast.classList.add('opacity-0', '-translate-y-10'), 2000);
-            });
+            // Fallback for iOS clipboard which sometimes requires user interaction context or text selection
+            if (navigator.clipboard && navigator.clipboard.writeText) {
+                navigator.clipboard.writeText(val).then(() => showToast());
+            } else {
+                // Fallback approach
+                const textArea = document.createElement("textarea");
+                textArea.value = val;
+                document.body.appendChild(textArea);
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showToast();
+                } catch (err) {
+                    console.error('Fallback copy failed', err);
+                }
+                document.body.removeChild(textArea);
+            }
+        }
+
+        function showToast() {
+            const toast = document.getElementById('toast');
+            toast.classList.remove('opacity-0', '-translate-y-20');
+            setTimeout(() => toast.classList.add('opacity-0', '-translate-y-20'), 2000);
         }
 
     </script>
