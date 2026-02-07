@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Générateur Devis - Chirurgie V2</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f8fafc;
+        }
+        .clinic-btn.active {
+            background-color: #2563eb;
+            color: white;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            border-color: #2563eb;
+        }
+        .fade-in {
+            animation: fadeIn 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        input[type=number]::-webkit-inner-spin-button, 
+        input[type=number]::-webkit-outer-spin-button { 
+            -webkit-appearance: none; 
+            margin: 0; 
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-slate-800">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-20">
+        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="flex items-center gap-3">
+                <div class="bg-blue-600 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-blue-200">
+                    <i class="fa-solid fa-calculator"></i>
+                </div>
+                <div>
+                    <h1 class="text-lg font-bold text-slate-800 leading-tight">Calculateur Honoraires</h1>
+                    <p class="text-xs text-slate-500 font-medium">Outil Coordinatrice</p>
+                </div>
+            </div>
+            <div class="text-xs font-mono bg-slate-100 px-2 py-1 rounded text-slate-500">
+                Ref: V2-VALIDATED
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container max-w-4xl mx-auto px-4 py-8 space-y-6">
+        
+        <!-- Selection Card -->
+        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <!-- Intervention -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">1. Intervention</label>
+                    <div class="relative">
+                        <select id="interventionSelect" class="block w-full pl-4 pr-10 py-3 text-base border-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 rounded-lg border bg-slate-50 transition-shadow cursor-pointer hover:bg-white">
+                            <option value="">-- Sélectionner dans la liste --</option>
+                            <!-- JS populates this -->
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-500">
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Clinique -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider">2. Clinique</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setClinic('alphand')" id="btn-alphand" class="clinic-btn py-3 px-2 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all duration-200">
+                            Alphand
+                        </button>
+                        <button onclick="setClinic('etoile')" id="btn-etoile" class="clinic-btn py-3 px-2 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all duration-200">
+                            Étoile
+                        </button>
+                        <button onclick="setClinic('biarritz')" id="btn-biarritz" class="clinic-btn py-3 px-2 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-600 hover:bg-slate-200 transition-all duration-200">
+                            Biarritz
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Parameters (Collapsible/Contextual) -->
+            <div id="params-panel" class="mt-6 pt-6 border-t border-slate-100 hidden fade-in">
+                <div class="flex items-center justify-between mb-3">
+                    <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">Paramètres de calcul</span>
+                    <span class="text-[10px] bg-yellow-100 text-yellow-800 px-2 py-0.5 rounded-full font-medium hidden" id="manual-flag">Modifié manuellement</span>
+                </div>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <div class="relative group">
+                        <label class="text-[10px] text-slate-400 block mb-1">Durée (min)</label>
+                        <input type="number" id="inputDuration" class="w-full text-sm font-mono border-slate-200 rounded-md bg-slate-50 focus:bg-white focus:ring-blue-500 focus:border-blue-500 p-2 border">
+                        <div class="absolute right-2 top-7 text-xs text-slate-400 pointer-events-none group-focus-within:hidden">min</div>
+                    </div>
+                    <div>
+                        <label class="text-[10px] text-slate-400 block mb-1">Type Hospit.</label>
+                        <select id="inputType" class="w-full text-sm border-slate-200 rounded-md bg-slate-50 focus:bg-white focus:ring-blue-500 focus:border-blue-500 p-2 border h-[38px]">
+                            <option value="Ambulatoire">Ambulatoire</option>
+                            <option value="Hospit 1 nuit">Hospit 1 nuit</option>
+                        </select>
+                    </div>
+                     <!-- New: Quick reset for HC -->
+                    <div class="col-span-2 flex items-end justify-end">
+                        <button onclick="resetHC()" class="text-xs text-blue-600 hover:text-blue-800 hover:underline mb-2" title="Remettre le prix Biarritz">
+                            <i class="fa-solid fa-rotate-left mr-1"></i>Reset Honoraires
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Result Card -->
+        <div id="resultCard" class="hidden fade-in">
+            <div class="bg-white rounded-xl shadow-lg border border-blue-100 overflow-hidden relative">
+                <!-- Top Accent -->
+                <div class="h-1.5 w-full bg-blue-600"></div>
+
+                <div class="p-6">
+                    <div class="flex justify-between items-start mb-6">
+                        <div>
+                            <h2 class="text-xl font-bold text-slate-800" id="resTitle">--</h2>
+                            <div class="flex items-center gap-2 mt-1">
+                                <span class="px-2 py-0.5 rounded text-xs font-medium bg-blue-50 text-blue-700 border border-blue-100" id="badgeClinic">--</span>
+                                <span class="px-2 py-0.5 rounded text-xs font-medium bg-slate-50 text-slate-600 border border-slate-100" id="badgeTime">-- min</span>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-xs text-slate-400 uppercase font-semibold mb-1">Total Estimé</p>
+                            <p class="text-3xl font-bold text-blue-600 tracking-tight" id="resTotal">0 €</p>
+                        </div>
+                    </div>
+
+                    <!-- Pricing Table -->
+                    <div class="space-y-3">
+                        
+                        <!-- Row: HC -->
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 hover:border-blue-300 hover:shadow-sm transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-blue-600">
+                                    <i class="fa-solid fa-user-doctor"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Honoraires Chirurgien</p>
+                                    <p class="text-xs text-slate-400">Honoraire libre (Base Biarritz)</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <input type="number" id="valHC" class="w-24 text-right font-mono font-bold text-slate-700 bg-transparent border-b border-transparent hover:border-slate-300 focus:border-blue-500 focus:outline-none transition-colors" value="0">
+                                <span class="text-slate-400 text-sm w-4">€</span>
+                                <button onclick="copyToClipboard('valHC')" class="w-8 h-8 rounded-full hover:bg-blue-50 text-slate-300 hover:text-blue-600 transition-colors flex items-center justify-center">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Row: Anesth -->
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 hover:border-teal-300 hover:shadow-sm transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-teal-50 flex items-center justify-center text-teal-600">
+                                    <i class="fa-solid fa-syringe"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Frais Anesthésie</p>
+                                    <p class="text-xs text-slate-400" id="descAnesth">--</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-24 text-right font-mono font-bold text-slate-700" id="valAnesth">0</span>
+                                <span class="text-slate-400 text-sm w-4">€</span>
+                                <button onclick="copyToClipboard('valAnesth', true)" class="w-8 h-8 rounded-full hover:bg-teal-50 text-slate-300 hover:text-teal-600 transition-colors flex items-center justify-center">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Row: Clinic -->
+                        <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 hover:border-indigo-300 hover:shadow-sm transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-indigo-50 flex items-center justify-center text-indigo-600">
+                                    <i class="fa-solid fa-hospital"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Frais Clinique / Bloc</p>
+                                    <p class="text-xs text-slate-400" id="descClinic">--</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-24 text-right font-mono font-bold text-slate-700" id="valClinic">0</span>
+                                <span class="text-slate-400 text-sm w-4">€</span>
+                                <button onclick="copyToClipboard('valClinic', true)" class="w-8 h-8 rounded-full hover:bg-indigo-50 text-slate-300 hover:text-indigo-600 transition-colors flex items-center justify-center">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Row: Stay -->
+                        <div id="rowStay" class="flex items-center justify-between p-3 rounded-lg bg-white border border-slate-100 hover:border-orange-300 hover:shadow-sm transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-orange-50 flex items-center justify-center text-orange-600">
+                                    <i class="fa-solid fa-bed"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Hébergement</p>
+                                    <p class="text-xs text-slate-400" id="descStay">--</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-24 text-right font-mono font-bold text-slate-700" id="valStay">0</span>
+                                <span class="text-slate-400 text-sm w-4">€</span>
+                                <button onclick="copyToClipboard('valStay', true)" class="w-8 h-8 rounded-full hover:bg-orange-50 text-slate-300 hover:text-orange-600 transition-colors flex items-center justify-center">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Row: Implants -->
+                        <div id="rowImplants" class="hidden flex items-center justify-between p-3 rounded-lg bg-pink-50 border border-pink-100 hover:border-pink-300 hover:shadow-sm transition-all group">
+                            <div class="flex items-center gap-4">
+                                <div class="w-10 h-10 rounded-full bg-white flex items-center justify-center text-pink-600">
+                                    <i class="fa-solid fa-shapes"></i>
+                                </div>
+                                <div>
+                                    <p class="text-sm font-semibold text-slate-700">Prothèses / Implants</p>
+                                    <p class="text-xs text-pink-500">Matériel inclus</p>
+                                </div>
+                            </div>
+                            <div class="flex items-center gap-2">
+                                <span class="w-24 text-right font-mono font-bold text-slate-700" id="valImplants">0</span>
+                                <span class="text-slate-400 text-sm w-4">€</span>
+                                <button onclick="copyToClipboard('valImplants', true)" class="w-8 h-8 rounded-full hover:bg-white text-pink-300 hover:text-pink-600 transition-colors flex items-center justify-center">
+                                    <i class="fa-regular fa-copy"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <p class="text-center text-xs text-slate-400 mt-4">
+                * Les prix calculés pour Paris se basent sur les durées théoriques. En cas de dépassement, la clinique facturera le supplément.
+            </p>
+        </div>
+
+        <!-- Initial State -->
+        <div id="emptyState" class="flex flex-col items-center justify-center py-12 text-slate-300">
+            <i class="fa-solid fa-laptop-medical text-6xl mb-4 text-slate-200"></i>
+            <p class="text-sm font-medium">Sélectionnez une intervention pour commencer</p>
+        </div>
+
+    </main>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="fixed top-4 right-1/2 translate-x-1/2 md:translate-x-0 md:right-4 bg-slate-800 text-white px-4 py-2 rounded-full shadow-xl flex items-center gap-3 transition-all duration-300 opacity-0 -translate-y-10 z-50 pointer-events-none">
+        <i class="fa-solid fa-circle-check text-green-400"></i>
+        <span class="text-sm font-medium">Montant copié</span>
+    </div>
+
+    <script>
+        /**
+         * DB: Base de données des interventions.
+         * Source: Synthèse Interventions.pdf & Grille Biarritz 2026.
+         * * Corrections V2:
+         * - Ablation proth + Mastopexie: HC corrigé à 5500 (vs 5000)
+         * - Ajout Lipo DLA et DLA + Lipo 1 site
+         */
+        const db = {
+            "Abdominoplastie": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4200, anesth: 550, fso: 726, sejour: 533, implants: 0 } },
+            "Abdominoplastie + Cure hernie": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4200, anesth: 550, fso: 726, sejour: 533, implants: 0 } },
+            "Ablation de prothèses": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3600, anesth: 400, fso: 145.20, sejour: 408, implants: 0 } },
+            "Ablation prothèses + Mastopexie": { duration: 120, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 726, sejour: 408, implants: 0 } }, // FIXED: 5500
+            "Augmentation Mammaire": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3900, anesth: 450, fso: 435.60, sejour: 408, implants: 680 } },
+            "Augmentation Mammaire Composite": { duration: 90, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 750, fso: 726, sejour: 408, implants: 680 } },
+            "Blépharoplastie 4 paupières": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 300, fso: 435.60, sejour: 408, implants: 0 } },
+            "Blépharoplastie Inférieure": { duration: 90, type: "Ambulatoire", biarritz: { hc: 3500, anesth: 300, fso: 290.40, sejour: 408, implants: 0 } },
+            "Blépharoplastie Supérieure": { duration: 60, type: "Ambulatoire", biarritz: { hc: 2600, anesth: 300, fso: 290.40, sejour: 408, implants: 0 } },
+            "Changement de prothèses": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 450, fso: 290.40, sejour: 408, implants: 680 } },
+            "Changement prothèses + Mastopexie": { duration: 150, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 726, sejour: 408, implants: 680 } },
+            "Lifting de bras": { duration: 120, type: "Ambulatoire", biarritz: { hc: 3900, anesth: 450, fso: 580.80, sejour: 408, implants: 0 } },
+            "Lipoaspiration 1 site": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3600, anesth: 450, fso: 726, sejour: 408, implants: 0 } },
+            "Lipoaspiration 2 sites": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 450, fso: 726, sejour: 408, implants: 0 } },
+            "Lipoaspiration 3 sites": { duration: 150, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 726, sejour: 408, implants: 0 } },
+            "Lipo DLA": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4800, anesth: 650, fso: 726, sejour: 533, implants: 0 } }, // NEW
+            "DLA + Lipo 1 site": { duration: 150, type: "Hospit 1 nuit", biarritz: { hc: 4900, anesth: 1000, fso: 726, sejour: 533, implants: 0 } }, // NEW (FSO assumed based on similar time)
+            "Lipofilling mammaire >200g": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 650, fso: 726, sejour: 408, implants: 0 } },
+            "Mastopexie": { duration: 90, type: "Ambulatoire", biarritz: { hc: 4200, anesth: 500, fso: 580.80, sejour: 408, implants: 0 } },
+            "Mastopexie + Implants": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 550, fso: 726, sejour: 408, implants: 680 } },
+            "Rhinoplastie": { duration: 210, type: "Ambulatoire", biarritz: { hc: 6200, anesth: 400, fso: 1016.40, sejour: 408, implants: 0 } },
+            "Septoplastie seule": { duration: 150, type: "Ambulatoire", biarritz: { hc: 0, anesth: 0, fso: 0, sejour: 0, implants: 0, note: "PEC Sécu" } }
+        };
+
+        let currentClinic = 'alphand';
+        let currentKey = '';
+
+        // Initialization
+        document.addEventListener('DOMContentLoaded', () => {
+            const select = document.getElementById('interventionSelect');
+            Object.keys(db).sort().forEach(key => {
+                const opt = document.createElement('option');
+                opt.value = key;
+                opt.textContent = key;
+                select.appendChild(opt);
+            });
+
+            select.addEventListener('change', (e) => {
+                currentKey = e.target.value;
+                if(currentKey) {
+                    loadInterventionData(currentKey);
+                } else {
+                    document.getElementById('emptyState').classList.remove('hidden');
+                    document.getElementById('resultCard').classList.add('hidden');
+                    document.getElementById('params-panel').classList.add('hidden');
+                }
+            });
+
+            // Input Listeners
+            document.getElementById('inputDuration').addEventListener('input', calculate);
+            document.getElementById('inputType').addEventListener('change', calculate);
+            document.getElementById('valHC').addEventListener('input', () => {
+                // User manually edited HC
+                updateTotal();
+            });
+
+            // Set Initial Clinic
+            setClinic('alphand');
+        });
+
+        function loadInterventionData(key) {
+            const data = db[key];
+            
+            // Populate Inputs
+            document.getElementById('inputDuration').value = data.duration;
+            document.getElementById('inputType').value = data.type;
+            
+            // Reset Manual HC to DB default
+            resetHC();
+
+            // UI Reveal
+            document.getElementById('emptyState').classList.add('hidden');
+            document.getElementById('resultCard').classList.remove('hidden');
+            document.getElementById('params-panel').classList.remove('hidden');
+
+            calculate();
+        }
+
+        function resetHC() {
+            if(!currentKey) return;
+            const data = db[currentKey];
+            const defaultHC = data.biarritz ? data.biarritz.hc : 0;
+            document.getElementById('valHC').value = defaultHC;
+            calculate();
+        }
+
+        function setClinic(clinic) {
+            currentClinic = clinic;
+            
+            // Visual Updates
+            document.querySelectorAll('.clinic-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(`btn-${clinic}`).classList.add('active');
+            
+            // Badge Update
+            const names = { alphand: "Alphand (Paris)", etoile: "Étoile (Paris)", biarritz: "Biarritz (Côté Basque)" };
+            document.getElementById('badgeClinic').textContent = names[clinic];
+
+            if(currentKey) calculate();
+        }
+
+        function calculate() {
+            if (!currentKey) return;
+
+            // Get Inputs
+            const duration = parseInt(document.getElementById('inputDuration').value) || 0;
+            const type = document.getElementById('inputType').value;
+            const data = db[currentKey];
+
+            // 1. Calculate Costs
+            let anesth = 0;
+            let clinicCost = 0;
+            let stay = 0;
+            let implants = (data.biarritz && data.biarritz.implants) ? data.biarritz.implants : 0;
+
+            // --- ALPHAND ---
+            // Rule: 750€/h divisible by 30 min blocks.
+            // Anesth: 500€ (1h) then 100€/30min.
+            if (currentClinic === 'alphand') {
+                // Round up duration to nearest 30 mins for billing safety
+                const blocks30 = Math.ceil(duration / 30);
+                const billingDuration = blocks30 * 30; 
+                
+                // Clinic: 375€ per 30 mins
+                clinicCost = blocks30 * 375;
+
+                // Anesthesia
+                if (billingDuration <= 60) {
+                    anesth = 500;
+                } else {
+                    const extraMins = billingDuration - 60;
+                    const extraBlocks = Math.ceil(extraMins / 30);
+                    anesth = 500 + (extraBlocks * 100);
+                }
+
+                // Stay
+                stay = (type === "Hospit 1 nuit") ? 650 : 350;
+                
+                // Descriptions
+                document.getElementById('descClinic').textContent = `Bloc (${duration} min arr. à ${billingDuration} min)`;
+                document.getElementById('descAnesth').textContent = "500€ 1ère h + 100€/30min";
+                document.getElementById('descStay').textContent = type;
+                document.getElementById('rowStay').classList.remove('hidden');
+            }
+            
+            // --- ETOILE ---
+            // Rule: 190€ / 15 mins.
+            else if (currentClinic === 'etoile') {
+                // Clinic
+                const blocks15 = Math.ceil(duration / 15);
+                clinicCost = blocks15 * 190;
+
+                // Anesthesia (Same as Alphand per user instruction)
+                if (duration <= 60) {
+                    anesth = 500;
+                } else {
+                    const extraMins = duration - 60;
+                    const extraBlocks = Math.ceil(extraMins / 30);
+                    anesth = 500 + (extraBlocks * 100);
+                }
+
+                // Stay: Often included or specific. Set to 0 but keep visible if Nuit?
+                // For safety in tool, we hide stay row or set to 0 unless specified.
+                // Assuming included in high block cost (190/15m = 760/h).
+                stay = 0;
+                
+                document.getElementById('descClinic').textContent = `190€ / 15 min (${blocks15} x 15min)`;
+                document.getElementById('descAnesth').textContent = "Idem Alphand";
+                document.getElementById('rowStay').classList.add('hidden');
+            }
+
+            // --- BIARRITZ ---
+            // Rule: Fixed Packages
+            else if (currentClinic === 'biarritz') {
+                if (data.biarritz) {
+                    anesth = data.biarritz.anesth;
+                    clinicCost = data.biarritz.fso;
+                    stay = data.biarritz.sejour;
+                    // HC is already set in input, we don't overwrite it here to allow manual changes
+                    // unless reset is called.
+                }
+                document.getElementById('descClinic').textContent = "Forfait Salle (FSO)";
+                document.getElementById('descAnesth').textContent = "Forfait";
+                document.getElementById('descStay').textContent = "Forfait Séjour";
+                document.getElementById('rowStay').classList.remove('hidden');
+            }
+
+            // 2. Update DOM
+            document.getElementById('resTitle').textContent = currentKey;
+            document.getElementById('badgeTime').textContent = duration + " min";
+            
+            document.getElementById('valAnesth').textContent = anesth;
+            document.getElementById('valClinic').textContent = formatPrice(clinicCost);
+            document.getElementById('valStay').textContent = stay;
+
+            // Implants visibility
+            if (implants > 0) {
+                document.getElementById('rowImplants').classList.remove('hidden');
+                document.getElementById('rowImplants').classList.add('flex');
+                document.getElementById('valImplants').textContent = implants;
+            } else {
+                document.getElementById('rowImplants').classList.add('hidden');
+                document.getElementById('rowImplants').classList.remove('flex');
+                document.getElementById('valImplants').textContent = 0;
+            }
+
+            updateTotal();
+        }
+
+        function formatPrice(num) {
+            return parseFloat(num).toFixed(2).replace('.00', '');
+        }
+
+        function updateTotal() {
+            const hc = parseFloat(document.getElementById('valHC').value) || 0;
+            const anesth = parseFloat(document.getElementById('valAnesth').textContent) || 0;
+            const clinic = parseFloat(document.getElementById('valClinic').textContent) || 0;
+            
+            const stayElem = document.getElementById('rowStay');
+            const stay = (!stayElem.classList.contains('hidden')) ? parseFloat(document.getElementById('valStay').textContent) || 0 : 0;
+            
+            const impElem = document.getElementById('rowImplants');
+            const implants = (!impElem.classList.contains('hidden')) ? parseFloat(document.getElementById('valImplants').textContent) || 0 : 0;
+
+            const total = hc + anesth + clinic + stay + implants;
+            
+            const formatter = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+            document.getElementById('resTotal').textContent = formatter.format(total);
+        }
+
+        function copyToClipboard(elementId, isText) {
+            let val = isText ? document.getElementById(elementId).textContent : document.getElementById(elementId).value;
+            navigator.clipboard.writeText(val).then(() => {
+                const toast = document.getElementById('toast');
+                toast.classList.remove('opacity-0', '-translate-y-10');
+                setTimeout(() => toast.classList.add('opacity-0', '-translate-y-10'), 2000);
+            });
+        }
+
+    </script>
+</body>
+</html>
