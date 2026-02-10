@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Générateur Devis - Chirurgie V7</title>
+    <title>Générateur Devis - Chirurgie V10</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -25,6 +25,7 @@
         .toggle-checkbox:checked { right: 0; border-color: #22c55e; }
         .toggle-checkbox:checked + .toggle-label { background-color: #22c55e; }
         .toggle-checkbox:checked + .toggle-label:before { transform: translateX(100%); }
+        .badge-secu { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; font-size: 0.65rem; padding: 2px 6px; border-radius: 9999px; margin-left: 6px; font-weight: 700; text-transform: uppercase; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col text-slate-800 pb-20 md:pb-0">
@@ -37,7 +38,7 @@
                 </div>
                 <div>
                     <h1 class="text-lg font-bold text-slate-900 leading-tight">Expert Pricing</h1>
-                    <p class="text-xs text-slate-500 font-medium tracking-wide">V7 : DATA CORRIGÉE</p>
+                    <p class="text-xs text-slate-500 font-medium tracking-wide">V10 : HÉBERGEMENT ÉTOILE</p>
                 </div>
             </div>
             <div class="flex items-center gap-2">
@@ -78,6 +79,8 @@
                             <label class="text-[10px] text-slate-400 block mb-1 uppercase">Durée (min)</label>
                             <input type="number" id="inputDuration" class="w-full text-sm font-mono border-slate-200 rounded bg-slate-50 p-2 border text-center">
                         </div>
+                        
+                        <!-- Type selector (Standard) -->
                         <div class="w-32">
                             <label class="text-[10px] text-slate-400 block mb-1 uppercase">Type</label>
                             <select id="inputType" class="w-full text-sm border-slate-200 rounded bg-slate-50 p-2 border h-[38px]">
@@ -85,8 +88,19 @@
                                 <option value="Hospit 1 nuit">Hospit 1 nuit</option>
                             </select>
                         </div>
+
+                        <!-- Etoile Specific Accommodation Selector -->
+                        <div id="etoile-stay-container" class="hidden w-40">
+                            <label class="text-[10px] text-orange-500 font-bold block mb-1 uppercase"><i class="fa-solid fa-bed mr-1"></i>Confort Étoile</label>
+                            <select id="etoileStay" class="w-full text-sm border-orange-200 rounded bg-orange-50 p-2 border h-[38px] text-orange-900 font-medium focus:ring-orange-500 focus:border-orange-500">
+                                <option value="260">Box (260€)</option>
+                                <option value="360">Ch. Double (360€)</option>
+                                <option value="420">Ch. Seule (420€)</option>
+                            </select>
+                        </div>
+
                         <div class="flex-grow text-right pb-2 flex flex-col items-end justify-center">
-                             <div id="etoile-warning" class="hidden text-xs text-orange-600 font-medium mb-1"><i class="fa-solid fa-triangle-exclamation mr-1"></i>Étoile = Ambulatoire forcé</div>
+                             <div id="etoile-warning" class="hidden text-xs text-orange-400 font-medium mb-1 mr-1">Ambulatoire forcé</div>
                              <div id="harmonization-status" class="text-[10px] uppercase font-bold text-slate-400 transition-colors">Mode Standard</div>
                         </div>
                     </div>
@@ -166,33 +180,39 @@
 
     <script>
         // --- DATA ---
+        // V9: Data complète et corrigée (10/02/2026)
         const db = {
-            "Abdominoplastie": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4200, anesth: 550, fso: 726, sejour: 533, implants: 0 } },
-            "Abdominoplastie + Cure hernie": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4200, anesth: 550, fso: 726, sejour: 533, implants: 0 } },
-            "Ablation de prothèses": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3600, anesth: 400, fso: 145.20, sejour: 408, implants: 0 } },
-            "Ablation prothèses + Lipofilling": { duration: 120, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 580.80, sejour: 408, implants: 0 } }, // NEW
-            "Ablation prothèses + Mastopexie": { duration: 120, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 726, sejour: 408, implants: 0 } },
-            "Augmentation Mammaire": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3900, anesth: 450, fso: 435.60, sejour: 408, implants: 680 } },
+            "Abdominoplastie": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4200, anesth: 875, fso: 726, sejour: 533, implants: 0 } },
+            "Abdominoplastie (SÉCU)": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4200, anesth: 725, fso: 0, sejour: 0, implants: 0 } },
+            "Abdominoplastie + Cure hernie": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4200, anesth: 875, fso: 726, sejour: 533, implants: 0 } },
+            "Ablation de prothèses": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3600, anesth: 500, fso: 145.20, sejour: 408, implants: 0 } },
+            "Ablation prothèses + Lipofilling": { duration: 120, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 650, fso: 726, sejour: 408, implants: 0 } },
+            "Ablation prothèses + Mastopexie": { duration: 120, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 650, fso: 580.80, sejour: 408, implants: 0 } },
+            "Augmentation Mammaire": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3900, anesth: 600, fso: 435.60, sejour: 408, implants: 680 } },
             "Augmentation Mammaire Composite": { duration: 90, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 750, fso: 726, sejour: 408, implants: 680 } },
-            "Blépharoplastie 4 paupières": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 300, fso: 435.60, sejour: 408, implants: 0 } },
-            "Blépharoplastie Inférieure": { duration: 90, type: "Ambulatoire", biarritz: { hc: 3500, anesth: 300, fso: 290.40, sejour: 408, implants: 0 } },
-            "Blépharoplastie Supérieure": { duration: 60, type: "Ambulatoire", biarritz: { hc: 2600, anesth: 300, fso: 290.40, sejour: 408, implants: 0 } },
-            "Changement de prothèses": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 450, fso: 290.40, sejour: 408, implants: 680 } },
-            "Changement prothèses + Mastopexie": { duration: 150, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 726, sejour: 408, implants: 680 } },
-            "Lifting de bras": { duration: 120, type: "Ambulatoire", biarritz: { hc: 3900, anesth: 450, fso: 580.80, sejour: 408, implants: 0 } },
-            "Lipoaspiration 1 site": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3600, anesth: 450, fso: 726, sejour: 408, implants: 0 } },
-            "Lipoaspiration 2 sites": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 450, fso: 726, sejour: 408, implants: 0 } },
-            "Lipoaspiration 3 sites": { duration: 150, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 550, fso: 726, sejour: 408, implants: 0 } },
-            "Lipo DLA": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4800, anesth: 650, fso: 726, sejour: 533, implants: 0 } },
-            "DLA + Lipo 1 site": { duration: 210, type: "Hospit 1 nuit", biarritz: { hc: 4900, anesth: 1000, fso: 0, sejour: 533, implants: 0 } }, // FIXED: FSO 0, Duration 210
-            "Lipofilling mammaire >200g": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 650, fso: 726, sejour: 408, implants: 0 } },
-            "Lipo sous-menton": { duration: 45, type: "Ambulatoire", biarritz: { hc: 2500, anesth: 0, fso: 0, sejour: 0, implants: 0 } }, // NEW
-            "Lipofilling cernes": { duration: 60, type: "Ambulatoire", biarritz: { hc: 1800, anesth: 0, fso: 0, sejour: 0, implants: 0 } }, // NEW
-            "Mastopexie": { duration: 90, type: "Ambulatoire", biarritz: { hc: 4200, anesth: 500, fso: 580.80, sejour: 408, implants: 0 } },
-            "Mastopexie + Implants": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 550, fso: 726, sejour: 408, implants: 680 } },
-            "Rhinoplastie": { duration: 210, type: "Ambulatoire", biarritz: { hc: 6200, anesth: 400, fso: 1016.40, sejour: 408, implants: 0 } },
-            "Rhino Secondaire": { duration: 240, type: "Ambulatoire", biarritz: { hc: 7200, anesth: 320, fso: 1567.20, sejour: 408, implants: 0 } }, // NEW
-            "Septorhinoplastie": { duration: 240, type: "Ambulatoire", biarritz: { hc: 6900, anesth: 400, fso: 1016.40, sejour: 408, implants: 0 } }, // NEW
+            "Blépharoplastie 4 paupières": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 650, fso: 435.60, sejour: 408, implants: 0 } },
+            "Blépharoplastie Inférieure": { duration: 90, type: "Ambulatoire", biarritz: { hc: 3500, anesth: 400, fso: 290.40, sejour: 408, implants: 0 } },
+            "Blépharoplastie Supérieure": { duration: 60, type: "Ambulatoire", biarritz: { hc: 2600, anesth: 400, fso: 290.40, sejour: 408, implants: 0 } },
+            "Changement de prothèses": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 600, fso: 290.40, sejour: 408, implants: 680 } },
+            "Changement prothèses + Mastopexie": { duration: 150, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 750, fso: 726, sejour: 408, implants: 680 } },
+            "Lifting de bras": { duration: 120, type: "Ambulatoire", biarritz: { hc: 3900, anesth: 650, fso: 580.80, sejour: 408, implants: 0 } },
+            "Lipoaspiration 1 site": { duration: 60, type: "Ambulatoire", biarritz: { hc: 3600, anesth: 650, fso: 726, sejour: 408, implants: 0 } },
+            "Lipoaspiration 2 sites": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 650, fso: 726, sejour: 408, implants: 0 } },
+            "Lipoaspiration 3 sites": { duration: 150, type: "Ambulatoire", biarritz: { hc: 5500, anesth: 750, fso: 726, sejour: 408, implants: 0 } },
+            "Lipo DLA": { duration: 120, type: "Hospit 1 nuit", biarritz: { hc: 4800, anesth: 875, fso: 726, sejour: 533, implants: 0 } },
+            "DLA + Lipo 1 site": { duration: 210, type: "Hospit 1 nuit", biarritz: { hc: 4900, anesth: 1000, fso: 0, sejour: 533, implants: 0 } },
+            "Lipofilling mammaire >200g": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 750, fso: 726, sejour: 408, implants: 0 } },
+            "Lipo sous-menton": { duration: 45, type: "Ambulatoire", biarritz: { hc: 2500, anesth: 0, fso: 0, sejour: 0, implants: 0 } },
+            "Lipofilling cernes": { duration: 60, type: "Ambulatoire", biarritz: { hc: 1800, anesth: 0, fso: 0, sejour: 0, implants: 0 } },
+            "Mastopexie": { duration: 90, type: "Ambulatoire", biarritz: { hc: 4200, anesth: 650, fso: 580.80, sejour: 408, implants: 0 } },
+            "Mastopexie + Implants": { duration: 120, type: "Ambulatoire", biarritz: { hc: 4800, anesth: 750, fso: 726, sejour: 408, implants: 680 } },
+            "Nymphoplastie (SÉCU)": { duration: 60, type: "Ambulatoire", biarritz: { hc: 2200, anesth: 350, fso: 0, sejour: 0, implants: 0 } }, 
+            "Otoplastie (SÉCU)": { duration: 60, type: "Ambulatoire", biarritz: { hc: 1800, anesth: 600, fso: 0, sejour: 0, implants: 0 } }, 
+            "Réduction Mammaire (SÉCU)": { duration: 90, type: "Ambulatoire", biarritz: { hc: 4500, anesth: 600, fso: 0, sejour: 0, implants: 0 } }, 
+            "Rhinoplastie": { duration: 210, type: "Ambulatoire", biarritz: { hc: 5800, anesth: 1350, fso: 1567.20, sejour: 408, implants: 0 } },
+            "Retouche Rhino": { duration: 60, type: "Ambulatoire", biarritz: { hc: 2800, anesth: 200, fso: 0, sejour: 0, implants: 0 } },
+            "Rhino Secondaire": { duration: 240, type: "Ambulatoire", biarritz: { hc: 7200, anesth: 320, fso: 1567.20, sejour: 408, implants: 0 } },
+            "Septorhinoplastie": { duration: 240, type: "Ambulatoire", biarritz: { hc: 6900, anesth: 1250, fso: 0, sejour: 0, implants: 0 } },
             "Septoplastie seule": { duration: 150, type: "Ambulatoire", biarritz: { hc: 0, anesth: 0, fso: 0, sejour: 0, implants: 0, note: "PEC Sécu" } }
         };
 
@@ -205,6 +225,9 @@
                 const opt = document.createElement('option');
                 opt.value = key;
                 opt.textContent = key;
+                if(key.includes("(SÉCU)")) {
+                    opt.classList.add('bg-green-50', 'text-green-700', 'font-medium');
+                }
                 select.appendChild(opt);
             });
             select.addEventListener('change', (e) => {
@@ -214,6 +237,7 @@
             });
             document.getElementById('inputDuration').addEventListener('input', calculate);
             document.getElementById('inputType').addEventListener('change', calculate);
+            document.getElementById('etoileStay').addEventListener('change', calculate); // New listener
             document.getElementById('valHC').addEventListener('input', updateTotalManual);
             document.getElementById('toggleHarmonization').addEventListener('change', calculate);
             setClinic('alphand');
@@ -244,13 +268,18 @@
             document.getElementById('badgeClinic').textContent = { alphand: "Clinique Alphand", etoile: "Clinique Étoile", biarritz: "Clinique Biarritz" }[clinic];
 
             const typeSelect = document.getElementById('inputType');
+            const etoileStayDiv = document.getElementById('etoile-stay-container');
+            const etoileWarning = document.getElementById('etoile-warning');
+
             if (clinic === 'etoile') {
                 typeSelect.value = 'Ambulatoire';
                 typeSelect.disabled = true;
-                document.getElementById('etoile-warning').classList.remove('hidden');
+                etoileWarning.classList.remove('hidden');
+                etoileStayDiv.classList.remove('hidden'); // Show Etoile specific stay
             } else {
                 typeSelect.disabled = false;
-                document.getElementById('etoile-warning').classList.add('hidden');
+                etoileWarning.classList.add('hidden');
+                etoileStayDiv.classList.add('hidden'); // Hide Etoile specific stay
                 if(currentKey) typeSelect.value = db[currentKey].type;
             }
             if(currentKey) calculate();
@@ -276,7 +305,7 @@
             // Local Costs
             let localTech = { clinic: 0, anesth: 0, stay: 0 };
             if (currentClinic === 'alphand') localTech = calcAlphand(duration, type);
-            else if (currentClinic === 'etoile') localTech = calcEtoile(duration);
+            else if (currentClinic === 'etoile') localTech = calcEtoile(duration); // Etoile now includes dynamic stay
             else if (currentClinic === 'biarritz') {
                 if(data.biarritz) localTech = { clinic: data.biarritz.fso, anesth: data.biarritz.anesth, stay: data.biarritz.sejour };
             }
@@ -288,7 +317,7 @@
             updateVisualTheme(isHarmonized);
 
             // Display
-            document.getElementById('resTitle').textContent = currentKey;
+            document.getElementById('resTitle').innerHTML = currentKey + (currentKey.includes("(SÉCU)") ? '<span class="badge-secu">SÉCU</span>' : '');
             document.getElementById('badgeTime').textContent = duration + " min";
             document.getElementById('valHC').value = computedHC;
             document.getElementById('valAnesth').textContent = localTech.anesth;
@@ -350,7 +379,11 @@
         function calcEtoile(dur) {
             const clinic = Math.ceil(dur / 15) * 190;
             let anesth = (dur <= 60) ? 500 : 500 + (Math.ceil((dur - 60) / 30) * 100);
-            return { clinic, anesth, stay: 0, total: clinic + anesth };
+            
+            // Get selected stay type
+            const stayCost = parseInt(document.getElementById('etoileStay').value) || 260;
+            
+            return { clinic, anesth, stay: stayCost, total: clinic + anesth + stayCost };
         }
 
         function updateDescriptions(dur, type, biarritzData) {
@@ -361,7 +394,11 @@
             } else if (currentClinic === 'etoile') {
                 document.getElementById('descClinic').textContent = `190€ / 15 min`;
                 document.getElementById('descAnesth').textContent = "Idem Alphand";
-                document.getElementById('descStay').textContent = "Inclus";
+                
+                // Get text of selected option
+                const sel = document.getElementById('etoileStay');
+                const text = sel.options[sel.selectedIndex].text;
+                document.getElementById('descStay').textContent = text;
             } else {
                 document.getElementById('descClinic').textContent = `Forfait Salle (FSO)`;
                 document.getElementById('descAnesth').textContent = "Forfait";
