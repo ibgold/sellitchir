@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clinique Dr Hayot - Refonte du Parcours Patient</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f4f4f5;
+        }
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .timeline-line {
+            position: absolute;
+            left: 2rem;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background-color: #e4e4e7;
+            z-index: 0;
+        }
+        @media (max-width: 768px) {
+            .timeline-line { left: 1.5rem; }
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 900: '#0c4a6e' },
+                        old: { 50: '#fafafa', 100: '#f4f4f5', 500: '#71717a', 600: '#52525b', alert: '#ef4444' },
+                        new: { 50: '#ecfdf5', 100: '#d1fae5', 500: '#10b981', 600: '#059669', accent: '#0ea5e9' }
+                    }
+                }
+            }
+        }
+
+        function switchTab(tabId) {
+            // Update buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('bg-white', 'shadow-md', 'text-slate-800');
+                btn.classList.add('text-slate-500', 'hover:text-slate-700');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.remove('text-slate-500', 'hover:text-slate-700');
+            activeBtn.classList.add('bg-white', 'shadow-md', 'text-slate-800');
+
+            // Update content
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.getElementById('content-' + tabId).classList.add('active');
+        }
+    </script>
+</head>
+<body class="text-slate-800 antialiased min-h-screen pb-20">
+
+    <!-- Header -->
+    <header class="bg-gradient-to-r from-slate-900 to-slate-800 text-white py-16 px-6 shadow-xl relative overflow-hidden">
+        <div class="absolute inset-0 opacity-10 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAiIGhlaWdodD0iMjAiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+PGNpcmNsZSBjeD0iMiIgY3k9IjIiIHI9IjIiIGZpbGw9IiNmZmZmZmYiLz48L3N2Zz4=')]"></div>
+        <div class="max-w-5xl mx-auto relative z-10 text-center">
+            <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">Clinique Dr Hayot</h1>
+            <h2 class="text-xl md:text-2xl text-brand-100 font-light opacity-90">Analyse & Optimisation du Parcours Patient</h2>
+            <p class="mt-6 max-w-2xl mx-auto text-slate-300 text-sm md:text-base leading-relaxed">
+                Reprise de contrôle sur le flux entrant, élimination des points de friction et transition vers une expérience premium, centralisée et fluide.
+            </p>
+        </div>
+    </header>
+
+    <!-- Tabs Navigation -->
+    <div class="max-w-md mx-auto mt-[-24px] relative z-20">
+        <div class="bg-slate-200/80 backdrop-blur-md p-1.5 rounded-2xl flex justify-between items-center shadow-lg border border-white/20">
+            <button id="btn-old" onclick="switchTab('old')" class="tab-btn w-1/2 py-3 rounded-xl font-semibold text-sm transition-all duration-300 bg-white shadow-md text-slate-800">
+                L'Ancien Processus
+            </button>
+            <button id="btn-new" onclick="switchTab('new')" class="tab-btn w-1/2 py-3 rounded-xl font-semibold text-sm transition-all duration-300 text-slate-500 hover:text-slate-700">
+                Le Nouveau Processus
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 mt-12 relative">
+
+        <!-- ============================================== -->
+        <!-- ONGLETS: ANCIEN PROCESSUS (L'existant / L'Audit) -->
+        <!-- ============================================== -->
+        <div id="content-old" class="tab-content active relative">
+            <div class="timeline-line"></div>
+
+            <!-- Etape 1 -->
+            <div class="relative pl-16 md:pl-24 mb-12">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-white border-4 border-slate-200 rounded-full flex items-center justify-center font-bold text-slate-400 text-xl shadow-sm">1</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Acquisition & Premier Contact</h3>
+                    <div class="mb-5 space-y-3 text-sm text-slate-600">
+                        <p><strong>Sources :</strong> Bouche-à-oreille (~60%), Instagram (~40%), Site internet, Téléphone.</p>
+                        <p><strong>Gestion Insta :</strong> Le Dr Hayot répond souvent lui-même aux DMs, ou Lucie redirige vers le formulaire.</p>
+                        <p><strong>Formulaire :</strong> Géré par Lucie (envoi de photos, validation médicale Dr, estimation tarifaire envoyée).</p>
+                        <p><strong>Téléphonie :</strong> 2 lignes. Ligne Dr (Lucie) + Ligne Centre (Infirmières/Accueil). Messagerie non centralisée.</p>
+                    </div>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                        <h4 class="text-red-700 font-semibold mb-2 flex items-center text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            Points de friction
+                        </h4>
+                        <ul class="list-disc list-inside text-sm text-red-600 space-y-1">
+                            <li>Le Dr Hayot perd du temps sur Instagram.</li>
+                            <li>Téléphonie confuse, perte de leads si appel au centre.</li>
+                            <li>Aucun filtrage des patients entrants.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Etape 2 -->
+            <div class="relative pl-16 md:pl-24 mb-12">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-white border-4 border-slate-200 rounded-full flex items-center justify-center font-bold text-slate-400 text-xl shadow-sm">2</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Prise de Rendez-vous</h3>
+                    <div class="mb-5 space-y-3 text-sm text-slate-600">
+                        <p><strong>Outil :</strong> Réservation autonome via Doctolib.</p>
+                        <p><strong>Délai :</strong> ~3 semaines d'attente.</p>
+                        <p><strong>Finances :</strong> Aucun acompte n'est demandé à la réservation.</p>
+                        <p><strong>Rappels :</strong> SMS du centre, mais pas de rappel systématique pour la ligne Dr Hayot (sauf manuellement par Lucie en période creuse).</p>
+                    </div>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                        <h4 class="text-red-700 font-semibold mb-2 flex items-center text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            Points de friction
+                        </h4>
+                        <ul class="list-disc list-inside text-sm text-red-600 space-y-1">
+                            <li>Autonomie sur Doctolib = aucun contrôle sur la qualité des leads.</li>
+                            <li>Agenda saturé par des "touristes" ou profils hors budget.</li>
+                            <li>Zéro engagement financier du patient avant la consultation.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Etape 3 -->
+            <div class="relative pl-16 md:pl-24 mb-12">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-white border-4 border-slate-200 rounded-full flex items-center justify-center font-bold text-slate-400 text-xl shadow-sm">3</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">La Consultation (Hybride)</h3>
+                    <div class="mb-5 space-y-3 text-sm text-slate-600">
+                        <p><strong>Format Visio (50€) :</strong> Mardi, Jeudi, Vendredi. 15min. Dr donne indication, Lucie reprend la main à distance pour devis.</p>
+                        <p><strong>Format Physique (100€) :</strong> 15-30min sur place. Dr donne le prix oralement. Sortie de salle gérée par Stéphanie ou l'accueil.</p>
+                        <p><strong>Administratif physique :</strong> Explication rapide (3 lignes) du devis et encaissement à la sortie.</p>
+                    </div>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                        <h4 class="text-red-700 font-semibold mb-2 flex items-center text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            Points de friction
+                        </h4>
+                        <ul class="list-disc list-inside text-sm text-red-600 space-y-1">
+                            <li>Modèle physique chronophage pour le chirurgien.</li>
+                            <li>Prix de la Visio (50€) trop faible, dévalorisant l'expertise.</li>
+                            <li>Explication de devis "expéditive" en sortie de salle.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Etape 4 -->
+            <div class="relative pl-16 md:pl-24 mb-12">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-white border-4 border-slate-200 rounded-full flex items-center justify-center font-bold text-slate-400 text-xl shadow-sm">4</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Closing & Décision</h3>
+                    <div class="mb-5 space-y-3 text-sm text-slate-600">
+                        <p><strong>Délai de décision :</strong> 15 jours pour les motivés, jusqu'à 3-6 mois pour les autres. Pertes de vue fréquentes.</p>
+                        <p><strong>Action patient :</strong> Rétrospectivement, le patient doit recontacter Lucie s'il est intéressé après réception du devis par mail.</p>
+                        <p><strong>Programmation :</strong> Lucie gère l'inscription au bloc, l'anesthésiste et l'envoi des consignes.</p>
+                    </div>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                        <h4 class="text-red-700 font-semibold mb-2 flex items-center text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            Points de friction
+                        </h4>
+                        <ul class="list-disc list-inside text-sm text-red-600 space-y-1">
+                            <li>Marketing de l'espoir : l'émotion redescend, le patient est laissé seul avec son devis.</li>
+                            <li>Aucun closing actif (le cabinet attend que le patient revienne).</li>
+                            <li>Chute brutale du taux de conversion.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Etape 5 -->
+            <div class="relative pl-16 md:pl-24 mb-12">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-white border-4 border-slate-200 rounded-full flex items-center justify-center font-bold text-slate-400 text-xl shadow-sm">5</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-slate-200 p-6 sm:p-8">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4">Intervention & Post-Opératoire</h3>
+                    <div class="mb-5 space-y-3 text-sm text-slate-600">
+                        <p><strong>Opérations :</strong> 8 à 10 par semaine (~1 mois d'attente).</p>
+                        <p><strong>Financement :</strong> Aucun acompte pour réserver le bloc. Règlement total le jour de l'intervention (souvent par chèque).</p>
+                        <p><strong>Suivi :</strong> Contrôle Dr à J+1. Ablation des fils par les infirmières (Sylvie/Emma) à J+6.</p>
+                        <p><strong>SAV :</strong> Questions diverses gérées par Lucie ou le centre.</p>
+                    </div>
+                    <div class="bg-red-50 border-l-4 border-red-500 p-4 rounded-r-lg">
+                        <h4 class="text-red-700 font-semibold mb-2 flex items-center text-sm">
+                            <svg class="w-4 h-4 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            Points de friction
+                        </h4>
+                        <ul class="list-disc list-inside text-sm text-red-600 space-y-1">
+                            <li>Risque financier (bloc réservé sans acompte, annulation de dernière minute possible).</li>
+                            <li>Communication éparpillée (mail/tél) pour le suivi.</li>
+                            <li>Surcharge mentale de Lucie qui gère l'administratif ET le médical léger.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================== -->
+        <!-- ONGLETS: NOUVEAU PROCESSUS (La Solution) -->
+        <!-- ============================================== -->
+        <div id="content-new" class="tab-content relative">
+            <div class="timeline-line bg-brand-100"></div>
+
+            <!-- Etape 1 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-new-500 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-md border-4 border-white">1</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-new-100 p-6 sm:p-8 hover:shadow-md transition">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        Acquisition & Premier Contact
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Délégation 100% Insta :</strong> Le Dr Hayot ne gère plus les DMs. Lucie récupère l'intégralité pour libérer le temps médical.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Téléphonie centralisée :</strong> Ligne prioritaire vers Lucie. <br/><span class="text-new-600 font-medium">Filet de sécurité :</span> Si l'accueil répond, consigne stricte de prendre nom/numéro uniquement. Lucie rappelle.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Base de données (CRM) :</strong> Création immédiate du profil patient dès récupération d'une coordonnée (Insta/Tél/Web).</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Etape 2 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-new-500 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-md border-4 border-white">2</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-new-100 p-6 sm:p-8 hover:shadow-md transition">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        Qualification & Prise de RDV
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Filtre Digital :</strong> Fin de la réservation autonome sur Doctolib. Tout passe par la qualification du cabinet.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Qualification C.A.R.E.S. :</strong> Application d'une méthode de filtrage stricte au téléphone par Lucie.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Engagement & Paiement Stripe :</strong> Encaissement de la consultation en avance via lien. (Pas de paiement sous 24h = Pas de RDV). Fin des no-shows et profils non qualifiés.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Etape 3 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-new-500 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-md border-4 border-white">3</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-new-100 p-6 sm:p-8 hover:shadow-md transition">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        La Consultation (Le nouveau modèle)
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>100% Téléconsultation :</strong> Suppression des premières consultations physiques (trop chronophages).</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Repositionnement Premium :</strong> Passage de la visio à 150€ (15 à 30 min) pour affirmer la valeur et l'expertise.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Physique = Exception :</strong> 2ème consultation sur place uniquement pour cas exceptionnels, sur des patients déjà qualifiés et engagés financièrement.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Etape 4 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-new-500 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-md border-4 border-white">4</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-new-100 p-6 sm:p-8 hover:shadow-md transition">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        Closing & Vente Active
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Transfert à chaud :</strong> Agendas calqués. Dès que le Dr termine la visio, Lucie prend immédiatement le relais avec le patient.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Méthode C.E.S.A.R.E. :</strong> Vente émotionnelle. Lucie va chercher les vraies motivations et projette le patient.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Closing direct GoCardless :</strong> Fin d'appel = validation d'un acompte ou du paiement total sous 15 jours. L'engagement est immédiat.</p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Etape 5 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="w-12 h-12 bg-new-500 text-white rounded-full flex items-center justify-center font-bold text-xl shadow-md border-4 border-white">5</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-new-100 p-6 sm:p-8 hover:shadow-md transition">
+                    <h3 class="text-xl font-bold text-slate-800 mb-4 flex items-center">
+                        Onboarding, Administratif & Médical
+                    </h3>
+                    <ul class="space-y-4">
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Sécurisation du bloc :</strong> Paiement total obligatoirement encaissé avant l'opération avec point de contrôle administratif.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Onboarding VIP WhatsApp :</strong> Dès le closing, création d'un groupe WhatsApp sécurisé et exclusif pour le patient.</p>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="bg-new-100 text-new-600 p-1 rounded-full mr-3 mt-0.5"><svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg></span>
+                            <p class="text-sm text-slate-700"><strong>Répartition de la charge (Équipe) :</strong> <br/>
+                                - <em>Stéphanie</em> est ajoutée au groupe pour l'administratif pré-op.<br/>
+                                - <em>Sylvie/Emma</em> sont ajoutées pour les questions médicales.<br/>
+                                <span class="text-new-600 font-medium">Lucie est libérée de la charge mentale post-closing.</span>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Conclusion globale nouveau process -->
+            <div class="mt-16 bg-gradient-to-br from-brand-900 to-brand-600 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 -mt-4 -mr-4 w-32 h-32 bg-white opacity-10 rounded-full blur-2xl"></div>
+                <h3 class="text-2xl font-bold mb-8 text-center relative z-10">Bénéfices du Nouveau Système</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center relative z-10">
+                    <div>
+                        <div class="text-3xl mb-3">⏱️</div>
+                        <h4 class="font-semibold text-brand-100 mb-1">Gain de temps</h4>
+                        <p class="text-xs text-brand-50/80 leading-tight">Chirurgien concentré sur l'expertise, tâches chronophages déléguées.</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl mb-3">📈</div>
+                        <h4 class="font-semibold text-brand-100 mb-1">Taux de Conversion</h4>
+                        <p class="text-xs text-brand-50/80 leading-tight">Closing à chaud, engagement immédiat et fin du marketing de l'espoir.</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl mb-3">💎</div>
+                        <h4 class="font-semibold text-brand-100 mb-1">Positionnement</h4>
+                        <p class="text-xs text-brand-50/80 leading-tight">Expérience fluide, encadrement WhatsApp VIP, image haut de gamme assumée.</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl mb-3">🧘‍♀️</div>
+                        <h4 class="font-semibold text-brand-100 mb-1">Sérénité d'équipe</h4>
+                        <p class="text-xs text-brand-50/80 leading-tight">Charge mentale répartie, rôles définis, processus sécurisé financièrement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+    
+    <footer class="text-center text-slate-400 text-sm mt-12 pb-8">
+        Refonte du Parcours Patient - Sell It &copy; 2026
+    </footer>
+
+</body>
+</html>
