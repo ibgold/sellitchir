@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Présentation Stratégie - Centre Agen Esthétique</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        serif: ['Playfair Display', 'serif'],
+                    },
+                    colors: {
+                        clinic: {
+                            dark: '#1a1a1a',
+                            charcoal: '#2d2d2d',
+                            gold: '#d4af37',
+                            sand: '#e8e5df',
+                            cream: '#fcfbf9',
+                            white: '#ffffff',
+                            accent: '#c5a059'
+                        }
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.8s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            background-color: #fcfbf9;
+            color: #1a1a1a;
+            scroll-behavior: smooth;
+        }
+        .presentation-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 2rem;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.05);
+        }
+        .chart-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
+            height: 300px;
+        }
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #fcfbf9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #d4af37;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased">
+
+    <nav class="fixed top-0 w-full glass-card z-50 px-8 py-4 flex justify-between items-center">
+        <div class="font-serif text-2xl font-bold tracking-tight text-clinic-dark">AGEN <span class="text-clinic-gold italic font-normal">Esthétique</span></div>
+        <div class="hidden md:flex space-x-6 text-sm font-medium text-clinic-charcoal">
+            <a href="#vision" class="hover:text-clinic-gold transition">La Vision</a>
+            <a href="#club-eclat" class="hover:text-clinic-gold transition">Club Éclat</a>
+            <a href="#beauty-bank" class="hover:text-clinic-gold transition">Beauty Bank</a>
+            <a href="#impact" class="hover:text-clinic-gold transition">Impact</a>
+        </div>
+    </nav>
+
+    <section id="hero" class="presentation-section relative items-center text-center animate-fade-in-up mt-10">
+        <div class="max-w-4xl mx-auto">
+            <span class="text-clinic-gold font-semibold tracking-widest uppercase text-sm mb-6 block">Stratégie de Fidélisation 2026</span>
+            <h1 class="font-serif text-5xl md:text-7xl font-bold mb-8 text-clinic-dark leading-tight">
+                L'Avenir de la <br>
+                <span class="italic text-clinic-gold">Beauté Récurrente</span>
+            </h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto leading-relaxed mb-12">
+                Transformer l'expérience patient d'une démarche occasionnelle à un accompagnement exclusif, continu et hautement rentable pour le centre.
+            </p>
+            <a href="#vision" class="inline-block bg-clinic-dark text-white px-8 py-4 rounded-none uppercase tracking-widest text-xs font-bold hover:bg-clinic-gold transition duration-300">
+                Découvrir la stratégie
+            </a>
+        </div>
+    </section>
+
+    <section id="vision" class="presentation-section bg-clinic-dark text-white">
+        <div class="max-w-6xl mx-auto w-full grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <div>
+                <h2 class="font-serif text-4xl md:text-5xl mb-6 leading-tight">Le paradoxe de <br><span class="text-clinic-gold italic">"l'Illimité"</span></h2>
+                <div class="h-1 w-20 bg-clinic-gold mb-8"></div>
+                <p class="text-gray-300 text-lg mb-6 leading-relaxed">
+                    Dans l'esthétique médicale (Hydrafacial, Virtue RF, Microneedling), un modèle "tout compris" classique détruit la marge à cause des consommables élevés.
+                </p>
+                <p class="text-gray-300 text-lg leading-relaxed">
+                    La solution ? Créer le sentiment d'appartenance à un <strong>Club Privilège</strong>. Offrir des avantages perçus comme massifs (petits soins, remises) tout en sanctuarisant la rentabilité des technologies coûteuses.
+                </p>
+            </div>
+            <div class="grid grid-cols-2 gap-6">
+                <div class="border border-white/20 p-8 flex flex-col items-center justify-center text-center hover:border-clinic-gold transition duration-300">
+                    <div class="text-4xl mb-4 text-clinic-gold">✦</div>
+                    <h3 class="font-bold mb-2">Prévisibilité</h3>
+                    <p class="text-sm text-gray-400">Revenus lissés sur 12 mois</p>
+                </div>
+                <div class="border border-white/20 p-8 flex flex-col items-center justify-center text-center hover:border-clinic-gold transition duration-300">
+                    <div class="text-4xl mb-4 text-clinic-gold">✦</div>
+                    <h3 class="font-bold mb-2">Fidélité</h3>
+                    <p class="text-sm text-gray-400">Captation totale du budget beauté</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="club-eclat" class="presentation-section bg-clinic-sand/30">
+        <div class="max-w-6xl mx-auto w-full">
+            <div class="text-center mb-16">
+                <span class="text-clinic-accent font-semibold tracking-widest uppercase text-sm mb-4 block">Option 01</span>
+                <h2 class="font-serif text-4xl md:text-5xl text-clinic-dark">Le Club "Éclat Signature"</h2>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">L'expérience ultime d'entretien cutané mensuel.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="bg-clinic-dark text-white p-10 md:p-14 shadow-2xl relative overflow-hidden">
+                    <div class="absolute top-0 right-0 w-32 h-32 bg-clinic-gold/10 rounded-full blur-3xl -mr-10 -mt-10"></div>
+                    <div class="flex justify-between items-end mb-10 border-b border-white/20 pb-8">
+                        <div>
+                            <h3 class="font-serif text-3xl italic text-clinic-gold mb-2">Carte Membre</h3>
+                            <p class="text-gray-400 text-sm tracking-widest uppercase">Engagement 6 mois</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-4xl md:text-5xl font-light">169<span class="text-2xl text-clinic-gold">€</span></span>
+                            <span class="block text-gray-400 text-sm mt-1">/ mois</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-6 text-gray-300">
+                        <li class="flex items-start">
+                            <span class="text-clinic-gold mr-4 mt-1">✓</span>
+                            <span><strong>1 Soin Technologique inclus</strong> <br><span class="text-sm text-gray-400">Au choix: Hydrafacial Signature, Jet-Peel, Microneedling.</span></span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-clinic-gold mr-4 mt-1">✓</span>
+                            <span><strong>Entretien "Illimité"</strong> <br><span class="text-sm text-gray-400">Jusqu'à 2 Soins Nettoyants Olivier Claire (30min) par mois.</span></span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-clinic-gold mr-4 mt-1">✓</span>
+                            <span><strong>Privilège VIP</strong> <br><span class="text-sm text-gray-400">-15% sur tous les soins supérieurs (Virtue RF, PRP) et cosmétiques.</span></span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="px-6">
+                    <h3 class="font-serif text-2xl mb-6 text-clinic-dark text-center">Pourquoi c'est irrésistible ?</h3>
+                    <p class="text-center text-sm text-gray-500 mb-8 italic">Le grand écart entre la valeur perçue par la patiente et le coût réel pour la clinique.</p>
+                    <div class="chart-wrapper">
+                        <canvas id="clubEclatChart"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="beauty-bank" class="presentation-section">
+        <div class="max-w-6xl mx-auto w-full">
+            <div class="text-center mb-16">
+                <span class="text-clinic-accent font-semibold tracking-widest uppercase text-sm mb-4 block">Option 02</span>
+                <h2 class="font-serif text-4xl md:text-5xl text-clinic-dark">La "Beauty Bank"</h2>
+                <p class="text-gray-600 mt-4 max-w-2xl mx-auto">Le modèle portefeuille VIP. La patiente épargne, la clinique s'assure une trésorerie immédiate.</p>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+                <div class="order-2 lg:order-1 px-6">
+                    <h3 class="font-serif text-2xl mb-6 text-clinic-dark text-center">L'effet de levier (Ex: Virtue RF Visage à 350€)</h3>
+                    <p class="text-center text-sm text-gray-500 mb-8 italic">Après 2 mois d'abonnement, le soin haut de gamme devient psychologiquement très accessible.</p>
+                    <div class="chart-wrapper">
+                        <canvas id="beautyBankChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="order-1 lg:order-2 bg-white p-10 md:p-14 shadow-xl border border-clinic-sand relative">
+                    <div class="flex justify-between items-end mb-10 border-b border-gray-100 pb-8">
+                        <div>
+                            <h3 class="font-serif text-3xl italic text-clinic-dark mb-2">Le Compte VIP</h3>
+                            <p class="text-gray-500 text-sm tracking-widest uppercase">Sans engagement (30j)</p>
+                        </div>
+                        <div class="text-right">
+                            <span class="text-4xl md:text-5xl font-light text-clinic-dark">150<span class="text-2xl text-clinic-gold">€</span></span>
+                            <span class="block text-gray-500 text-sm mt-1">/ mois épargnés</span>
+                        </div>
+                    </div>
+                    <ul class="space-y-6 text-gray-700">
+                        <li class="flex items-start">
+                            <span class="text-clinic-accent mr-4 mt-1">❖</span>
+                            <span><strong>100% de la somme créditée</strong> <br><span class="text-sm text-gray-500">Les 150€ sont placés sur sa cagnotte clinique, utilisables à tout moment.</span></span>
+                        </li>
+                        <li class="flex items-start">
+                            <span class="text-clinic-accent mr-4 mt-1">❖</span>
+                            <span><strong>Le Bouclier Tarifaire VIP</strong> <br><span class="text-sm text-gray-500">Tant que l'abonnement est actif, elle bénéficie de <strong>-20%</strong> sur l'intégralité de la carte de soins.</span></span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="impact" class="presentation-section bg-clinic-charcoal text-white">
+        <div class="max-w-5xl mx-auto w-full text-center">
+            <h2 class="font-serif text-4xl md:text-5xl mb-4">L'Impact sur la Croissance</h2>
+            <div class="h-1 w-20 bg-clinic-gold mb-12 mx-auto"></div>
+            
+            <div class="bg-clinic-dark p-8 md:p-12 shadow-2xl mb-12">
+                <h3 class="text-xl font-light tracking-wide mb-8 uppercase">Valeur Client Annuelle (LTV)</h3>
+                <div class="chart-wrapper" style="height: 400px; max-width: 800px;">
+                    <canvas id="revenueChart"></canvas>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
+                <div class="p-6 border-l-2 border-clinic-gold bg-white/5">
+                    <h4 class="font-bold text-lg mb-2">Engagement</h4>
+                    <p class="text-sm text-gray-400">Contrat strict : en cas de résiliation anticipée, les soins consommés sont refacturés au tarif public.</p>
+                </div>
+                <div class="p-6 border-l-2 border-clinic-gold bg-white/5">
+                    <h4 class="font-bold text-lg mb-2">No-Show</h4>
+                    <p class="text-sm text-gray-400">Rigueur clinique : annulation -48h = perte du soin mensuel ou pénalité déduite de la cagnotte.</p>
+                </div>
+                <div class="p-6 border-l-2 border-clinic-gold bg-white/5">
+                    <h4 class="font-bold text-lg mb-2">Exclusivité</h4>
+                    <p class="text-sm text-gray-400">Avantages strictement nominatifs. Non cumulables avec les cures ou promotions en cours.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="bg-clinic-dark text-center py-8 border-t border-white/10">
+        <div class="font-serif text-xl font-bold tracking-tight text-white opacity-50">AGEN <span class="italic font-normal">Esthétique</span></div>
+    </footer>
+
+    <script>
+        // Utility for label wrapping
+        function wrapLabel(label) {
+            if (label.length <= 15) return label;
+            const words = label.split(' ');
+            let lines = [];
+            let currentLine = '';
+            words.forEach(word => {
+                if ((currentLine + word).length > 15) {
+                    if (currentLine) lines.push(currentLine.trim());
+                    currentLine = word + ' ';
+                } else {
+                    currentLine += word + ' ';
+                }
+            });
+            if (currentLine) lines.push(currentLine.trim());
+            return lines;
+        }
+
+        // Global Chart Defaults for elegant look
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        Chart.defaults.color = '#71717a'; // gray-500
+        Chart.defaults.scale.grid.color = 'rgba(0,0,0,0.05)';
+
+        const commonTooltip = {
+            backgroundColor: 'rgba(26, 26, 26, 0.9)',
+            titleFont: { family: "'Playfair Display', serif", size: 16 },
+            bodyFont: { size: 14 },
+            padding: 12,
+            cornerRadius: 0,
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    return Array.isArray(label) ? label.join(' ') : label;
+                }
+            }
+        };
+
+        // Chart 1: Club Eclat (Bar)
+        const ctxEclat = document.getElementById('clubEclatChart').getContext('2d');
+        new Chart(ctxEclat, {
+            type: 'bar',
+            data: {
+                labels: ["Prix Payé", "Valeur Totale Reçue"].map(wrapLabel),
+                datasets: [{
+                    label: 'Montant (€)',
+                    data: [169, 347],
+                    backgroundColor: ['#1a1a1a', '#d4af37'],
+                    borderRadius: 0, // Sharp edges for luxury feel
+                    barThickness: 60
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: commonTooltip
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        grid: { display: false },
+                        border: { display: false }
+                    },
+                    x: {
+                        grid: { display: false },
+                        border: { display: false },
+                        ticks: { font: { weight: '600' }, color: '#1a1a1a' }
+                    }
+                }
+            }
+        });
+
+        // Chart 2: Beauty Bank (Doughnut)
+        const ctxBank = document.getElementById('beautyBankChart').getContext('2d');
+        new Chart(ctxBank, {
+            type: 'doughnut',
+            data: {
+                labels: ["Cagnotte Épargnée (2 mois)", "Reste à Payer (Jour J)", "Remise VIP (-20%)"].map(wrapLabel),
+                datasets: [{
+                    data: [300, -20, 70], // Total 350€ (300 cagnotte, -20 car on a 300 et le soin coûte 350-20% = 280. Donc il reste de l'argent ! Ajustons les datas pour être précis.)
+                    // Soin Virtue = 350€. Remise 20% = 70€. Coût = 280€. 
+                    // Cagnotte = 300€. Reste à payer = 0€ (et il reste 20€ sur la cagnotte).
+                    // Refaisons la data visuelle pour être impactant:
+                    data: [280, 0, 70], 
+                    backgroundColor: ['#1a1a1a', '#e8e5df', '#d4af37'],
+                    borderWidth: 2,
+                    borderColor: '#ffffff'
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                cutout: '75%',
+                plugins: {
+                    legend: { position: 'bottom', labels: { padding: 20, font: { size: 12 } } },
+                    tooltip: commonTooltip
+                }
+            }
+        });
+
+        // Chart 3: Revenue (Horizontal Bar)
+        const ctxRev = document.getElementById('revenueChart').getContext('2d');
+        new Chart(ctxRev, {
+            type: 'bar',
+            data: {
+                labels: ["Patiente Occasionnelle", "Patiente Club Éclat"].map(wrapLabel),
+                datasets: [{
+                    label: 'CA Annuel (€)',
+                    data: [450, 2028],
+                    backgroundColor: ['#525252', '#d4af37'],
+                    borderRadius: 0,
+                    barThickness: 40
+                }]
+            },
+            options: {
+                indexAxis: 'y',
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: { display: false },
+                    tooltip: {
+                        ...commonTooltip,
+                        backgroundColor: 'rgba(255, 255, 255, 0.9)',
+                        titleColor: '#1a1a1a',
+                        bodyColor: '#1a1a1a'
+                    }
+                },
+                scales: {
+                    x: { 
+                        beginAtZero: true, 
+                        grid: { color: 'rgba(255,255,255,0.05)' }, 
+                        border: { display: false },
+                        ticks: { color: '#a1a1aa' } 
+                    },
+                    y: { 
+                        grid: { display: false }, 
+                        border: { display: false },
+                        ticks: { color: '#ffffff', font: { weight: '600', size: 14 } } 
+                    }
+                }
+            }
+        });
+    </script>
+</body>
+</html>
