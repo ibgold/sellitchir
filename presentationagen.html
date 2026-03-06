@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plan d'Action - Clinique d'Agen</title>
+    <title>Processus & Stratégie - Clinique d'Agen</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
@@ -31,7 +31,6 @@
             }
         }
 
-        /* Animations pour la présentation */
         @keyframes fadeInUp {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
@@ -42,162 +41,238 @@
         }
         .delay-100 { animation-delay: 100ms; }
         .delay-200 { animation-delay: 200ms; }
-        .delay-300 { animation-delay: 300ms; }
-        .delay-400 { animation-delay: 400ms; }
         
-        /* Custom shadows for a modern look */
         .glass-card {
             background: rgba(255, 255, 255, 0.95);
             box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.05);
             border: 1px solid rgba(255, 255, 255, 0.2);
             backdrop-filter: blur(10px);
         }
+
+        .tab-content {
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+        }
+        .tab-content.active {
+            display: block;
+            opacity: 1;
+        }
+        .tab-btn.active {
+            background-color: #4F46E5;
+            color: white;
+            border-color: #4F46E5;
+        }
     </style>
 </head>
 <body class="antialiased pb-24 selection:bg-indigo-500 selection:text-white">
 
-    <!-- En-tête de présentation moderne -->
     <header class="bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-900 text-white pt-20 pb-28 px-6 rounded-b-[3rem] shadow-2xl relative overflow-hidden animate-fade-in">
         <div class="absolute top-0 left-0 w-full h-full opacity-20 pointer-events-none" style="background-image: radial-gradient(circle at 20% 30%, #6366f1 0%, transparent 40%), radial-gradient(circle at 80% 70%, #3b82f6 0%, transparent 40%);"></div>
         <div class="max-w-5xl mx-auto relative z-10 text-center">
             <span class="inline-block py-1 px-3 rounded-full bg-white/10 border border-white/20 text-indigo-200 text-sm font-semibold tracking-wider uppercase mb-6 backdrop-blur-sm">
-                Plan Stratégique 2026
+                Audit & Plan d'Action
             </span>
             <h1 class="text-5xl md:text-6xl font-extrabold tracking-tight mb-6 leading-tight">
-                Clinique d'Agen <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Cap sur la Croissance</span>
+                Clinique d'Agen <br><span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300">Analyse Opérationnelle</span>
             </h1>
             <p class="text-xl md:text-2xl text-slate-300 max-w-3xl mx-auto font-light leading-relaxed">
-                Structuration des données & optimisation des revenus par l'upsell ciblé en épilation laser.
+                Cartographie du parcours patient actuel et déploiement de la nouvelle stratégie de croissance.
             </p>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-6 space-y-20 -mt-16 relative z-20">
+    <main class="max-w-5xl mx-auto px-6 space-y-12 -mt-16 relative z-20">
 
-        <!-- Section 1 : Data -->
-        <section class="glass-card rounded-3xl p-8 md:p-12 animate-fade-in delay-100">
-            <div class="flex flex-col md:flex-row gap-8 items-start md:items-center mb-10 border-b border-slate-100 pb-8">
-                <div class="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center text-3xl shadow-inner shrink-0">📊</div>
-                <div>
-                    <h2 class="text-3xl font-bold text-slate-900 mb-2 tracking-tight">Structuration & Récolte de Données</h2>
-                    <p class="text-slate-500 text-lg leading-relaxed">Phase "Lean Startup" : Bâtir une fondation solide pour comprendre la clientèle en palliant le manque critique de données actuelles.</p>
-                </div>
-            </div>
+        <div class="glass-card p-2 rounded-2xl flex flex-col md:flex-row justify-center gap-2 max-w-2xl mx-auto shadow-xl">
+            <button onclick="switchTab('tab-process')" id="btn-process" class="tab-btn active flex-1 py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 border-2 border-transparent text-slate-600 hover:bg-slate-50">
+                Processus Actuel & Frictions
+            </button>
+            <button onclick="switchTab('tab-strategy')" id="btn-strategy" class="tab-btn flex-1 py-4 px-6 rounded-xl font-bold text-lg transition-all duration-300 border-2 border-transparent text-slate-600 hover:bg-slate-50">
+                Nouveau Plan Stratégique
+            </button>
+        </div>
+
+        <div id="tab-process" class="tab-content active space-y-12 animate-fade-in delay-100">
             
-            <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
-                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 hover:-translate-y-1 group">
-                    <div class="w-14 h-14 mx-auto bg-blue-50 text-blue-600 rounded-xl flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform">💾</div>
-                    <h3 class="font-bold text-slate-800 mb-2">CRM Dédié</h3>
-                    <p class="text-sm text-slate-500">Outil centralisé pour l'agrégation de l'ensemble des contacts.</p>
-                </div>
-                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 hover:-translate-y-1 group">
-                    <div class="w-14 h-14 mx-auto bg-indigo-50 text-indigo-600 rounded-xl flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform">📞</div>
-                    <h3 class="font-bold text-slate-800 mb-2">Capture 100%</h3>
-                    <p class="text-sm text-slate-500">Saisie obligatoire des coordonnées pour chaque appel entrant.</p>
-                </div>
-                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 hover:-translate-y-1 group">
-                    <div class="w-14 h-14 mx-auto bg-violet-50 text-violet-600 rounded-xl flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform">🎯</div>
-                    <h3 class="font-bold text-slate-800 mb-2">Qualification</h3>
-                    <p class="text-sm text-slate-500">Traçage précis des motifs pour définir les personas.</p>
-                </div>
-                <div class="bg-white rounded-2xl p-6 text-center shadow-sm border border-slate-100 hover:shadow-md transition-all duration-300 hover:-translate-y-1 group">
-                    <div class="w-14 h-14 mx-auto bg-fuchsia-50 text-fuchsia-600 rounded-xl flex items-center justify-center text-2xl mb-5 group-hover:scale-110 transition-transform">🔄</div>
-                    <h3 class="font-bold text-slate-800 mb-2">Follow-up</h3>
-                    <p class="text-sm text-slate-500">Stratégie de relance automatisée basée sur la data.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 2 : Levier Laser -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in delay-200">
-            <div class="glass-card rounded-3xl p-8 md:p-10 flex flex-col justify-center">
-                <div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center text-2xl shadow-inner mb-6">⚡</div>
-                <h2 class="text-3xl font-bold text-slate-900 mb-4 tracking-tight">Le Laser comme Moteur</h2>
-                <p class="text-slate-500 text-lg mb-8 leading-relaxed">L'axe principal d'optimisation réside dans l'épilation laser. Ce service capte déjà la vaste majorité des revenus actuels.</p>
-                
-                <div class="bg-gradient-to-r from-blue-600 to-indigo-600 p-6 rounded-2xl text-white shadow-lg mt-auto relative overflow-hidden">
-                    <div class="absolute -right-4 -top-4 text-7xl opacity-10">⏱️</div>
-                    <h4 class="font-bold text-xl mb-2 flex items-center gap-2">Le Levier des "10 Heures"</h4>
-                    <p class="text-blue-100 font-light text-sm leading-relaxed">Chaque patiente passe ~10 séances d'1h en cabine par an. Ce temps de contact privilégié est une opportunité commerciale majeure.</p>
-                </div>
-            </div>
-            
-            <div class="glass-card rounded-3xl p-8 md:p-10 flex flex-col items-center justify-center">
-                <h3 class="text-lg font-bold text-center text-slate-800 w-full mb-6 uppercase tracking-wider text-sm">Répartition du CA Mensuel</h3>
-                <div class="chart-container w-full">
-                    <canvas id="revenueChart"></canvas>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 3 : Mécanique Upsell -->
-        <section class="glass-card rounded-3xl p-8 md:p-12 animate-fade-in delay-300">
-            <div class="text-center mb-12 max-w-2xl mx-auto">
-                <span class="text-indigo-600 font-bold tracking-widest uppercase text-sm mb-2 block">Processus Commercial</span>
-                <h2 class="text-3xl font-bold text-slate-900 mb-4 tracking-tight">La Mécanique d'Upsell en Cabine</h2>
-                <p class="text-slate-500 text-lg">Former les praticiennes à une approche de "découverte" conversationnelle pour proposer des soins additionnels ciblés.</p>
-            </div>
-
-            <div class="flex flex-col md:flex-row items-center justify-between gap-6 relative">
-                <!-- Ligne de fond pour grand écran -->
-                <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-slate-100 -z-10 transform -translate-y-1/2 rounded-full"></div>
-
-                <div class="bg-white rounded-2xl p-8 text-center shadow-lg border border-slate-100 w-full md:w-1/3 relative z-10 transition-transform hover:-translate-y-1">
-                    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-indigo-100 to-blue-50 text-indigo-600 rounded-full flex items-center justify-center text-3xl mb-5 shadow-sm border border-indigo-100/50">💬</div>
-                    <h4 class="font-bold text-slate-900 text-lg mb-2">1. Découverte</h4>
-                    <p class="text-sm text-slate-500 leading-relaxed">Identifier les douleurs et complexes cutanés de la cliente pendant le laser.</p>
-                </div>
-                
-                <div class="text-slate-300 text-3xl transform rotate-90 md:rotate-0 font-light">➔</div>
-                
-                <div class="bg-white rounded-2xl p-8 text-center shadow-lg border border-slate-100 w-full md:w-1/3 relative z-10 transition-transform hover:-translate-y-1">
-                    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-indigo-100 to-blue-50 text-blue-600 rounded-full flex items-center justify-center text-3xl mb-5 shadow-sm border border-indigo-100/50">💰</div>
-                    <h4 class="font-bold text-slate-900 text-lg mb-2">2. Évaluation Budget</h4>
-                    <p class="text-sm text-slate-500 leading-relaxed">"Quel budget auriez-vous pour traiter ce problème aujourd'hui ?"</p>
-                </div>
-
-                <div class="text-slate-300 text-3xl transform rotate-90 md:rotate-0 font-light">➔</div>
-                
-                <div class="bg-white rounded-2xl p-8 text-center shadow-lg border border-slate-100 w-full md:w-1/3 relative z-10 transition-transform hover:-translate-y-1">
-                    <div class="w-16 h-16 mx-auto bg-gradient-to-br from-indigo-100 to-blue-50 text-indigo-600 rounded-full flex items-center justify-center text-3xl mb-5 shadow-sm border border-indigo-100/50">✨</div>
-                    <h4 class="font-bold text-slate-900 text-lg mb-2">3. Offre Irrésistible</h4>
-                    <p class="text-sm text-slate-500 leading-relaxed">Proposer un soin adapté au budget déclaré avec une valeur perçue élevée.</p>
-                </div>
-            </div>
-        </section>
-
-        <!-- Section 4 : Impact -->
-        <section class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in delay-400">
-            <div class="glass-card rounded-3xl p-8 md:p-10 flex flex-col items-center justify-center order-2 md:order-1">
-                <h3 class="text-lg font-bold text-center text-slate-800 w-full mb-6 uppercase tracking-wider text-sm">Projection : 100 Patientes Laser</h3>
-                <div class="chart-container w-full">
-                    <canvas id="impactChart"></canvas>
-                </div>
-            </div>
-
-            <div class="glass-card rounded-3xl p-8 md:p-10 flex flex-col justify-center order-1 md:order-2">
-                <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-2xl shadow-inner mb-6">📈</div>
-                <h2 class="text-3xl font-bold text-slate-900 mb-4 tracking-tight">Objectif Financier</h2>
-                <p class="text-slate-500 text-lg mb-8 leading-relaxed">Transformer les praticiennes en conseillères actives pour augmenter le panier moyen systématiquement.</p>
-                
-                <div class="bg-slate-900 p-8 rounded-2xl text-white shadow-xl relative overflow-hidden">
-                    <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-indigo-500 rounded-full blur-3xl opacity-30 pointer-events-none"></div>
-                    <p class="text-slate-400 font-semibold uppercase tracking-widest text-xs mb-2">Cible par Panier Moyen</p>
-                    <div class="flex items-baseline gap-2">
-                        <h4 class="font-black text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-300 text-6xl md:text-7xl tracking-tighter">+50€</h4>
+            <section class="glass-card rounded-3xl p-8 md:p-12">
+                <div class="flex flex-col md:flex-row gap-8 items-start md:items-center mb-10 border-b border-slate-100 pb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-rose-50 flex flex-col items-center justify-center shadow-inner shrink-0">
+                        <div class="w-1.5 h-6 bg-rose-500 rounded-full"></div>
+                        <div class="w-1.5 h-1.5 bg-rose-500 rounded-full mt-1"></div>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-2 tracking-tight">Diagnostic & Points de Friction</h2>
+                        <p class="text-slate-500 text-lg leading-relaxed">Analyse des pertes d'opportunités dans le parcours d'acquisition et de traitement actuel.</p>
                     </div>
                 </div>
-                <p class="text-sm text-slate-400 mt-6 font-medium">L'effet cumulé sur le volume annuel génère une croissance exponentielle du CA global.</p>
-            </div>
-        </section>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-transform">
+                        <div class="text-sm font-black text-slate-300 mb-4 tracking-widest">01</div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2">Pertes d'Appels</h3>
+                        <p class="text-sm text-slate-500">L'équipe effectue les soins et gère l'accueil simultanément. Impossibilité de répondre au téléphone pendant les séances, générant des leads perdus.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-transform">
+                        <div class="text-sm font-black text-slate-300 mb-4 tracking-widest">02</div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2">Taux de "Ghosting"</h3>
+                        <p class="text-sm text-slate-500">Environ 4 à 5 rendez-vous non honorés par semaine sur un volume de 43. Impossibilité légale actuelle de demander un acompte via Doctolib.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-transform">
+                        <div class="text-sm font-black text-slate-300 mb-4 tracking-widest">03</div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2">Faille Digitale</h3>
+                        <p class="text-sm text-slate-500">Formulaire du site web redirigé vers une adresse email inconnue. Demandes Instagram non converties faute de capture systématique du numéro.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-transform">
+                        <div class="text-sm font-black text-slate-300 mb-4 tracking-widest">04</div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2">Absence de CRM</h3>
+                        <p class="text-sm text-slate-500">Aucune base de données structurée. Les contacts non aboutis ne sont ni enregistrés ni relancés stratégiquement.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-transform">
+                        <div class="text-sm font-black text-slate-300 mb-4 tracking-widest">05</div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2">Temps Cabine Sous-Exploité</h3>
+                        <p class="text-sm text-slate-500">10 heures passées avec chaque patiente laser. Conversations axées sur la banalité (travail, famille) au lieu de creuser les complexes esthétiques.</p>
+                    </div>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 hover:shadow-md transition-transform">
+                        <div class="text-sm font-black text-slate-300 mb-4 tracking-widest">06</div>
+                        <h3 class="font-bold text-slate-800 text-lg mb-2">Objections Prix</h3>
+                        <p class="text-sm text-slate-500">Difficulté à vendre des soins premium (ex: Hydrafacial) face à des clientes qui comparent les prix avec des instituts classiques.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div class="glass-card rounded-3xl p-8 md:p-10 flex flex-col justify-center">
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4 tracking-tight">Répartition du CA Actuel</h2>
+                    <p class="text-slate-500 text-lg mb-6 leading-relaxed">Sur un CA de 28 000€ généré en Janvier, le laser représente la très grande majorité des revenus, avec un panier moyen d'environ 300€ par séance.</p>
+                    <div class="bg-rose-50 p-6 rounded-2xl border border-rose-100 mt-auto">
+                        <h4 class="font-bold text-rose-900 text-xl mb-2">Constat</h4>
+                        <p class="text-rose-800 text-sm leading-relaxed">Le laser est un produit d'appel et de rentabilité fort, mais la vente croisée vers des soins additionnels est quasi inexistante durant ces séances.</p>
+                    </div>
+                </div>
+                
+                <div class="glass-card rounded-3xl p-8 md:p-10 flex flex-col items-center justify-center">
+                    <h3 class="text-lg font-bold text-center text-slate-800 w-full mb-6 uppercase tracking-wider text-sm">Données Janvier 2024</h3>
+                    <div class="chart-container w-full">
+                        <canvas id="currentRevChart"></canvas>
+                    </div>
+                </div>
+            </section>
+        </div>
+
+        <div id="tab-strategy" class="tab-content space-y-12">
+            
+            <section class="glass-card rounded-3xl p-8 md:p-12 animate-fade-in delay-100">
+                <div class="flex flex-col md:flex-row gap-8 items-start md:items-center mb-10 border-b border-slate-100 pb-8">
+                    <div class="w-16 h-16 rounded-2xl bg-indigo-50 flex items-center justify-center shadow-inner shrink-0">
+                        <div class="w-6 h-6 border-[3px] border-indigo-500 rounded-full flex items-center justify-center">
+                            <div class="w-1.5 h-1.5 bg-indigo-500 rounded-full"></div>
+                        </div>
+                    </div>
+                    <div>
+                        <h2 class="text-3xl font-bold text-slate-900 mb-2 tracking-tight">Fondations & Structuration</h2>
+                        <p class="text-slate-500 text-lg leading-relaxed">Résolution immédiate des fuites de prospects et professionnalisation de l'accueil.</p>
+                    </div>
+                </div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div class="bg-gradient-to-br from-indigo-600 to-blue-600 p-8 rounded-2xl text-white shadow-lg relative overflow-hidden">
+                        <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-white opacity-5 rounded-full blur-2xl"></div>
+                        <h3 class="font-bold text-2xl mb-4">Recrutement Ciblé</h3>
+                        <p class="text-indigo-100 font-light leading-relaxed">Intégration d'une secrétaire dédiée dès le mois prochain. Objectif : 100% de taux de réponse téléphonique, accueil physique premium et libération du temps de vente des praticiennes.</p>
+                    </div>
+                    <div class="bg-white border-2 border-indigo-100 p-8 rounded-2xl shadow-sm relative overflow-hidden">
+                        <div class="absolute -right-4 -bottom-4 w-32 h-32 bg-indigo-600 opacity-5 rounded-full blur-2xl"></div>
+                        <h3 class="font-bold text-slate-800 text-2xl mb-4">Déploiement CRM</h3>
+                        <p class="text-slate-500 leading-relaxed">Centralisation de la data. Capture obligatoire de chaque numéro de téléphone (appels, DM). Création de scénarios de relance pour réactiver les prospects froids et limiter le ghosting.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="glass-card rounded-3xl p-8 md:p-12 animate-fade-in delay-200">
+                <div class="text-center mb-12 max-w-3xl mx-auto">
+                    <span class="text-indigo-600 font-bold tracking-widest uppercase text-sm mb-2 block">Vente Émotionnelle</span>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4 tracking-tight">La Stratégie des "10 Heures"</h2>
+                    <p class="text-slate-500 text-lg">Exploiter la relation de confiance établie durant la dizaine de séances d'épilation laser pour générer de l'upsell sur des soins esthétiques à haute marge.</p>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-stretch justify-between gap-6 relative">
+                    <div class="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-gradient-to-r from-indigo-100 via-blue-200 to-fuchsia-100 -z-10 transform -translate-y-1/2 rounded-full"></div>
+
+                    <div class="bg-white rounded-2xl p-8 text-center shadow-xl border border-slate-100 w-full md:w-1/3 relative z-10">
+                        <div class="w-16 h-16 mx-auto bg-indigo-50 text-indigo-600 rounded-full flex items-center justify-center text-xl font-black mb-6 shadow-sm border border-indigo-100/50">01</div>
+                        <h4 class="font-bold text-slate-900 text-xl mb-3">1. Creuser la Douleur</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">Remplacer les discussions banales par des questions ciblées. Identifier un complexe profond (acné, relâchement, cellulite) sans braquer la patiente.</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-8 text-center shadow-xl border border-slate-100 w-full md:w-1/3 relative z-10">
+                        <div class="w-16 h-16 mx-auto bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-xl font-black mb-6 shadow-sm border border-blue-100/50">02</div>
+                        <h4 class="font-bold text-slate-900 text-xl mb-3">2. Calibrer le Budget</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">Découvrir la capacité d'investissement avant de présenter une offre. Ne jamais supposer le budget du client à l'avance.</p>
+                    </div>
+                    
+                    <div class="bg-white rounded-2xl p-8 text-center shadow-xl border border-slate-100 w-full md:w-1/3 relative z-10">
+                        <div class="w-16 h-16 mx-auto bg-fuchsia-50 text-fuchsia-600 rounded-full flex items-center justify-center text-xl font-black mb-6 shadow-sm border border-fuchsia-100/50">03</div>
+                        <h4 class="font-bold text-slate-900 text-xl mb-3">3. L'Offre Irrésistible</h4>
+                        <p class="text-sm text-slate-500 leading-relaxed">Proposer la solution exacte au complexe soulevé, parfaitement adaptée au budget validé. Focus sur la valeur perçue et le résultat final.</p>
+                    </div>
+                </div>
+            </section>
+
+            <section class="grid grid-cols-1 md:grid-cols-2 gap-8 animate-fade-in delay-300">
+                <div class="glass-card rounded-3xl p-8 md:p-10 flex flex-col items-center justify-center">
+                    <h3 class="text-lg font-bold text-center text-slate-800 w-full mb-6 uppercase tracking-wider text-sm">Potentiel d'Upsell</h3>
+                    <div class="chart-container w-full">
+                        <canvas id="strategyChart"></canvas>
+                    </div>
+                </div>
+
+                <div class="glass-card rounded-3xl p-8 md:p-10 flex flex-col justify-center">
+                    <div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center text-indigo-500 shadow-inner mb-6 text-2xl font-light">
+                        +
+                    </div>
+                    <h2 class="text-3xl font-bold text-slate-900 mb-4 tracking-tight">Exécution & Suivi</h2>
+                    <ul class="space-y-4 text-slate-600">
+                        <li class="flex items-start gap-3">
+                            <span class="text-indigo-500 font-bold mt-1">✓</span>
+                            <span>Mise en place d'un dossier partagé (Drive) regroupant l'ensemble des trames de vente et processus.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-indigo-500 font-bold mt-1">✓</span>
+                            <span>Collecte immédiate des retranscriptions de séances laser pour auditer les discours réels.</span>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="text-indigo-500 font-bold mt-1">✓</span>
+                            <span>Phase de coaching intensif (2 mois minimum) pour lever les blocages liés à la vente.</span>
+                        </li>
+                    </ul>
+                </div>
+            </section>
+        </div>
 
     </main>
 
     <script>
-        // Configuration globale Chart.js pour un look moderne
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            document.getElementById(tabId).classList.add('active');
+            
+            if (tabId === 'tab-process') {
+                document.getElementById('btn-process').classList.add('active');
+            } else {
+                document.getElementById('btn-strategy').classList.add('active');
+            }
+        }
+
         Chart.defaults.font.family = "'Plus Jakarta Sans', sans-serif";
-        Chart.defaults.color = '#64748B'; // slate-500
-        Chart.defaults.scale.grid.color = 'rgba(226, 232, 240, 0.4)'; // slate-200 très transparent
+        Chart.defaults.color = '#64748B'; 
+        Chart.defaults.scale.grid.color = 'rgba(226, 232, 240, 0.4)'; 
 
         const wrapLabel = (label, limit = 16) => {
             if (label.length <= limit) return label;
@@ -217,7 +292,7 @@
         };
 
         const commonTooltipConfig = {
-            backgroundColor: 'rgba(15, 23, 42, 0.9)', // slate-900
+            backgroundColor: 'rgba(15, 23, 42, 0.9)', 
             titleFont: { size: 14, weight: 'bold' },
             bodyFont: { size: 14 },
             padding: 12,
@@ -236,9 +311,8 @@
             }
         };
 
-        // Graphique 1 : Doughnut
-        const ctxRev = document.getElementById('revenueChart').getContext('2d');
-        const rawRevLabels = ["Épilation Laser (CA Majoritaire)", "Autres Soins et Services"];
+        const ctxRev = document.getElementById('currentRevChart').getContext('2d');
+        const rawRevLabels = ["Épilation Laser", "Soins Esthétiques & Produits", "Ventes Additionnelles"];
         const wrappedRevLabels = rawRevLabels.map(l => wrapLabel(l));
 
         new Chart(ctxRev, {
@@ -246,9 +320,9 @@
             data: {
                 labels: wrappedRevLabels,
                 datasets: [{
-                    data: [19000, 9000],
-                    backgroundColor: ['#4F46E5', '#E2E8F0'], // indigo-600, slate-200
-                    hoverBackgroundColor: ['#4338CA', '#CBD5E1'], // indigo-700, slate-300
+                    data: [17780, 8220, 2000],
+                    backgroundColor: ['#4F46E5', '#94A3B8', '#F43F5E'], 
+                    hoverBackgroundColor: ['#4338CA', '#64748B', '#E11D48'],
                     borderWidth: 0,
                     hoverOffset: 4
                 }]
@@ -263,29 +337,27 @@
                     },
                     tooltip: commonTooltipConfig
                 },
-                cutout: '75%',
+                cutout: '70%',
                 animation: { animateScale: true, animateRotate: true }
             }
         });
 
-        // Graphique 2 : Bar Chart
-        const ctxImp = document.getElementById('impactChart').getContext('2d');
-        const rawImpLabels = ["CA de Base (Forfait Laser)", "CA Projeté avec Upsell (+50€)"];
-        const wrappedImpLabels = rawImpLabels.map(l => wrapLabel(l));
+        const ctxStrat = document.getElementById('strategyChart').getContext('2d');
+        const rawStratLabels = ["Laser Sans Upsell (Actuel)", "Conversion Soins (Objectif 30%)"];
+        const wrappedStratLabels = rawStratLabels.map(l => wrapLabel(l));
 
-        // Création d'un dégradé pour la barre projetée
-        const gradientProjected = ctxImp.createLinearGradient(0, 0, 0, 400);
-        gradientProjected.addColorStop(0, '#4F46E5'); // indigo-600
-        gradientProjected.addColorStop(1, '#3B82F6'); // blue-500
+        const gradientStrat = ctxStrat.createLinearGradient(0, 0, 0, 400);
+        gradientStrat.addColorStop(0, '#4F46E5'); 
+        gradientStrat.addColorStop(1, '#3B82F6'); 
 
-        new Chart(ctxImp, {
+        new Chart(ctxStrat, {
             type: 'bar',
             data: {
-                labels: wrappedImpLabels,
+                labels: wrappedStratLabels,
                 datasets: [{
-                    label: 'Chiffre d\'Affaires (€)',
-                    data: [15000, 20000],
-                    backgroundColor: ['#94A3B8', gradientProjected], // slate-400 vs Gradient
+                    label: 'Valeur Client sur 10 Séances (€)',
+                    data: [420, 920],
+                    backgroundColor: ['#CBD5E1', gradientStrat], 
                     borderRadius: 8,
                     barPercentage: 0.6
                 }]
@@ -305,7 +377,7 @@
                             drawBorder: false,
                             color: function(context) {
                                 if (context.tick.value === 0) return 'transparent';
-                                return 'rgba(226, 232, 240, 0.5)'; // Ligne de grille très discrète
+                                return 'rgba(226, 232, 240, 0.5)';
                             },
                             borderDash: [5, 5]
                         },
