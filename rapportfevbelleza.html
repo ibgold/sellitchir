@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Présentation Financière - Part Belleza</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Inter', 'sans-serif'] },
+                    colors: {
+                        brand: { 400: '#38bdf8', 500: '#0ea5e9', 600: '#0284c7' },
+                        accent: { 400: '#c084fc', 500: '#a855f7' }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #020617; color: #f8fafc; overflow-x: hidden; }
+        .glass-card { 
+            background: rgba(15, 23, 42, 0.6); 
+            backdrop-filter: blur(12px); 
+            -webkit-backdrop-filter: blur(12px); 
+            border: 1px solid rgba(255, 255, 255, 0.08); 
+            border-radius: 1rem; 
+        }
+        .text-gradient { 
+            background: linear-gradient(135deg, #38bdf8 0%, #a855f7 100%); 
+            -webkit-background-clip: text; 
+            -webkit-text-fill-color: transparent; 
+        }
+        .bg-glow { position: absolute; border-radius: 50%; filter: blur(100px); z-index: -1; opacity: 0.4; }
+        .chart-container { position: relative; width: 100%; max-width: 100%; height: 300px; }
+        @media (min-width: 768px) { .chart-container { height: 350px; } }
+    </style>
+</head>
+<body class="antialiased relative min-h-screen flex flex-col">
+
+    <!-- Ambient Background Glows -->
+    <div class="bg-glow w-96 h-96 bg-brand-600 top-0 left-0"></div>
+    <div class="bg-glow w-96 h-96 bg-accent-500 bottom-0 right-0 opacity-20"></div>
+
+    <nav class="border-b border-white/10 bg-slate-950/50 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20">
+                <div class="flex items-center gap-4">
+                    <span class="text-3xl">&#128188;</span>
+                    <div>
+                        <div class="font-bold text-xl tracking-wide text-white">Dr Marival</div>
+                        <div class="text-xs text-brand-400 font-medium tracking-widest uppercase">Rapport Financier</div>
+                    </div>
+                </div>
+                <div class="text-sm font-semibold bg-white/10 border border-white/20 px-4 py-2 rounded-full text-slate-200">
+                    Février 2026
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <main class="flex-grow max-w-7xl mx-auto px-6 lg:px-8 py-12 w-full">
+        
+        <header class="mb-14">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 tracking-tight">Performance <span class="text-gradient">Part Belleza</span></h1>
+            <p class="text-lg text-slate-400 max-w-3xl">Synthèse de l'activité chirurgicale et des revenus générés suite aux téléconsultations, axée exclusivement sur la quote-part Belleza.</p>
+        </header>
+
+        <!-- KPI Section -->
+        <section class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+            
+            <div class="glass-card p-8 relative overflow-hidden group">
+                <div class="absolute -right-6 -top-6 w-32 h-32 bg-brand-500/20 rounded-full blur-2xl group-hover:bg-brand-500/30 transition-all"></div>
+                <div class="text-sm uppercase tracking-wider text-slate-400 font-semibold mb-2">Chiffre d'Affaires (Belleza)</div>
+                <div class="text-5xl font-black text-white mb-2 tracking-tight">56 132 <span class="text-3xl text-brand-400">€</span></div>
+                <div class="text-sm text-emerald-400 font-medium flex items-center gap-1">
+                    &#8593; Total sécurisé et en cours
+                </div>
+            </div>
+
+            <div class="glass-card p-8">
+                <div class="text-sm uppercase tracking-wider text-slate-400 font-semibold mb-2 flex justify-between">
+                    <span>Conversions TC</span>
+                    <span class="text-slate-500 text-lg">&#128200;</span>
+                </div>
+                <div class="text-4xl font-black text-white mb-2">11 <span class="text-xl text-slate-500 font-medium">/ 15</span></div>
+                <div class="w-full bg-slate-800 rounded-full h-2 mt-4 mb-2">
+                    <div class="bg-gradient-to-r from-brand-500 to-accent-500 h-2 rounded-full" style="width: 73.3%"></div>
+                </div>
+                <div class="text-xs text-slate-400 font-medium text-right">Taux de transformation : 73.3%</div>
+            </div>
+
+            <div class="glass-card p-8 flex flex-col justify-center">
+                <div class="mb-6">
+                    <div class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">Panier Moyen (Belleza)</div>
+                    <div class="text-3xl font-bold text-white">5 103 € <span class="text-sm font-normal text-slate-500">/ patient</span></div>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400 uppercase font-bold tracking-wider mb-1">Rendement par TC</div>
+                    <div class="text-2xl font-bold text-white">3 742 € <span class="text-sm font-normal text-slate-500">/ consult.</span></div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Charts Section -->
+        <section class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+            
+            <!-- Chart 1: Dynamique d'acquisition -->
+            <div class="glass-card p-6 flex flex-col">
+                <h3 class="text-lg font-bold text-white mb-1">Dynamique d'Acquisition (CA Cumulé)</h3>
+                <p class="text-sm text-slate-400 mb-6">Évolution du chiffre d'affaires Belleza sur le mois (acté dès le 1er acompte).</p>
+                
+                <div class="flex-grow flex items-center justify-center">
+                    <div class="chart-container">
+                        <canvas id="statusChart"></canvas>
+                    </div>
+                </div>
+                
+                <div class="mt-6 grid grid-cols-2 gap-4 text-center border-t border-white/10 pt-4">
+                    <div>
+                        <div class="text-xs text-brand-400 uppercase font-bold tracking-wider">Meilleure Journée</div>
+                        <div class="text-xl font-bold text-white">10 384 € <span class="text-xs font-normal text-slate-500">(25 Fév)</span></div>
+                    </div>
+                    <div>
+                        <div class="text-xs text-emerald-400 uppercase font-bold tracking-wider">Total Acté</div>
+                        <div class="text-xl font-bold text-white">56 132 € <span class="text-xs font-normal text-slate-500">(100%)</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Chart 2: Top Interventions -->
+            <div class="glass-card p-6 flex flex-col">
+                <h3 class="text-lg font-bold text-white mb-1">Top 5 Patients (Valeur Belleza)</h3>
+                <p class="text-sm text-slate-400 mb-6">Les 5 dossiers générant la plus forte contribution au chiffre d'affaires Belleza ce mois-ci.</p>
+                
+                <div class="flex-grow flex items-center justify-center">
+                    <div class="chart-container">
+                        <canvas id="topPatientsChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+        </section>
+
+        <!-- Strategic Insight Section -->
+        <section class="mb-8">
+            <div class="glass-card p-8 border-l-4 border-accent-500 relative overflow-hidden">
+                <div class="absolute -right-10 -top-10 w-40 h-40 bg-accent-500/10 rounded-full blur-3xl"></div>
+                <h3 class="text-xl font-bold text-white mb-4 flex items-center gap-3">
+                    <span class="text-2xl text-accent-400">&#9888;</span> 
+                    Note Stratégique : Analyse de l'écart prévisionnel
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="md:col-span-2 space-y-4 text-slate-300 text-sm leading-relaxed">
+                        <p>
+                            Les projections initiales pour ce mois s'élevaient à <strong class="text-white font-semibold text-base">76 000 €</strong> (Part Belleza). L'écart d'environ 20 000 € avec le CA actuellement sécurisé s'explique par <strong>la modification des tarifs de l'anesthésiste</strong> (effectuée par Camille) <em>après</em> la réalisation des premières téléconsultations.
+                        </p>
+                        <p>
+                            <span class="text-brand-400 font-semibold">Conséquence opérationnelle :</span> Cécilia est actuellement contrainte de relancer les patientes concernées pour leur faire signer les devis mis à jour et récupérer les acomptes. Ce processus crée une friction et un délai totalement évitables, sachant que ces patientes ont déjà exprimé une forte volonté de s'engager.
+                        </p>
+                    </div>
+                    <div class="bg-slate-900/60 p-5 rounded-lg border border-white/10 flex flex-col justify-center">
+                        <h4 class="text-accent-400 font-bold text-xs uppercase tracking-wider mb-3">Recommandation Clé</h4>
+                        <p class="text-white text-sm font-medium leading-relaxed">
+                            Il est impératif de faire signer le devis et de faire régler l'acompte <strong>immédiatement lors de la téléconsultation</strong>. Cela verrouille l'engagement de la patiente à chaud et évite toute déperdition administrative post-consultation.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        // Setup Chart.js defaults for Dark Theme
+        Chart.defaults.color = '#94a3b8'; // text-slate-400
+        Chart.defaults.font.family = "'Inter', sans-serif";
+        
+        // Tooltip Configuration required
+        const globalTooltipConfig = {
+            backgroundColor: 'rgba(15, 23, 42, 0.9)',
+            titleColor: '#ffffff',
+            bodyColor: '#cbd5e1',
+            borderColor: 'rgba(255,255,255,0.1)',
+            borderWidth: 1,
+            padding: 12,
+            callbacks: {
+                title: function(tooltipItems) {
+                    const item = tooltipItems[0];
+                    let label = item.chart.data.labels[item.dataIndex];
+                    if (Array.isArray(label)) {
+                        return label.join(' ');
+                    } else {
+                        return label;
+                    }
+                },
+                label: function(context) {
+                    let label = context.dataset.label || '';
+                    if (label) {
+                        label += ': ';
+                    }
+                    if (context.parsed.y !== null && context.chart.config.type !== 'doughnut') {
+                        label += new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(context.parsed.x || context.parsed.y);
+                    } else {
+                        label += new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR', maximumFractionDigits: 0 }).format(context.parsed);
+                    }
+                    return label;
+                }
+            }
+        };
+
+        // Chart 1: Dynamique (Area chart cumulatif)
+        const ctxStatus = document.getElementById('statusChart').getContext('2d');
+        
+        // Gradient pour le line chart
+        const gradientStatus = ctxStatus.createLinearGradient(0, 0, 0, 300);
+        gradientStatus.addColorStop(0, 'rgba(16, 185, 129, 0.4)'); // Emerald semi-transparent
+        gradientStatus.addColorStop(1, 'rgba(16, 185, 129, 0.0)');
+        
+        new Chart(ctxStatus, {
+            type: 'line',
+            data: {
+                labels: ['14/02', '15/02', '16/02', '17/02', '18/02', '20/02', '23/02', '25/02', '26/02'],
+                datasets: [{
+                    label: 'CA Cumulé',
+                    data: [4056, 9856, 15656, 19556, 28856, 32836, 41691, 52075, 56132],
+                    borderColor: '#10b981', // Emerald 500
+                    backgroundColor: gradientStatus,
+                    borderWidth: 3,
+                    pointBackgroundColor: '#0f172a',
+                    pointBorderColor: '#10b981',
+                    pointBorderWidth: 2,
+                    pointRadius: 4,
+                    pointHoverRadius: 6,
+                    fill: true,
+                    tension: 0.4 // Courbe adoucie
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                scales: {
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#64748b' }
+                    },
+                    y: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: {
+                            color: '#64748b',
+                            callback: function(value) { return value / 1000 + 'k €'; }
+                        }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: globalTooltipConfig
+                }
+            }
+        });
+
+        // Chart 2: Top 5 Patients (Bar)
+        const ctxTop = document.getElementById('topPatientsChart').getContext('2d');
+        new Chart(ctxTop, {
+            type: 'bar',
+            data: {
+                // Formatting labels under 16 chars logic implemented naturally here by using initials for last names
+                labels: ['Flora M.', 'Mélodie B.', 'Noa G.', 'Elisa M.', 'Amal E.'],
+                datasets: [{
+                    label: 'Part Belleza',
+                    data: [9300, 5800, 5800, 5800, 4875],
+                    backgroundColor: '#38bdf8', // Brand Light Blue
+                    borderRadius: 4,
+                    barThickness: 'flex',
+                    maxBarThickness: 40
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                indexAxis: 'y', // Horizontal bar chart looks better for rankings
+                scales: {
+                    x: {
+                        grid: { color: 'rgba(255, 255, 255, 0.05)' },
+                        ticks: {
+                            callback: function(value) {
+                                return value + ' €';
+                            }
+                        }
+                    },
+                    y: {
+                        grid: { display: false }
+                    }
+                },
+                plugins: {
+                    legend: { display: false },
+                    tooltip: globalTooltipConfig
+                }
+            }
+        });
+    </script>
+</body>
+</html>
