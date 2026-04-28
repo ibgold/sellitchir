@@ -1,0 +1,880 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Audit & Stratégie — Clinique Dr Fabie-Boulard</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --teal-dark:   #0f6e56;
+      --teal-mid:    #1D9E75;
+      --teal-light:  #e1f5ee;
+      --teal-xlight: #f0faf6;
+      --red-text:    #b83232;
+      --red-bg:      #fdf4f4;
+      --red-border:  #e8b4b4;
+      --text-primary:   #0a1628;
+      --text-secondary: #4a6470;
+      --border:      #dde8e4;
+      --bg-page:     #f4f7f5;
+      --bg-card:     #ffffff;
+      --bg-header:   #f8fbf9;
+      --shadow: 0 6px 32px rgba(15,110,86,0.07);
+    }
+
+    body {
+      font-family: 'Montserrat', sans-serif;
+      background: var(--bg-page);
+      color: var(--text-primary);
+      font-size: 17px;
+      line-height: 1.75;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── HEADER ── */
+    header {
+      background: #fff;
+      border-bottom: 1.5px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+    .header-inner {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 18px 32px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      flex-wrap: wrap;
+    }
+    .header-brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .brand-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      background: var(--teal-light);
+      border: 1.5px solid #b6dfd1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+      color: var(--teal-dark);
+      flex-shrink: 0;
+    }
+    .brand-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.3px;
+    }
+    .brand-sub {
+      font-size: 14px;
+      font-weight: 500;
+      color: var(--teal-dark);
+      margin-top: 1px;
+    }
+
+    /* ── TABS ── */
+    .tabs {
+      display: flex;
+      background: #eef2ef;
+      border-radius: 12px;
+      padding: 5px;
+      gap: 4px;
+    }
+    .tab-btn {
+      padding: 10px 24px;
+      border-radius: 9px;
+      font-family: 'Montserrat', sans-serif;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      transition: all .25s ease;
+      color: var(--text-secondary);
+      background: transparent;
+      letter-spacing: 0.1px;
+    }
+    .tab-btn.active {
+      background: #fff;
+      color: var(--teal-dark);
+      box-shadow: 0 2px 8px rgba(15,110,86,0.12);
+    }
+    .tab-btn i { margin-right: 8px; font-size: 13px; }
+
+    /* ── MAIN ── */
+    main {
+      max-width: 960px;
+      margin: 0 auto;
+      padding: 52px 32px 80px;
+    }
+
+    .section-intro {
+      margin-bottom: 48px;
+    }
+    .section-intro h2 {
+      font-size: 32px;
+      font-weight: 800;
+      color: var(--text-primary);
+      letter-spacing: -0.5px;
+      margin-bottom: 12px;
+    }
+    .section-intro p {
+      font-size: 17px;
+      color: var(--text-secondary);
+      max-width: 640px;
+      font-weight: 400;
+    }
+
+    /* ── FADE ── */
+    .tab-content { display: none; animation: fadeUp .35s ease forwards; }
+    .tab-content.visible { display: block; }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(16px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── TIMELINE ── */
+    .timeline {
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      gap: 0;
+    }
+    .timeline::before {
+      content: '';
+      position: absolute;
+      left: 26px;
+      top: 60px;
+      bottom: 60px;
+      width: 2px;
+      background: linear-gradient(to bottom, var(--teal-mid), #b6dfd1);
+      border-radius: 2px;
+    }
+
+    /* ── STEP ── */
+    .step {
+      display: flex;
+      gap: 32px;
+      padding: 20px 0;
+    }
+    .step-num {
+      flex-shrink: 0;
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: var(--teal-dark);
+      color: #fff;
+      font-size: 20px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 4px 16px rgba(15,110,86,0.25);
+      position: relative;
+      z-index: 2;
+      margin-top: 4px;
+    }
+    .step-body { flex: 1; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--bg-card);
+      border: 1.5px solid var(--border);
+      border-radius: 20px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .card-header {
+      background: var(--bg-header);
+      border-bottom: 1.5px solid var(--border);
+      padding: 18px 28px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .card-header i {
+      font-size: 18px;
+      color: var(--teal-mid);
+    }
+    .card-header h3 {
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--text-primary);
+      letter-spacing: -0.2px;
+    }
+    .card-cols {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+    }
+    @media (max-width: 680px) {
+      .card-cols { grid-template-columns: 1fr; }
+    }
+
+    /* ── COL LEFT ── */
+    .col-left { padding: 28px 32px; border-right: 1.5px solid var(--border); }
+    .col-label {
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 2.5px;
+      color: var(--text-secondary);
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .col-label i { font-size: 11px; }
+
+    .item-list { display: flex; flex-direction: column; gap: 18px; }
+    .item-list li {
+      display: flex;
+      align-items: flex-start;
+      gap: 12px;
+      font-size: 15px;
+      color: var(--text-primary);
+      line-height: 1.7;
+      list-style: none;
+    }
+    .item-list li .icon-bullet {
+      width: 22px;
+      height: 22px;
+      border-radius: 6px;
+      background: var(--teal-light);
+      color: var(--teal-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+    .item-list li .icon-bullet.red {
+      background: var(--red-bg);
+      color: var(--red-text);
+    }
+
+    /* ── COL RIGHT — FRICTIONS ── */
+    .col-right { padding: 28px 32px; }
+    .col-right.frictions { background: #fffafa; }
+    .col-right.objectif  { background: var(--teal-xlight); }
+
+    .friction-card {
+      background: #fff;
+      border: 1.5px solid var(--red-border);
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 14px;
+    }
+    .friction-card:last-child { margin-bottom: 0; }
+    .friction-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--red-text);
+      margin-bottom: 6px;
+    }
+    .friction-body {
+      font-size: 14px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+    }
+
+    .objectif-text {
+      font-size: 15px;
+      color: #1a3d30;
+      line-height: 1.8;
+    }
+
+    /* ── METHOD BADGE ── */
+    .method-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      padding: 9px 18px;
+      background: var(--teal-dark);
+      color: #fff;
+      border-radius: 50px;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      cursor: pointer;
+      border: none;
+      font-family: 'Montserrat', sans-serif;
+      transition: background .2s, transform .15s;
+      box-shadow: 0 4px 12px rgba(15,110,86,0.25);
+    }
+    .method-badge:hover {
+      background: #0a5240;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(15,110,86,0.3);
+    }
+    .method-badge i { font-size: 12px; }
+
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10,22,40,0.55);
+      z-index: 200;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+    }
+    .modal-overlay.open { display: flex; animation: fadeOverlay .25s ease forwards; }
+    @keyframes fadeOverlay { from { opacity:0; } to { opacity:1; } }
+
+    .modal {
+      background: #fff;
+      border-radius: 24px;
+      max-width: 620px;
+      width: 100%;
+      box-shadow: 0 24px 80px rgba(10,22,40,0.25);
+      animation: slideModal .3s ease forwards;
+      overflow: hidden;
+    }
+    @keyframes slideModal {
+      from { opacity:0; transform: translateY(24px); }
+      to   { opacity:1; transform: translateY(0); }
+    }
+    .modal-header {
+      background: var(--teal-dark);
+      padding: 28px 32px 24px;
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 16px;
+    }
+    .modal-header-left { flex: 1; }
+    .modal-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.6);
+      margin-bottom: 6px;
+    }
+    .modal-title {
+      font-size: 28px;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: -0.5px;
+    }
+    .modal-subtitle {
+      font-size: 15px;
+      color: rgba(255,255,255,0.75);
+      margin-top: 6px;
+      font-weight: 400;
+    }
+    .modal-close {
+      background: rgba(255,255,255,0.15);
+      border: none;
+      color: #fff;
+      width: 40px;
+      height: 40px;
+      border-radius: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: background .2s;
+      font-family: 'Montserrat', sans-serif;
+    }
+    .modal-close:hover { background: rgba(255,255,255,0.28); }
+    .modal-body {
+      padding: 32px;
+    }
+    .modal-placeholder {
+      background: var(--teal-xlight);
+      border: 2px dashed #a0d4c1;
+      border-radius: 12px;
+      padding: 28px 24px;
+      text-align: center;
+      color: var(--teal-dark);
+      font-size: 15px;
+      font-weight: 500;
+      line-height: 1.7;
+    }
+    .modal-placeholder i {
+      font-size: 28px;
+      display: block;
+      margin-bottom: 12px;
+      opacity: .6;
+    }
+    .modal-placeholder span {
+      display: block;
+      font-size: 13px;
+      color: var(--text-secondary);
+      margin-top: 8px;
+      font-weight: 400;
+    }
+  </style>
+</head>
+<body>
+
+<!-- ── HEADER ── -->
+<header>
+  <div class="header-inner">
+    <div class="header-brand">
+      <div class="brand-icon"><i class="fa-solid fa-stethoscope"></i></div>
+      <div>
+        <div class="brand-title">Audit &amp; Stratégie Commerciale</div>
+        <div class="brand-sub">Clinique Dr Fabie-Boulard</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <button class="tab-btn active" id="tab-actuel" onclick="switchTab('actuel')">
+        <i class="fa-solid fa-magnifying-glass"></i>Process Actuel
+      </button>
+      <button class="tab-btn" id="tab-nouveau" onclick="switchTab('nouveau')">
+        <i class="fa-solid fa-arrow-trend-up"></i>Nouveau Process
+      </button>
+    </div>
+  </div>
+</header>
+
+<!-- ── MAIN ── -->
+<main>
+
+  <!-- ════════ ONGLET 1 : PROCESS ACTUEL ════════ -->
+  <div id="content-actuel" class="tab-content visible">
+    <div class="section-intro">
+      <h2>Diagnostic du Process Actuel</h2>
+      <p>Analyse étape par étape du parcours patient. Les zones rouges mettent en évidence les frictions qui empêchent de maximiser la prise de décision le jour J.</p>
+    </div>
+
+    <div class="timeline">
+
+      <!-- ÉTAPE 1 -->
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa-solid fa-phone"></i>
+              <h3>Phase de Prise de Contact</h3>
+            </div>
+            <div class="card-cols">
+              <div class="col-left">
+                <div class="col-label"><i class="fa-solid fa-gear"></i>Fonctionnement</div>
+                <ul class="item-list">
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-check"></i></span>
+                    <span>Appels gérés en équipe par Jonathan, Virginie ou le Dr Fabie-Boulard.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-check"></i></span>
+                    <span>Prise de rendez-vous directe, aucun devis d'intervention n'est communiqué par téléphone.</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-right frictions">
+                <div class="col-label" style="color: var(--red-text);">
+                  <i class="fa-solid fa-triangle-exclamation"></i>Frictions commerciales
+                </div>
+                <div class="friction-card">
+                  <div class="friction-title">Absence de Tracking &amp; Data</div>
+                  <div class="friction-body">Déperdition invisible. Impossible de connaître le vrai taux de conversion global car les appels et leads perdus ne sont pas mesurés.</div>
+                </div>
+                <div class="friction-card">
+                  <div class="friction-title">Manque de Pré-qualification</div>
+                  <div class="friction-body">Le médecin risque de perdre 1h en consultation avec des patients n'ayant pas le budget pour le positionnement premium de la clinique.</div>
+                </div>
+                <div class="friction-card">
+                  <div class="friction-title">Tarification des consultations</div>
+                  <div class="friction-body">Incohérence (150€ vs 100€) non justifiée, désalignée avec l'expertise réelle et le nouvel emplacement centre-ville.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 -->
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa-solid fa-user-doctor"></i>
+              <h3>La Consultation &amp; Le Relais</h3>
+            </div>
+            <div class="card-cols">
+              <div class="col-left">
+                <div class="col-label"><i class="fa-solid fa-gear"></i>Fonctionnement</div>
+                <ul class="item-list">
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-check"></i></span>
+                    <span>Excellente consultation du Dr Fabie-Boulard. Un pic émotionnel fort est généré.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-check"></i></span>
+                    <span>Le relais est passé à Jonathan pour gérer la présentation financière.</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-right frictions">
+                <div class="col-label" style="color: var(--red-text);">
+                  <i class="fa-solid fa-triangle-exclamation"></i>Frictions commerciales
+                </div>
+                <div class="friction-card">
+                  <div class="friction-title">Remise partielle du devis par le médecin</div>
+                  <div class="friction-body">Dès que le Dr aborde les tarifs, elle bascule inconsciemment de "Chirurgienne Experte" à "Vendeuse" aux yeux du patient.</div>
+                </div>
+                <div class="friction-card">
+                  <div class="friction-title">Sous-exploitation du Momentum</div>
+                  <div class="friction-body">Jonathan récupère le patient, mais l'échange redevient froid et transactionnel. La dynamique n'est pas utilisée.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 -->
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa-solid fa-file-signature"></i>
+              <h3>Prise de Décision &amp; Closing</h3>
+            </div>
+            <div class="card-cols">
+              <div class="col-left">
+                <div class="col-label"><i class="fa-solid fa-gear"></i>Fonctionnement</div>
+                <ul class="item-list">
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-check"></i></span>
+                    <span>Le patient rentre chez lui (délai de 1 à 15 jours). Paiement exigé 15j avant l'intervention.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-check"></i></span>
+                    <span>Jonathan assure les relances téléphoniques à 3 jours et 15 jours.</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-right frictions">
+                <div class="col-label" style="color: var(--red-text);">
+                  <i class="fa-solid fa-triangle-exclamation"></i>Frictions commerciales
+                </div>
+                <div class="friction-card">
+                  <div class="friction-title">Décision Jour-J trop faible (35–50%)</div>
+                  <div class="friction-body">Sans aide à la décision, le patient sort de la "bulle émotionnelle". Le quotidien reprend le dessus.</div>
+                </div>
+                <div class="friction-card">
+                  <div class="friction-title">Aucun engagement financier</div>
+                  <div class="friction-body">Le jour J, aucun acte (acompte, mandat) ne valide la décision.</div>
+                </div>
+                <div class="friction-card">
+                  <div class="friction-title">Process de relance "demandeur"</div>
+                  <div class="friction-body">Inverse la dynamique : c'est la clinique qui court après le patient, dégradant l'image premium.</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end timeline -->
+  </div>
+
+  <!-- ════════ ONGLET 2 : NOUVEAU PROCESS ════════ -->
+  <div id="content-nouveau" class="tab-content">
+    <div class="section-intro">
+      <h2>Le Nouveau Process Optimisé</h2>
+      <p>Ce nouveau modèle repose sur un cloisonnement strict des rôles, l'élévation de la perception Premium et l'optimisation des conversions (Méthodes CARES &amp; CESARE).</p>
+    </div>
+
+    <div class="timeline" style="--teal-timeline: var(--teal-mid)">
+
+      <!-- ÉTAPE 1 -->
+      <div class="step">
+        <div class="step-num">1</div>
+        <div class="step-body">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa-solid fa-star"></i>
+              <h3>Filtre Premium &amp; Image de Marque</h3>
+            </div>
+            <div class="card-cols">
+              <div class="col-left">
+                <div class="col-label"><i class="fa-solid fa-screwdriver-wrench"></i>Actions Mises en Place</div>
+                <ul class="item-list">
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Nettoyage public :</strong> Retrait immédiat des tarifs d'intervention sur le site web et retrait du "Open to Work" sur LinkedIn.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Filtre à l'entrée :</strong> Suppression de la prise de RDV autonome sur Doctolib pour la chirurgie. Passage obligatoire par le standard.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Alignement tarifaire :</strong> Tarif unique de 150€ pour toutes les consultations.</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-right objectif">
+                <div class="col-label" style="color: var(--teal-dark);">
+                  <i class="fa-solid fa-bullseye"></i>Objectif
+                </div>
+                <p class="objectif-text">Rétablir un positionnement véritablement exclusif. La clinique n'est pas un catalogue en libre-service. Le parcours doit refléter l'expertise médicale haut de gamme et le nouvel emplacement en centre-ville.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2 — CARES -->
+      <div class="step">
+        <div class="step-num">2</div>
+        <div class="step-body">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa-solid fa-phone-volume"></i>
+              <h3>Qualification — Méthode CARES</h3>
+            </div>
+            <div class="card-cols">
+              <div class="col-left">
+                <div class="col-label"><i class="fa-solid fa-screwdriver-wrench"></i>Actions Mises en Place</div>
+                <ul class="item-list">
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Exclusion du Docteur :</strong> Le Dr Fabie-Boulard ne répond plus jamais au téléphone pour protéger son statut.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Responsabilité Virginie :</strong> Elle devient l'unique responsable de la qualification (Amont) et des soins post-op (Aval).</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Méthode CARES :</strong> Montée en compétence de Virginie pour qualifier les patients (besoins, budget) via script avant de valider un RDV.</span>
+                  </li>
+                </ul>
+                <button class="method-badge" onclick="openModal('cares')">
+                  <i class="fa-solid fa-circle-info"></i>
+                  Découvrir la méthode CARES
+                </button>
+              </div>
+              <div class="col-right objectif">
+                <div class="col-label" style="color: var(--teal-dark);">
+                  <i class="fa-solid fa-bullseye"></i>Objectif
+                </div>
+                <p class="objectif-text">Arrêter de remplir l'agenda avec des "touristes" hors budget. En appliquant CARES, Virginie s'assure que le temps de consultation du Docteur n'est investi que sur des profils qualifiés et pertinents.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 3 -->
+      <div class="step">
+        <div class="step-num">3</div>
+        <div class="step-body">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa-solid fa-user-doctor"></i>
+              <h3>La Consultation &amp; Posture d'Experte</h3>
+            </div>
+            <div class="card-cols">
+              <div class="col-left">
+                <div class="col-label"><i class="fa-solid fa-screwdriver-wrench"></i>Actions Mises en Place</div>
+                <ul class="item-list">
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Alignement Agendas :</strong> 1ères consultations programmées uniquement les jours où Jonathan est présent.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Posture d'Experte :</strong> Fin des "3 options" qui embrouillent le patient. Le Docteur impose la meilleure solution médicale unique.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Zéro finance :</strong> Le médecin ne donne plus aucun prix. Le relais est total dès la fin de l'acte médical.</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-right objectif">
+                <div class="col-label" style="color: var(--teal-dark);">
+                  <i class="fa-solid fa-bullseye"></i>Objectif
+                </div>
+                <p class="objectif-text">Préserver l'autorité absolue du Chirurgien. Le patient n'a pas à "choisir" sa technique opératoire comme sur un menu. Le médecin apporte la solution, et délègue l'aspect pécuniaire à 100%.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 4 — CESARE -->
+      <div class="step">
+        <div class="step-num">4</div>
+        <div class="step-body">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa-solid fa-file-signature"></i>
+              <h3>Closing — Méthode CESARE</h3>
+            </div>
+            <div class="card-cols">
+              <div class="col-left">
+                <div class="col-label"><i class="fa-solid fa-screwdriver-wrench"></i>Actions Mises en Place</div>
+                <ul class="item-list">
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Responsabilité Jonathan :</strong> Unique gestionnaire du post-consultation, closing et follow-up financier.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Méthode CESARE :</strong> Montée en compétence de Jonathan pour structurer son échange et capitaliser sur le momentum du patient.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Engagement Jour-J :</strong> Sécurisation systématique de la décision par mandat de prélèvement ou acompte immédiat.</span>
+                  </li>
+                </ul>
+                <button class="method-badge" onclick="openModal('cesare')">
+                  <i class="fa-solid fa-circle-info"></i>
+                  Découvrir la méthode CESARE
+                </button>
+              </div>
+              <div class="col-right objectif">
+                <div class="col-label" style="color: var(--teal-dark);">
+                  <i class="fa-solid fa-bullseye"></i>Objectif
+                </div>
+                <p class="objectif-text">Convertir l'émotion générée par le Docteur en une décision ferme. L'application de CESARE permet d'augmenter drastiquement le taux de closing à chaud et d'éliminer les relances chronophages.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 5 -->
+      <div class="step">
+        <div class="step-num">5</div>
+        <div class="step-body">
+          <div class="card">
+            <div class="card-header">
+              <i class="fa-solid fa-users"></i>
+              <h3>Cloisonnement &amp; Communication</h3>
+            </div>
+            <div class="card-cols">
+              <div class="col-left">
+                <div class="col-label"><i class="fa-solid fa-screwdriver-wrench"></i>Actions Mises en Place</div>
+                <ul class="item-list">
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>Séparation stricte :</strong> Virginie = Appel/Qualification. Jonathan = Post-consultation/Closing. Docteur = Médical/Chirurgie.</span>
+                  </li>
+                  <li>
+                    <span class="icon-bullet"><i class="fa-solid fa-arrow-right"></i></span>
+                    <span><strong>WhatsApp d'Équipe :</strong> Groupe créé avec l'équipe (Jonathan/Virginie/Consultants). Le Docteur n'y est pas incluse pour les points commerciaux.</span>
+                  </li>
+                </ul>
+              </div>
+              <div class="col-right objectif">
+                <div class="col-label" style="color: var(--teal-dark);">
+                  <i class="fa-solid fa-bullseye"></i>Objectif
+                </div>
+                <p class="objectif-text">Garantir que chacun reste maître de son périmètre (Zone de Génie). Le Docteur est préservée de toute pollution commerciale ou administrative, ce qui renforce son statut et son efficacité.</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- end timeline -->
+  </div>
+
+</main>
+
+
+<!-- ════════ MODAL CARES ════════ -->
+<div class="modal-overlay" id="modal-cares" onclick="closeOnOverlay(event, 'cares')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-label">Méthode de Qualification</div>
+        <div class="modal-title">CARES</div>
+        <div class="modal-subtitle">Script de qualification téléphonique — Virginie</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('cares')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-placeholder">
+        <i class="fa-regular fa-file-lines"></i>
+        La description de la méthode CARES sera ajoutée ici.
+        <span>Colle ton contenu dans cette zone pour remplacer ce placeholder.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════════ MODAL CESARE ════════ -->
+<div class="modal-overlay" id="modal-cesare" onclick="closeOnOverlay(event, 'cesare')">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-header-left">
+        <div class="modal-label">Méthode de Closing</div>
+        <div class="modal-title">CESARE</div>
+        <div class="modal-subtitle">Protocole de closing post-consultation — Jonathan</div>
+      </div>
+      <button class="modal-close" onclick="closeModal('cesare')"><i class="fa-solid fa-xmark"></i></button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-placeholder">
+        <i class="fa-regular fa-file-lines"></i>
+        La description de la méthode CESARE sera ajoutée ici.
+        <span>Colle ton contenu dans cette zone pour remplacer ce placeholder.</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<script>
+  function switchTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('visible'));
+    document.getElementById('tab-' + tab).classList.add('active');
+    const content = document.getElementById('content-' + tab);
+    content.classList.add('visible');
+    content.style.animation = 'none';
+    content.offsetHeight;
+    content.style.animation = '';
+  }
+
+  function openModal(name) {
+    document.getElementById('modal-' + name).classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeModal(name) {
+    document.getElementById('modal-' + name).classList.remove('open');
+    document.body.style.overflow = '';
+  }
+  function closeOnOverlay(e, name) {
+    if (e.target === e.currentTarget) closeModal(name);
+  }
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') {
+      document.querySelectorAll('.modal-overlay.open').forEach(m => {
+        m.classList.remove('open');
+        document.body.style.overflow = '';
+      });
+    }
+  });
+</script>
+</body>
+</html>
