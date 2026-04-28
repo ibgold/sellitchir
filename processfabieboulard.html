@@ -397,29 +397,49 @@
     .modal-body {
       padding: 32px;
     }
-    .modal-placeholder {
-      background: var(--teal-xlight);
-      border: 2px dashed #a0d4c1;
-      border-radius: 12px;
-      padding: 28px 24px;
-      text-align: center;
-      color: var(--teal-dark);
-      font-size: 15px;
-      font-weight: 500;
+    .modal-intro {
+      font-size: 14px;
+      color: var(--text-secondary);
       line-height: 1.7;
+      margin-bottom: 20px;
+      padding-bottom: 20px;
+      border-bottom: 1.5px solid var(--border);
     }
-    .modal-placeholder i {
-      font-size: 28px;
-      display: block;
-      margin-bottom: 12px;
-      opacity: .6;
+    .method-steps { display: flex; flex-direction: column; gap: 10px; }
+    .method-step {
+      display: flex;
+      align-items: flex-start;
+      gap: 16px;
+      background: var(--bg-header);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 14px 18px;
     }
-    .modal-placeholder span {
-      display: block;
+    .method-letter {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: var(--teal-dark);
+      color: #fff;
+      font-size: 18px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      letter-spacing: -0.5px;
+    }
+    .method-step-text { flex: 1; padding-top: 1px; }
+    .method-step-name {
+      font-size: 14px;
+      font-weight: 700;
+      color: var(--text-primary);
+      margin-bottom: 3px;
+    }
+    .method-step-desc {
       font-size: 13px;
       color: var(--text-secondary);
-      margin-top: 8px;
-      font-weight: 400;
+      line-height: 1.6;
     }
   </style>
 </head>
@@ -813,10 +833,43 @@
       <button class="modal-close" onclick="closeModal('cares')"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="modal-body">
-      <div class="modal-placeholder">
-        <i class="fa-regular fa-file-lines"></i>
-        La description de la méthode CARES sera ajoutée ici.
-        <span>Colle ton contenu dans cette zone pour remplacer ce placeholder.</span>
+      <p class="modal-intro">Script d'appel entrant géré par Virginie. Objectif : qualifier le patient avant de valider le rendez-vous et obtenir le prépaiement pour sécuriser le créneau.</p>
+      <div class="method-steps">
+        <div class="method-step">
+          <div class="method-letter">C</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Connecter &amp; Cadrer</div>
+            <div class="method-step-desc">Poser le cadre premium dès la 1ère phrase. Le patient doit sentir qu'il est entre les mains d'une structure experte et organisée.</div>
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="method-letter">A</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Analyser &amp; Qualifier</div>
+            <div class="method-step-desc">Recueillir projet, profil physique (IMC, tabac), antécédents médicaux, budget estimé et délai souhaité. Tout est noté dans le CRM.</div>
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="method-letter">R</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Rassurer &amp; Revaloriser</div>
+            <div class="method-step-desc">Justifier l'expertise et le positionnement du Dr avant d'annoncer le prix de la consultation. Le montant est déduit du devis si le patient avance.</div>
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="method-letter">E</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Engager vers le RDV</div>
+            <div class="method-step-desc">Transformer l'intérêt en réservation immédiate. Proposer deux créneaux, créer la rareté : "les blocs se remplissent vite".</div>
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="method-letter">S</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Sécuriser</div>
+            <div class="method-step-desc">Obtenir le prépaiement via lien Stripe (SMS ou mail) pour garantir le créneau et éliminer les no-shows.</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -834,10 +887,50 @@
       <button class="modal-close" onclick="closeModal('cesare')"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="modal-body">
-      <div class="modal-placeholder">
-        <i class="fa-regular fa-file-lines"></i>
-        La description de la méthode CESARE sera ajoutée ici.
-        <span>Colle ton contenu dans cette zone pour remplacer ce placeholder.</span>
+      <p class="modal-intro">Script post-consultation géré par Jonathan. Objectif : convertir le pic émotionnel généré par le Dr en engagement financier concret (acompte) le jour même.</p>
+      <div class="method-steps">
+        <div class="method-step">
+          <div class="method-letter">C</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Cadrage &amp; Accueil</div>
+            <div class="method-step-desc">Accueillir le patient à la sortie du bureau. Se présenter comme coordinateur et référent unique pour toute la suite du parcours.</div>
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="method-letter">E</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Émotionnel</div>
+            <div class="method-step-desc">Faire verbaliser le ressenti post-consultation. Reformuler les mots-clés du patient et faire projeter le résultat dans sa vie quotidienne.</div>
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="method-letter">S</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Storytelling &amp; Autorité</div>
+            <div class="method-step-desc">Renforcer la valeur perçue du Dr (résultats naturels, chirurgien parmi les plus demandés) et créer l'effet de rareté sur les créneaux opératoires.</div>
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="method-letter">A</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Annonce du Prix</div>
+            <div class="method-step-desc">Présenter le devis personnalisé (honoraires + clinique + anesthésie). Appel à l'action direct : "Pour réserver votre place au bloc, il suffit d'un acompte de X€."</div>
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="method-letter">R</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Rassurer</div>
+            <div class="method-step-desc">Traiter les objections selon leur nature : budget (organiser le règlement), délai (option 48h), peur (encadrement médical), réflexion (conjoint à consulter).</div>
+          </div>
+        </div>
+        <div class="method-step">
+          <div class="method-letter">E</div>
+          <div class="method-step-text">
+            <div class="method-step-name">Engager &amp; Encaisser</div>
+            <div class="method-step-desc">Finaliser l'acompte (carte ou virement). Envoyer la confirmation, la checklist pré-op et le RDV anesthésiste. Féliciter le patient chaleureusement.</div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
