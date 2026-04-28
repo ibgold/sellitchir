@@ -340,6 +340,9 @@
       border-radius: 24px;
       max-width: 620px;
       width: 100%;
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
       box-shadow: 0 24px 80px rgba(10,22,40,0.25);
       animation: slideModal .3s ease forwards;
       overflow: hidden;
@@ -396,6 +399,7 @@
     .modal-close:hover { background: rgba(255,255,255,0.28); }
     .modal-body {
       padding: 32px;
+      overflow-y: auto;
     }
     .modal-intro {
       font-size: 14px;
