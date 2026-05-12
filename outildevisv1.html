@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Expert Pricing V16b — Clinique Belleza</title>
+    <title>Expert Pricing V16c — Clinique Belleza</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -455,6 +455,8 @@
                     <tr class="bg-white">
                         <th class="min-w-[200px] text-left">Intervention</th>
                         <th class="w-20">Durée <span class="text-slate-300 font-normal">(min)</span></th>
+                        <th class="w-20 text-orange-400">Durée Étoile</th>
+                        <th class="w-20 text-violet-400">Durée Biarritz</th>
                         <th class="w-28">Type</th>
                         <th class="w-16">HC <span class="text-slate-300 font-normal">(€)</span></th>
                         <th class="w-16 text-purple-500">Anesth B.</th>
@@ -473,7 +475,8 @@
         <p class="text-[10px] text-slate-400 mt-3">
             <span class="text-purple-500 font-bold">B.</span> = Biarritz forfait · 
             <span class="text-green-500 font-bold">✦</span> = Prise en charge Sécu ·
-            Double-clic sur le nom pour le modifier.
+            <span class="text-orange-400 font-bold">Durée Étoile / Biarritz</span> = laisser vide pour utiliser la durée défaut ·
+            Double-clic sur le nom pour renommer.
         </p>
     </div>
 
@@ -774,6 +777,8 @@ function buildRow(key, data) {
             </div>
         </td>
         <td><input type="number" value="${data.duration}" class="row-duration" data-key="${escHtml(key)}" oninput="rowChanged(this)"></td>
+        <td><input type="number" value="${data.duration_etoile ?? ''}" placeholder="=" class="row-duration-etoile" data-key="${escHtml(key)}" oninput="rowChanged(this)" style="color:#f97316" title="Laisser vide = utilise la durée défaut"></td>
+        <td><input type="number" value="${data.duration_biarritz ?? ''}" placeholder="=" class="row-duration-biarritz" data-key="${escHtml(key)}" oninput="rowChanged(this)" style="color:#a855f7" title="Laisser vide = utilise la durée défaut"></td>
         <td>
             <select class="row-type text-xs p-1 rounded border border-slate-200 bg-slate-50 w-full" data-key="${escHtml(key)}" onchange="rowChanged(this)">
                 <option value="Ambulatoire" ${data.type==='Ambulatoire'?'selected':''}>Ambu</option>
@@ -803,6 +808,10 @@ function rowChanged(el) {
     if (!db[key]) return;
     const tr = el.closest('tr');
     db[key].duration         = parseInt(tr.querySelector('.row-duration').value) || 0;
+    const etoileVal          = tr.querySelector('.row-duration-etoile').value;
+    const biarritzVal        = tr.querySelector('.row-duration-biarritz').value;
+    db[key].duration_etoile   = etoileVal   !== '' ? parseInt(etoileVal)   : null;
+    db[key].duration_biarritz = biarritzVal !== '' ? parseInt(biarritzVal) : null;
     db[key].type             = tr.querySelector('.row-type').value;
     db[key].biarritz.hc      = parseFloat(tr.querySelector('.row-hc').value) || 0;
     db[key].biarritz.anesth  = parseFloat(tr.querySelector('.row-anesth').value) || 0;
@@ -819,6 +828,10 @@ function collectTableEdits() {
         const key = tr.dataset.key;
         if (!key || !db[key]) return;
         db[key].duration          = parseInt(tr.querySelector('.row-duration')?.value) || 0;
+        const etoileVal           = tr.querySelector('.row-duration-etoile')?.value;
+        const biarritzVal         = tr.querySelector('.row-duration-biarritz')?.value;
+        db[key].duration_etoile   = etoileVal   !== '' && etoileVal   != null ? parseInt(etoileVal)   : null;
+        db[key].duration_biarritz = biarritzVal !== '' && biarritzVal != null ? parseInt(biarritzVal) : null;
         db[key].type              = tr.querySelector('.row-type')?.value || 'Ambulatoire';
         db[key].biarritz.hc       = parseFloat(tr.querySelector('.row-hc')?.value) || 0;
         db[key].biarritz.anesth   = parseFloat(tr.querySelector('.row-anesth')?.value) || 0;
@@ -897,9 +910,16 @@ function hideResults() {
     document.getElementById('params-panel').classList.add('hidden');
 }
 
+function getEffectiveDuration(key) {
+    const data = db[key];
+    if (currentClinic === 'etoile'   && data.duration_etoile   != null) return data.duration_etoile;
+    if (currentClinic === 'biarritz' && data.duration_biarritz != null) return data.duration_biarritz;
+    return data.duration;
+}
+
 function loadInterventionData(key) {
     const data = db[key];
-    document.getElementById('inputDuration').value = data.duration;
+    document.getElementById('inputDuration').value = getEffectiveDuration(key);
     if (currentClinic === 'etoile') document.getElementById('inputType').value = 'Ambulatoire';
     else document.getElementById('inputType').value = data.type;
     document.getElementById('emptyState').classList.add('hidden');
@@ -927,7 +947,10 @@ function setClinic(clinic) {
         etoileWarn.classList.add('hidden'); etoileDiv.classList.add('hidden');
         if (currentKey) typeEl.value = db[currentKey].type;
     }
-    if (currentKey) calculate();
+    if (currentKey) {
+        document.getElementById('inputDuration').value = getEffectiveDuration(currentKey);
+        calculate();
+    }
 }
 
 function updateEtoileStayOptions() {
