@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Expert Pricing V15 — Clinique Belleza</title>
+    <title>Expert Pricing V16 — Clinique Belleza</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -16,283 +16,486 @@
         select:disabled { background-color: #f1f5f9; color: #94a3b8; cursor: not-allowed; }
         .toggle-checkbox:checked + .toggle-label { background-color: #22c55e; }
         .badge-secu { background-color: #dcfce7; color: #166534; border: 1px solid #bbf7d0; font-size: 0.65rem; padding: 2px 6px; border-radius: 9999px; margin-left: 6px; font-weight: 700; text-transform: uppercase; }
-
-        /* Assure que chaque ligne technique est toujours en flex */
         .tech-line { display: flex; }
+        .tab-btn { transition: all .2s; }
+        .tab-btn.active { background-color: #1e293b; color: white; }
+        .tab-btn:not(.active) { background-color: #f1f5f9; color: #64748b; }
+        .tab-btn:not(.active):hover { background-color: #e2e8f0; }
+
+        /* Paramètres table */
+        .params-table input { font-size: 0.8rem; padding: 4px 6px; border-radius: 4px; border: 1px solid #e2e8f0; background: #f8fafc; width: 100%; text-align: right; font-family: monospace; }
+        .params-table input:focus { outline: none; border-color: #6366f1; background: white; }
+        .params-table td { padding: 5px 6px; vertical-align: middle; }
+        .params-table th { padding: 6px 6px; text-align: right; font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; }
+        .params-table th:first-child, .params-table td:first-child { text-align: left; }
+        .params-table tr:nth-child(even) { background: #f8fafc; }
+        .params-table tr:hover { background: #f1f5f9; }
+        .params-table .secu-row td:first-child::after { content: ' ✦'; color: #22c55e; font-size: 0.6rem; }
+
+        .section-divider { display: flex; align-items: center; gap: 8px; margin: 20px 0 12px; }
+        .section-divider span { font-size: 0.7rem; font-weight: 800; color: #94a3b8; text-transform: uppercase; letter-spacing: .1em; white-space: nowrap; }
+        .section-divider::before, .section-divider::after { content: ''; flex: 1; height: 1px; background: #e2e8f0; }
+
+        .save-btn { transition: all .2s; }
+        .save-btn:disabled { opacity: .5; cursor: not-allowed; }
+        .save-btn.saving { background: #f59e0b; }
+        .save-btn.saved { background: #22c55e; }
+
+        .input-label { font-size: 0.65rem; font-weight: 700; color: #94a3b8; text-transform: uppercase; letter-spacing: .05em; display: block; margin-bottom: 3px; }
+        .config-input { border: 1px solid #e2e8f0; border-radius: 6px; padding: 6px 10px; font-size: 0.85rem; background: #f8fafc; width: 100%; font-family: monospace; }
+        .config-input:focus { outline: none; border-color: #6366f1; background: white; }
+        .config-input.error { border-color: #ef4444; background: #fef2f2; }
+
+        /* Sticky header for params table */
+        .params-table thead th { position: sticky; top: 0; background: white; z-index: 2; box-shadow: 0 1px 0 #e2e8f0; }
+
+        .delete-row-btn { opacity: 0; transition: opacity .15s; }
+        .params-table tr:hover .delete-row-btn { opacity: 1; }
+
+        #gist-status { transition: all .3s; }
+
+        /* Scroll container for table */
+        .table-scroll { overflow-x: auto; overflow-y: auto; max-height: 55vh; border-radius: 8px; border: 1px solid #e2e8f0; }
     </style>
 </head>
 <body class="min-h-screen flex flex-col text-slate-800 pb-20 md:pb-0">
 
-    <!-- HEADER -->
-    <header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-30">
-        <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
-            <div class="flex items-center gap-3">
-                <div class="bg-slate-900 text-white w-10 h-10 flex items-center justify-center rounded-lg shadow-lg">
-                    <i class="fa-solid fa-calculator text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="text-lg font-bold text-slate-900 leading-tight">Expert Pricing</h1>
-                    <p class="text-xs text-slate-500 font-medium tracking-wide">V15 · GRILLE MARS 2026</p>
-                </div>
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     HEADER
+═══════════════════════════════════════════════════════════════════════════ -->
+<header class="bg-white shadow-sm border-b border-slate-200 sticky top-0 z-30">
+    <div class="max-w-5xl mx-auto px-4 py-3 flex justify-between items-center gap-4">
+        <div class="flex items-center gap-3">
+            <div class="bg-slate-900 text-white w-9 h-9 flex items-center justify-center rounded-lg shadow-lg flex-shrink-0">
+                <i class="fa-solid fa-calculator text-base"></i>
             </div>
-            <div class="flex items-center gap-2">
-                <span class="text-[10px] uppercase font-bold text-slate-400 hidden md:block">Harmonisation</span>
-                <div class="relative inline-block w-12 mr-2 align-middle select-none">
-                    <input type="checkbox" id="toggleHarmonization"
-                        class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-all duration-300 left-0 top-0 checked:left-6 border-slate-300 checked:border-green-500"/>
-                    <label for="toggleHarmonization"
-                        class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-colors duration-300"></label>
-                </div>
-            </div>
-        </div>
-    </header>
-
-    <main class="flex-grow container max-w-4xl mx-auto px-4 py-6 space-y-6">
-
-        <!-- SÉLECTION -->
-        <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-6">
-            <div class="space-y-6">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-
-                    <!-- Intervention -->
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">1. Intervention</label>
-                        <div class="relative">
-                            <select id="interventionSelect"
-                                class="block w-full pl-4 pr-10 py-3 text-base border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-500 rounded-lg border bg-slate-50 cursor-pointer hover:bg-white">
-                                <option value="">-- Sélectionner --</option>
-                            </select>
-                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
-                                <i class="fa-solid fa-chevron-down text-xs"></i>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Lieu -->
-                    <div class="space-y-2">
-                        <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">2. Lieu</label>
-                        <div class="grid grid-cols-3 gap-2">
-                            <button onclick="setClinic('alphand')" id="btn-alphand"
-                                class="clinic-btn py-3 px-1 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-500 transition-all flex flex-col items-center justify-center gap-1">
-                                <span>Alphand</span><span class="text-[9px] opacity-70 font-normal">Paris 16</span>
-                            </button>
-                            <button onclick="setClinic('etoile')" id="btn-etoile"
-                                class="clinic-btn py-3 px-1 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-500 transition-all flex flex-col items-center justify-center gap-1">
-                                <span>Étoile</span><span class="text-[9px] opacity-70 font-normal">Paris 17</span>
-                            </button>
-                            <button onclick="setClinic('biarritz')" id="btn-biarritz"
-                                class="clinic-btn py-3 px-1 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-500 transition-all flex flex-col items-center justify-center gap-1">
-                                <span>Biarritz</span><span class="text-[9px] opacity-70 font-normal">Basque</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Params -->
-                <div id="params-panel" class="pt-4 border-t border-slate-100 hidden fade-in">
-                    <div class="flex flex-wrap gap-4 items-end">
-                        <div class="w-24">
-                            <label class="text-[10px] text-slate-400 block mb-1 uppercase">Durée (min)</label>
-                            <input type="number" id="inputDuration"
-                                class="w-full text-sm font-mono border-slate-200 rounded bg-slate-50 p-2 border text-center">
-                        </div>
-                        <div class="w-36">
-                            <label class="text-[10px] text-slate-400 block mb-1 uppercase">Type</label>
-                            <select id="inputType" class="w-full text-sm border-slate-200 rounded bg-slate-50 p-2 border h-[38px]">
-                                <option value="Ambulatoire">Ambulatoire</option>
-                                <option value="Hospit 1 nuit">Hospit 1 nuit</option>
-                            </select>
-                        </div>
-                        <div id="etoile-stay-container" class="hidden w-44">
-                            <label class="text-[10px] text-orange-500 font-bold block mb-1 uppercase">
-                                <i class="fa-solid fa-bed mr-1"></i>Confort Étoile
-                            </label>
-                            <select id="etoileStay"
-                                class="w-full text-sm border-orange-200 rounded bg-orange-50 p-2 border h-[38px] text-orange-900 font-medium">
-                                <option value="260">Box (260 €)</option>
-                                <option value="360">Ch. Double (360 €)</option>
-                                <option value="420">Ch. Simple (420 €)</option>
-                            </select>
-                        </div>
-                        <div class="flex-grow text-right pb-2 flex flex-col items-end justify-center">
-                            <div id="etoile-warning" class="hidden text-xs text-orange-400 font-medium mb-1">Ambulatoire forcé</div>
-                            <div id="harmonization-status" class="text-[10px] uppercase font-bold text-slate-400">Mode Standard</div>
-                        </div>
-                    </div>
-                </div>
+            <div>
+                <h1 class="text-base font-bold text-slate-900 leading-tight">Expert Pricing</h1>
+                <p class="text-[10px] text-slate-400 font-medium tracking-wide" id="versionLabel">V16 · chargement…</p>
             </div>
         </div>
 
-        <!-- RÉSULTAT -->
-        <div id="resultCard" class="hidden fade-in relative">
-
-            <!-- Badge harmonisation -->
-            <div id="profitBadge" class="absolute -top-3 -right-2 md:right-4 z-20 hidden">
-                <div class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white flex items-center gap-1">
-                    <i class="fa-solid fa-arrow-trend-up"></i><span id="profitAmount">+0 €</span>
-                </div>
-            </div>
-
-            <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
-
-                <!-- EN-TÊTE résultat -->
-                <div class="bg-slate-900 p-6 text-white flex justify-between items-center">
-                    <div>
-                        <h2 class="text-xl font-bold" id="resTitle">--</h2>
-                        <div class="flex items-center gap-2 mt-1 opacity-80">
-                            <span class="text-xs bg-white/20 px-2 py-0.5 rounded" id="badgeClinic">--</span>
-                            <span class="text-xs bg-white/20 px-2 py-0.5 rounded" id="badgeTime">-- min</span>
-                        </div>
-                    </div>
-                    <div class="text-right">
-                        <p class="text-[10px] uppercase tracking-widest opacity-60 mb-1">Total Patient</p>
-                        <p class="text-3xl font-bold tracking-tight" id="resTotal">0 €</p>
-                    </div>
-                </div>
-
-                <div class="p-4 md:p-6 space-y-4">
-
-                    <!-- ── HONORAIRES CHIRURGIEN ── -->
-                    <div id="rowHC" class="flex items-center justify-between p-4 rounded-xl bg-blue-50 border border-blue-100 ring-1 ring-blue-200 shadow-sm transition-all duration-300">
-                        <div class="flex items-center gap-4">
-                            <div id="iconHC" class="w-12 h-12 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-sm">
-                                <i class="fa-solid fa-user-doctor text-xl"></i>
-                            </div>
-                            <div>
-                                <p class="text-sm font-bold text-slate-800 uppercase tracking-wide">Honoraires Chirurgien</p>
-                                <p class="text-xs text-slate-500 font-medium mt-0.5" id="hcSubtitle">Standard</p>
-                            </div>
-                        </div>
-                        <div class="flex items-center gap-3">
-                            <input type="number" id="valHC"
-                                class="w-28 text-right font-mono text-2xl font-bold text-slate-900 bg-transparent border-b border-blue-300 focus:border-blue-500 focus:outline-none p-0"
-                                value="0">
-                            <span class="text-slate-400 text-lg">€</span>
-                            <button onclick="copyToClipboard('valHC', false)"
-                                class="w-8 h-8 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition-colors flex items-center justify-center">
-                                <i class="fa-regular fa-copy"></i>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- Séparateur -->
-                    <div class="flex items-center gap-2 py-1">
-                        <div class="h-px bg-slate-100 flex-grow"></div>
-                        <span class="text-[10px] text-slate-400 uppercase font-semibold">Frais Techniques</span>
-                        <div class="h-px bg-slate-100 flex-grow"></div>
-                    </div>
-
-                    <!-- ── GRILLE FRAIS TECHNIQUES ── -->
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
-
-                        <!-- Anesthésie -->
-                        <div class="tech-line items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-white text-teal-600 flex items-center justify-center shadow-sm flex-shrink-0">
-                                    <i class="fa-solid fa-syringe text-xs"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-700">Anesthésie</p>
-                                    <p class="text-[10px] text-slate-400" id="descAnesth">--</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 ml-auto">
-                                <span class="font-mono font-bold text-slate-700 text-sm" id="valAnesth">0</span>
-                                <span class="text-slate-400 text-xs">€</span>
-                                <button onclick="copyToClipboard('valAnesth', true)"
-                                    class="w-7 h-7 rounded-full hover:bg-slate-200 text-slate-300 hover:text-teal-600 transition-colors flex items-center justify-center">
-                                    <i class="fa-regular fa-copy text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Bloc / Salle -->
-                        <div class="tech-line items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-white text-indigo-600 flex items-center justify-center shadow-sm flex-shrink-0">
-                                    <i class="fa-solid fa-hospital text-xs"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-700">Bloc / Salle</p>
-                                    <p class="text-[10px] text-slate-400" id="descClinic">--</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 ml-auto">
-                                <span class="font-mono font-bold text-slate-700 text-sm" id="valClinic">0</span>
-                                <span class="text-slate-400 text-xs">€</span>
-                                <button onclick="copyToClipboard('valClinic', true)"
-                                    class="w-7 h-7 rounded-full hover:bg-slate-200 text-slate-300 hover:text-indigo-600 transition-colors flex items-center justify-center">
-                                    <i class="fa-regular fa-copy text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Hébergement -->
-                        <div class="tech-line items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-white text-orange-600 flex items-center justify-center shadow-sm flex-shrink-0">
-                                    <i class="fa-solid fa-bed text-xs"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-700">Hébergement</p>
-                                    <p class="text-[10px] text-slate-400" id="descStay">--</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 ml-auto">
-                                <span class="font-mono font-bold text-slate-700 text-sm" id="valStay">0</span>
-                                <span class="text-slate-400 text-xs">€</span>
-                                <button onclick="copyToClipboard('valStay', true)"
-                                    class="w-7 h-7 rounded-full hover:bg-slate-200 text-slate-300 hover:text-orange-600 transition-colors flex items-center justify-center">
-                                    <i class="fa-regular fa-copy text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                        <!-- Implants (masqué si non applicable) -->
-                        <div id="rowImplants" class="tech-line items-center justify-between p-3 rounded-lg bg-pink-50 border border-pink-100" style="display:none">
-                            <div class="flex items-center gap-3">
-                                <div class="w-8 h-8 rounded-full bg-white text-pink-600 flex items-center justify-center shadow-sm flex-shrink-0">
-                                    <i class="fa-solid fa-shapes text-xs"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs font-bold text-slate-700">Implants</p>
-                                    <p class="text-[10px] text-pink-400">Inclus dans le devis</p>
-                                </div>
-                            </div>
-                            <div class="flex items-center gap-2 ml-auto">
-                                <span class="font-mono font-bold text-slate-700 text-sm" id="valImplants">0</span>
-                                <span class="text-slate-400 text-xs">€</span>
-                                <button onclick="copyToClipboard('valImplants', true)"
-                                    class="w-7 h-7 rounded-full hover:bg-pink-100 text-pink-300 hover:text-pink-600 transition-colors flex items-center justify-center">
-                                    <i class="fa-regular fa-copy text-xs"></i>
-                                </button>
-                            </div>
-                        </div>
-
-                    </div><!-- fin grille -->
-                </div>
-            </div>
-
-            <p class="text-center text-[10px] text-slate-400 mt-4 px-4 italic" id="footerNote">* Prix calculé sur la base standard.</p>
+        <!-- TABS -->
+        <div class="flex items-center gap-1 bg-slate-100 rounded-lg p-1">
+            <button onclick="switchTab('calc')" id="tab-calc"
+                class="tab-btn active text-xs font-bold px-3 py-1.5 rounded-md flex items-center gap-1.5">
+                <i class="fa-solid fa-calculator text-[10px]"></i><span>Calcul</span>
+            </button>
+            <button onclick="switchTab('params')" id="tab-params"
+                class="tab-btn text-xs font-bold px-3 py-1.5 rounded-md flex items-center gap-1.5">
+                <i class="fa-solid fa-sliders text-[10px]"></i><span>Paramètres</span>
+            </button>
         </div>
 
-        <!-- EMPTY STATE -->
-        <div id="emptyState" class="flex flex-col items-center justify-center py-12 text-slate-300">
-            <i class="fa-solid fa-chart-pie text-6xl mb-4 text-slate-200"></i>
-            <p class="text-sm font-medium">Sélectionnez une intervention</p>
+        <!-- Harmonisation toggle (calc only) -->
+        <div id="harmoniz-toggle" class="flex items-center gap-2">
+            <span class="text-[10px] uppercase font-bold text-slate-400 hidden md:block">Harmonisation</span>
+            <div class="relative inline-block w-12 align-middle select-none">
+                <input type="checkbox" id="toggleHarmonization"
+                    class="toggle-checkbox absolute block w-6 h-6 rounded-full bg-white border-4 appearance-none cursor-pointer z-10 transition-all duration-300 left-0 top-0 checked:left-6 border-slate-300 checked:border-green-500"/>
+                <label for="toggleHarmonization"
+                    class="toggle-label block overflow-hidden h-6 rounded-full bg-slate-300 cursor-pointer transition-colors duration-300"></label>
+            </div>
         </div>
+    </div>
+</header>
 
-    </main>
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     TAB : CALCUL
+═══════════════════════════════════════════════════════════════════════════ -->
+<main id="view-calc" class="flex-grow container max-w-4xl mx-auto px-4 py-6 space-y-6">
 
-    <!-- TOAST -->
-    <div id="toast"
-        class="fixed top-4 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-4 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 transition-all duration-300 opacity-0 -translate-y-20 z-50 pointer-events-none">
-        <i class="fa-solid fa-check text-green-400"></i><span class="text-sm font-bold">Copié !</span>
+    <!-- SÉLECTION -->
+    <div class="bg-white rounded-xl shadow-sm border border-slate-200 p-5 md:p-6">
+        <div class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+                <!-- Intervention -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">1. Intervention</label>
+                    <div class="relative">
+                        <select id="interventionSelect"
+                            class="block w-full pl-4 pr-10 py-3 text-base border-slate-200 focus:outline-none focus:ring-2 focus:ring-slate-500 rounded-lg border bg-slate-50 cursor-pointer hover:bg-white">
+                            <option value="">-- Sélectionner --</option>
+                        </select>
+                        <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-slate-400">
+                            <i class="fa-solid fa-chevron-down text-xs"></i>
+                        </div>
+                    </div>
+                </div>
+                <!-- Lieu -->
+                <div class="space-y-2">
+                    <label class="text-xs font-bold text-slate-400 uppercase tracking-wider">2. Lieu</label>
+                    <div class="grid grid-cols-3 gap-2">
+                        <button onclick="setClinic('alphand')" id="btn-alphand"
+                            class="clinic-btn py-3 px-1 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-500 transition-all flex flex-col items-center justify-center gap-1">
+                            <span>Alphand</span><span class="text-[9px] opacity-70 font-normal">Paris 16</span>
+                        </button>
+                        <button onclick="setClinic('etoile')" id="btn-etoile"
+                            class="clinic-btn py-3 px-1 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-500 transition-all flex flex-col items-center justify-center gap-1">
+                            <span>Étoile</span><span class="text-[9px] opacity-70 font-normal">Paris 17</span>
+                        </button>
+                        <button onclick="setClinic('biarritz')" id="btn-biarritz"
+                            class="clinic-btn py-3 px-1 rounded-lg text-sm font-semibold border border-transparent bg-slate-100 text-slate-500 transition-all flex flex-col items-center justify-center gap-1">
+                            <span>Biarritz</span><span class="text-[9px] opacity-70 font-normal">Basque</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <!-- Params -->
+            <div id="params-panel" class="pt-4 border-t border-slate-100 hidden fade-in">
+                <div class="flex flex-wrap gap-4 items-end">
+                    <div class="w-24">
+                        <label class="text-[10px] text-slate-400 block mb-1 uppercase">Durée (min)</label>
+                        <input type="number" id="inputDuration"
+                            class="w-full text-sm font-mono border-slate-200 rounded bg-slate-50 p-2 border text-center">
+                    </div>
+                    <div class="w-36">
+                        <label class="text-[10px] text-slate-400 block mb-1 uppercase">Type</label>
+                        <select id="inputType" class="w-full text-sm border-slate-200 rounded bg-slate-50 p-2 border h-[38px]">
+                            <option value="Ambulatoire">Ambulatoire</option>
+                            <option value="Hospit 1 nuit">Hospit 1 nuit</option>
+                        </select>
+                    </div>
+                    <div id="etoile-stay-container" class="hidden w-44">
+                        <label class="text-[10px] text-orange-500 font-bold block mb-1 uppercase">
+                            <i class="fa-solid fa-bed mr-1"></i>Confort Étoile
+                        </label>
+                        <select id="etoileStay"
+                            class="w-full text-sm border-orange-200 rounded bg-orange-50 p-2 border h-[38px] text-orange-900 font-medium">
+                            <option value="260">Box (260 €)</option>
+                            <option value="360">Ch. Double (360 €)</option>
+                            <option value="420">Ch. Simple (420 €)</option>
+                        </select>
+                    </div>
+                    <div class="flex-grow text-right pb-2 flex flex-col items-end justify-center">
+                        <div id="etoile-warning" class="hidden text-xs text-orange-400 font-medium mb-1">Ambulatoire forcé</div>
+                        <div id="harmonization-status" class="text-[10px] uppercase font-bold text-slate-400">Mode Standard</div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 
+    <!-- RÉSULTAT -->
+    <div id="resultCard" class="hidden fade-in relative">
+        <div id="profitBadge" class="absolute -top-3 -right-2 md:right-4 z-20 hidden">
+            <div class="bg-green-600 text-white text-xs font-bold px-3 py-1 rounded-full shadow-lg border-2 border-white flex items-center gap-1">
+                <i class="fa-solid fa-arrow-trend-up"></i><span id="profitAmount">+0 €</span>
+            </div>
+        </div>
+        <div class="bg-white rounded-xl shadow-lg border border-slate-200 overflow-hidden">
+            <div class="bg-slate-900 p-6 text-white flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold" id="resTitle">--</h2>
+                    <div class="flex items-center gap-2 mt-1 opacity-80">
+                        <span class="text-xs bg-white/20 px-2 py-0.5 rounded" id="badgeClinic">--</span>
+                        <span class="text-xs bg-white/20 px-2 py-0.5 rounded" id="badgeTime">-- min</span>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-[10px] uppercase tracking-widest opacity-60 mb-1">Total Patient</p>
+                    <p class="text-3xl font-bold tracking-tight" id="resTotal">0 €</p>
+                </div>
+            </div>
+            <div class="p-4 md:p-6 space-y-4">
+                <!-- HC -->
+                <div id="rowHC" class="flex items-center justify-between p-4 rounded-xl bg-blue-50 border border-blue-100 ring-1 ring-blue-200 shadow-sm transition-all duration-300">
+                    <div class="flex items-center gap-4">
+                        <div id="iconHC" class="w-12 h-12 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-sm">
+                            <i class="fa-solid fa-user-doctor text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm font-bold text-slate-800 uppercase tracking-wide">Honoraires Chirurgien</p>
+                            <p class="text-xs text-slate-500 font-medium mt-0.5" id="hcSubtitle">Standard</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center gap-3">
+                        <input type="number" id="valHC"
+                            class="w-28 text-right font-mono text-2xl font-bold text-slate-900 bg-transparent border-b border-blue-300 focus:border-blue-500 focus:outline-none p-0"
+                            value="0">
+                        <span class="text-slate-400 text-lg">€</span>
+                        <button onclick="copyToClipboard('valHC', false)"
+                            class="w-8 h-8 rounded-full hover:bg-slate-200 text-slate-400 hover:text-slate-700 transition-colors flex items-center justify-center">
+                            <i class="fa-regular fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- Séparateur -->
+                <div class="flex items-center gap-2 py-1">
+                    <div class="h-px bg-slate-100 flex-grow"></div>
+                    <span class="text-[10px] text-slate-400 uppercase font-semibold">Frais Techniques</span>
+                    <div class="h-px bg-slate-100 flex-grow"></div>
+                </div>
+                <!-- Grille frais -->
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <!-- Anesthésie -->
+                    <div class="tech-line items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white text-teal-600 flex items-center justify-center shadow-sm flex-shrink-0">
+                                <i class="fa-solid fa-syringe text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-700">Anesthésie</p>
+                                <p class="text-[10px] text-slate-400" id="descAnesth">--</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 ml-auto">
+                            <span class="font-mono font-bold text-slate-700 text-sm" id="valAnesth">0</span>
+                            <span class="text-slate-400 text-xs">€</span>
+                            <button onclick="copyToClipboard('valAnesth', true)"
+                                class="w-7 h-7 rounded-full hover:bg-slate-200 text-slate-300 hover:text-teal-600 transition-colors flex items-center justify-center">
+                                <i class="fa-regular fa-copy text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Bloc -->
+                    <div class="tech-line items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white text-indigo-600 flex items-center justify-center shadow-sm flex-shrink-0">
+                                <i class="fa-solid fa-hospital text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-700">Bloc / Salle</p>
+                                <p class="text-[10px] text-slate-400" id="descClinic">--</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 ml-auto">
+                            <span class="font-mono font-bold text-slate-700 text-sm" id="valClinic">0</span>
+                            <span class="text-slate-400 text-xs">€</span>
+                            <button onclick="copyToClipboard('valClinic', true)"
+                                class="w-7 h-7 rounded-full hover:bg-slate-200 text-slate-300 hover:text-indigo-600 transition-colors flex items-center justify-center">
+                                <i class="fa-regular fa-copy text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Hébergement -->
+                    <div class="tech-line items-center justify-between p-3 rounded-lg bg-slate-50 border border-slate-100">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white text-orange-600 flex items-center justify-center shadow-sm flex-shrink-0">
+                                <i class="fa-solid fa-bed text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-700">Hébergement</p>
+                                <p class="text-[10px] text-slate-400" id="descStay">--</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 ml-auto">
+                            <span class="font-mono font-bold text-slate-700 text-sm" id="valStay">0</span>
+                            <span class="text-slate-400 text-xs">€</span>
+                            <button onclick="copyToClipboard('valStay', true)"
+                                class="w-7 h-7 rounded-full hover:bg-slate-200 text-slate-300 hover:text-orange-600 transition-colors flex items-center justify-center">
+                                <i class="fa-regular fa-copy text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <!-- Implants -->
+                    <div id="rowImplants" class="tech-line items-center justify-between p-3 rounded-lg bg-pink-50 border border-pink-100" style="display:none">
+                        <div class="flex items-center gap-3">
+                            <div class="w-8 h-8 rounded-full bg-white text-pink-600 flex items-center justify-center shadow-sm flex-shrink-0">
+                                <i class="fa-solid fa-shapes text-xs"></i>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-slate-700">Implants</p>
+                                <p class="text-[10px] text-pink-400">Inclus dans le devis</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center gap-2 ml-auto">
+                            <span class="font-mono font-bold text-slate-700 text-sm" id="valImplants">0</span>
+                            <span class="text-slate-400 text-xs">€</span>
+                            <button onclick="copyToClipboard('valImplants', true)"
+                                class="w-7 h-7 rounded-full hover:bg-pink-100 text-pink-300 hover:text-pink-600 transition-colors flex items-center justify-center">
+                                <i class="fa-regular fa-copy text-xs"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <p class="text-center text-[10px] text-slate-400 mt-4 px-4 italic" id="footerNote">* Prix calculé sur la base standard.</p>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="flex flex-col items-center justify-center py-12 text-slate-300">
+        <i class="fa-solid fa-chart-pie text-6xl mb-4 text-slate-200"></i>
+        <p class="text-sm font-medium">Sélectionnez une intervention</p>
+    </div>
+</main>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     TAB : PARAMÈTRES
+═══════════════════════════════════════════════════════════════════════════ -->
+<main id="view-params" class="hidden flex-grow container max-w-5xl mx-auto px-4 py-6 space-y-5">
+
+    <!-- CONFIG GIST -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div class="flex items-center justify-between mb-4">
+            <div>
+                <h3 class="font-bold text-slate-800 text-sm">Configuration GitHub Gist</h3>
+                <p class="text-xs text-slate-400 mt-0.5">Les données sont chargées et sauvegardées dans un Gist privé.</p>
+            </div>
+            <div id="gist-status" class="flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full bg-slate-100 text-slate-500">
+                <i class="fa-solid fa-circle-notch fa-spin text-[10px]"></i><span>Initialisation</span>
+            </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div>
+                <label class="input-label">GitHub Personal Access Token <span class="text-red-400">(scope: gist)</span></label>
+                <input type="password" id="gistToken" class="config-input" placeholder="ghp_xxxxxxxxxxxxxxxxxxxx"
+                    oninput="onConfigChange()">
+                <p class="text-[10px] text-slate-400 mt-1">Créer sur github.com → Settings → Developer settings → Tokens (classic)</p>
+            </div>
+            <div>
+                <label class="input-label">Gist ID</label>
+                <input type="text" id="gistId" class="config-input font-mono" placeholder="abc123def456..."
+                    oninput="onConfigChange()">
+                <p class="text-[10px] text-slate-400 mt-1">L'ID se trouve dans l'URL de ton Gist : gist.github.com/user/<strong>ID</strong></p>
+            </div>
+        </div>
+        <div class="flex items-center gap-3 mt-4">
+            <button onclick="loadFromGist()" class="text-xs font-bold bg-slate-800 text-white px-4 py-2 rounded-lg hover:bg-slate-700 transition flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-down"></i> Charger depuis Gist
+            </button>
+            <button onclick="saveToGist()" id="saveGistBtn"
+                class="save-btn text-xs font-bold bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-500 transition flex items-center gap-2">
+                <i class="fa-solid fa-cloud-arrow-up"></i> <span id="saveBtnLabel">Sauvegarder</span>
+            </button>
+            <button onclick="exportJSON()" class="text-xs font-semibold text-slate-500 hover:text-slate-800 px-3 py-2 rounded-lg hover:bg-slate-100 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-download text-[10px]"></i> Export JSON
+            </button>
+            <label class="text-xs font-semibold text-slate-500 hover:text-slate-800 px-3 py-2 rounded-lg hover:bg-slate-100 transition flex items-center gap-1.5 cursor-pointer">
+                <i class="fa-solid fa-upload text-[10px]"></i> Import JSON
+                <input type="file" accept=".json" onchange="importJSON(event)" class="hidden">
+            </label>
+        </div>
+    </div>
+
+    <!-- TARIFS STRUCTURELS -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <h3 class="font-bold text-slate-800 text-sm mb-4 flex items-center gap-2">
+            <i class="fa-solid fa-building-columns text-indigo-500"></i> Tarifs Structurels des Cliniques
+        </h3>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <!-- Alphand -->
+            <div class="space-y-3">
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest border-b pb-2">Alphand</div>
+                <div>
+                    <label class="input-label">Bloc (€/h)</label>
+                    <input type="number" id="s_alphand_bloc_per_hour" class="config-input" value="750" oninput="structuralChanged()">
+                </div>
+                <div>
+                    <label class="input-label">Séjour Ambulatoire (€)</label>
+                    <input type="number" id="s_alphand_stay_ambu" class="config-input" value="350" oninput="structuralChanged()">
+                </div>
+                <div>
+                    <label class="input-label">Séjour 1 Nuit (€)</label>
+                    <input type="number" id="s_alphand_stay_nuit" class="config-input" value="650" oninput="structuralChanged()">
+                </div>
+                <div>
+                    <label class="input-label">Anesth. base (€)</label>
+                    <input type="number" id="s_alphand_anesth_base" class="config-input" value="500" oninput="structuralChanged()">
+                </div>
+                <div>
+                    <label class="input-label">Anesth. tranche 30min (€)</label>
+                    <input type="number" id="s_alphand_anesth_step" class="config-input" value="100" oninput="structuralChanged()">
+                </div>
+            </div>
+            <!-- Étoile -->
+            <div class="space-y-3">
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest border-b pb-2">Étoile</div>
+                <div>
+                    <label class="input-label">Bloc (€/15 min)</label>
+                    <input type="number" id="s_etoile_bloc_per_15" class="config-input" value="190" oninput="structuralChanged()">
+                </div>
+                <div>
+                    <label class="input-label">Box (€)</label>
+                    <input type="number" id="s_etoile_box" class="config-input" value="260" oninput="structuralChanged()">
+                </div>
+                <div>
+                    <label class="input-label">Chambre Double (€)</label>
+                    <input type="number" id="s_etoile_double" class="config-input" value="360" oninput="structuralChanged()">
+                </div>
+                <div>
+                    <label class="input-label">Chambre Simple (€)</label>
+                    <input type="number" id="s_etoile_simple" class="config-input" value="420" oninput="structuralChanged()">
+                </div>
+                <div>
+                    <label class="input-label">Anesth. base (€)</label>
+                    <input type="number" id="s_etoile_anesth_base" class="config-input" value="500" oninput="structuralChanged()">
+                </div>
+                <div>
+                    <label class="input-label">Anesth. tranche 30min (€)</label>
+                    <input type="number" id="s_etoile_anesth_step" class="config-input" value="100" oninput="structuralChanged()">
+                </div>
+            </div>
+            <!-- Biarritz note -->
+            <div class="space-y-3">
+                <div class="text-xs font-bold text-slate-500 uppercase tracking-widest border-b pb-2">Biarritz</div>
+                <div class="text-xs text-slate-400 bg-slate-50 rounded-lg p-3 italic">
+                    Les frais Biarritz sont forfaitaires par intervention.<br>Modifiables dans le tableau ci-dessous (colonnes Anesth / FSO / Séjour).
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- TABLEAU INTERVENTIONS -->
+    <div class="bg-white rounded-xl border border-slate-200 shadow-sm p-5">
+        <div class="flex items-center justify-between mb-4">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+                <i class="fa-solid fa-table-list text-indigo-500"></i> Interventions
+                <span id="countBadge" class="text-[10px] font-bold bg-indigo-100 text-indigo-600 px-2 py-0.5 rounded-full ml-1">0</span>
+            </h3>
+            <button onclick="addNewRow()" class="text-xs font-bold bg-green-600 text-white px-3 py-2 rounded-lg hover:bg-green-500 transition flex items-center gap-1.5">
+                <i class="fa-solid fa-plus"></i> Ajouter
+            </button>
+        </div>
+
+        <div class="table-scroll">
+            <table class="params-table w-full text-sm border-collapse">
+                <thead>
+                    <tr class="bg-white">
+                        <th class="min-w-[200px] text-left">Intervention</th>
+                        <th class="w-20">Durée <span class="text-slate-300 font-normal">(min)</span></th>
+                        <th class="w-28">Type</th>
+                        <th class="w-16">HC <span class="text-slate-300 font-normal">(€)</span></th>
+                        <th class="w-16 text-purple-500">Anesth B.</th>
+                        <th class="w-16 text-purple-500">FSO B.</th>
+                        <th class="w-16 text-purple-500">Séjour B.</th>
+                        <th class="w-16 text-pink-400">Implants</th>
+                        <th class="w-12">Sécu</th>
+                        <th class="w-8"></th>
+                    </tr>
+                </thead>
+                <tbody id="interventionsTableBody">
+                </tbody>
+            </table>
+        </div>
+
+        <p class="text-[10px] text-slate-400 mt-3">
+            <span class="text-purple-500 font-bold">B.</span> = Biarritz forfait · 
+            <span class="text-green-500 font-bold">✦</span> = Prise en charge Sécu ·
+            Double-clic sur le nom pour le modifier.
+        </p>
+    </div>
+
+</main>
+
+<!-- TOAST -->
+<div id="toast"
+    class="fixed top-4 left-1/2 -translate-x-1/2 md:left-auto md:translate-x-0 md:right-4 bg-slate-900 text-white px-4 py-3 rounded-lg shadow-2xl flex items-center gap-3 transition-all duration-300 opacity-0 -translate-y-20 z-50 pointer-events-none">
+    <i class="fa-solid fa-check text-green-400"></i><span id="toastMsg" class="text-sm font-bold">Copié !</span>
+</div>
+
+<!-- ═══════════════════════════════════════════════════════════════════════════
+     SCRIPT
+═══════════════════════════════════════════════════════════════════════════ -->
 <script>
-// ─── DATABASE V15 — Grille validée 29/03/2026 ─────────────────────────────────
-const db = {
+// ─── DEFAULTS ──────────────────────────────────────────────────────────────
+const DEFAULT_STRUCTURAL = {
+    alphand: { bloc_per_hour: 750, stay_ambu: 350, stay_nuit: 650, anesth_base: 500, anesth_step: 100 },
+    etoile:  { bloc_per_15: 190, box: 260, double: 360, simple: 420, anesth_base: 500, anesth_step: 100 }
+};
+
+const DEFAULT_DB = {
     "Abdominoplastie":                    { duration:120, type:"Hospit 1 nuit",  biarritz:{ hc:5500, anesth:875,  fso:726,     sejour:533, implants:0   } },
     "Abdominoplastie (SÉCU)":             { duration:120, type:"Hospit 1 nuit",  secu:true, biarritz:{ hc:5500, anesth:725,  fso:0,       sejour:0,   implants:0   } },
     "Abdominoplastie + Cure hernie":      { duration:120, type:"Hospit 1 nuit",  biarritz:{ hc:5500, anesth:875,  fso:726,     sejour:533, implants:0   } },
@@ -329,19 +532,34 @@ const db = {
     "Septorhinoplastie":                  { duration:240, type:"Ambulatoire",    biarritz:{ hc:8750, anesth:1250, fso:0,       sejour:0,   implants:0   } }
 };
 
+// ─── STATE ─────────────────────────────────────────────────────────────────
+let db = JSON.parse(JSON.stringify(DEFAULT_DB));
+let structural = JSON.parse(JSON.stringify(DEFAULT_STRUCTURAL));
 let currentClinic = 'alphand';
 let currentKey = '';
+let isDirty = false;
+const VERSION = 'V16';
 
-// ─── INIT ─────────────────────────────────────────────────────────────────────
+// ─── STORAGE KEYS ──────────────────────────────────────────────────────────
+const LS_TOKEN = 'ep_gist_token';
+const LS_ID    = 'ep_gist_id';
+
+// ─── INIT ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-    const select = document.getElementById('interventionSelect');
-    Object.keys(db).sort((a, b) => a.localeCompare(b, 'fr')).forEach(key => {
-        const opt = document.createElement('option');
-        opt.value = key;
-        opt.textContent = key;
-        select.appendChild(opt);
-    });
-    select.addEventListener('change', e => {
+    // Restore credentials from localStorage
+    const savedToken = localStorage.getItem(LS_TOKEN);
+    const savedId    = localStorage.getItem(LS_ID);
+    if (savedToken) document.getElementById('gistToken').value = savedToken;
+    if (savedId)    document.getElementById('gistId').value    = savedId;
+
+    if (savedToken && savedId) {
+        loadFromGist();
+    } else {
+        initWithDefaults();
+        setGistStatus('no-config', 'Non configuré');
+    }
+
+    document.getElementById('interventionSelect').addEventListener('change', e => {
         currentKey = e.target.value;
         if (currentKey) loadInterventionData(currentKey);
         else hideResults();
@@ -354,6 +572,323 @@ document.addEventListener('DOMContentLoaded', () => {
     setClinic('alphand');
 });
 
+function initWithDefaults() {
+    rebuildSelect();
+    rebuildParamsTable();
+    loadStructuralIntoUI();
+    document.getElementById('versionLabel').textContent = VERSION + ' · défaut local';
+}
+
+// ─── TABS ──────────────────────────────────────────────────────────────────
+function switchTab(tab) {
+    document.getElementById('view-calc').classList.toggle('hidden', tab !== 'calc');
+    document.getElementById('view-params').classList.toggle('hidden', tab !== 'params');
+    document.getElementById('tab-calc').classList.toggle('active', tab === 'calc');
+    document.getElementById('tab-params').classList.toggle('active', tab === 'params');
+    document.getElementById('harmoniz-toggle').classList.toggle('hidden', tab !== 'calc');
+    if (tab === 'params') rebuildParamsTable();
+}
+
+// ─── GIST ──────────────────────────────────────────────────────────────────
+function getGistCreds() {
+    return {
+        token: document.getElementById('gistToken').value.trim(),
+        id:    document.getElementById('gistId').value.trim()
+    };
+}
+
+function setGistStatus(state, label) {
+    const el = document.getElementById('gist-status');
+    const icons = { ok: 'fa-circle-check text-green-500', error: 'fa-circle-xmark text-red-500', loading: 'fa-circle-notch fa-spin text-indigo-500', 'no-config': 'fa-circle-exclamation text-amber-500', dirty: 'fa-circle-dot text-orange-500' };
+    const bgs   = { ok: 'bg-green-50 text-green-700', error: 'bg-red-50 text-red-600', loading: 'bg-indigo-50 text-indigo-600', 'no-config': 'bg-amber-50 text-amber-600', dirty: 'bg-orange-50 text-orange-600' };
+    el.className = `flex items-center gap-2 text-xs font-semibold px-3 py-1.5 rounded-full ${bgs[state] || bgs.ok}`;
+    el.innerHTML = `<i class="fa-solid ${icons[state] || icons.ok} text-[10px]"></i><span>${label}</span>`;
+}
+
+function onConfigChange() {
+    const { token, id } = getGistCreds();
+    if (token) localStorage.setItem(LS_TOKEN, token);
+    if (id)    localStorage.setItem(LS_ID, id);
+}
+
+async function loadFromGist() {
+    const { token, id } = getGistCreds();
+    if (!token || !id) { setGistStatus('no-config', 'Token / ID manquant'); return; }
+    setGistStatus('loading', 'Chargement…');
+    try {
+        const res = await fetch(`https://api.github.com/gists/${id}`, {
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const gist = await res.json();
+        const file = Object.values(gist.files)[0];
+        const data = JSON.parse(file.content);
+        applyLoadedData(data);
+        setGistStatus('ok', 'Synchronisé');
+        const d = new Date(gist.updated_at);
+        document.getElementById('versionLabel').textContent = `${VERSION} · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
+        showToast('Données chargées ✓', 'ok');
+    } catch(e) {
+        setGistStatus('error', 'Erreur: ' + e.message);
+        showToast('Erreur chargement: ' + e.message, 'error');
+        initWithDefaults();
+    }
+}
+
+async function saveToGist() {
+    const { token, id } = getGistCreds();
+    if (!token || !id) { showToast('Configure d\'abord le token et le Gist ID', 'error'); return; }
+
+    // Collect current table edits before saving
+    collectTableEdits();
+    collectStructuralEdits();
+
+    const btn = document.getElementById('saveGistBtn');
+    const label = document.getElementById('saveBtnLabel');
+    btn.disabled = true;
+    label.textContent = 'Sauvegarde…';
+    setGistStatus('loading', 'Sauvegarde…');
+
+    const payload = buildPayload();
+    try {
+        const res = await fetch(`https://api.github.com/gists/${id}`, {
+            method: 'PATCH',
+            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json', 'Content-Type': 'application/json' },
+            body: JSON.stringify({ files: { 'expert-pricing-db.json': { content: JSON.stringify(payload, null, 2) } } })
+        });
+        if (!res.ok) throw new Error(`HTTP ${res.status}`);
+        const gist = await res.json();
+        isDirty = false;
+        setGistStatus('ok', 'Synchronisé');
+        const d = new Date(gist.updated_at);
+        document.getElementById('versionLabel').textContent = `${VERSION} · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
+        showToast('Sauvegardé dans le Gist ✓', 'ok');
+    } catch(e) {
+        setGistStatus('error', 'Erreur: ' + e.message);
+        showToast('Erreur sauvegarde: ' + e.message, 'error');
+    } finally {
+        btn.disabled = false;
+        label.textContent = 'Sauvegarder';
+    }
+}
+
+function buildPayload() {
+    return { version: VERSION, db, structural };
+}
+
+function applyLoadedData(data) {
+    if (data.db) db = data.db;
+    if (data.structural) structural = data.structural;
+    rebuildSelect();
+    rebuildParamsTable();
+    loadStructuralIntoUI();
+}
+
+// ─── EXPORT / IMPORT ──────────────────────────────────────────────────────
+function exportJSON() {
+    collectTableEdits();
+    collectStructuralEdits();
+    const blob = new Blob([JSON.stringify(buildPayload(), null, 2)], { type: 'application/json' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `expert-pricing-db-${new Date().toISOString().slice(0,10)}.json`;
+    a.click();
+}
+
+function importJSON(event) {
+    const file = event.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+        try {
+            const data = JSON.parse(e.target.result);
+            applyLoadedData(data);
+            showToast('Import réussi ✓', 'ok');
+            markDirty();
+        } catch(err) {
+            showToast('JSON invalide', 'error');
+        }
+    };
+    reader.readAsText(file);
+}
+
+// ─── STRUCTURAL UI ─────────────────────────────────────────────────────────
+function loadStructuralIntoUI() {
+    const s = structural;
+    const set = (id, val) => { const el = document.getElementById(id); if(el) el.value = val; };
+    set('s_alphand_bloc_per_hour', s.alphand.bloc_per_hour);
+    set('s_alphand_stay_ambu',     s.alphand.stay_ambu);
+    set('s_alphand_stay_nuit',     s.alphand.stay_nuit);
+    set('s_alphand_anesth_base',   s.alphand.anesth_base);
+    set('s_alphand_anesth_step',   s.alphand.anesth_step);
+    set('s_etoile_bloc_per_15',    s.etoile.bloc_per_15);
+    set('s_etoile_box',            s.etoile.box);
+    set('s_etoile_double',         s.etoile.double);
+    set('s_etoile_simple',         s.etoile.simple);
+    set('s_etoile_anesth_base',    s.etoile.anesth_base);
+    set('s_etoile_anesth_step',    s.etoile.anesth_step);
+}
+
+function collectStructuralEdits() {
+    const gv = id => parseFloat(document.getElementById(id)?.value) || 0;
+    structural.alphand.bloc_per_hour = gv('s_alphand_bloc_per_hour');
+    structural.alphand.stay_ambu     = gv('s_alphand_stay_ambu');
+    structural.alphand.stay_nuit     = gv('s_alphand_stay_nuit');
+    structural.alphand.anesth_base   = gv('s_alphand_anesth_base');
+    structural.alphand.anesth_step   = gv('s_alphand_anesth_step');
+    structural.etoile.bloc_per_15    = gv('s_etoile_bloc_per_15');
+    structural.etoile.box            = gv('s_etoile_box');
+    structural.etoile.double         = gv('s_etoile_double');
+    structural.etoile.simple         = gv('s_etoile_simple');
+    structural.etoile.anesth_base    = gv('s_etoile_anesth_base');
+    structural.etoile.anesth_step    = gv('s_etoile_anesth_step');
+}
+
+function structuralChanged() {
+    collectStructuralEdits();
+    markDirty();
+    if (currentKey) calculate();
+}
+
+// ─── PARAMS TABLE ─────────────────────────────────────────────────────────
+function rebuildParamsTable() {
+    const tbody = document.getElementById('interventionsTableBody');
+    tbody.innerHTML = '';
+    const keys = Object.keys(db).sort((a,b) => a.localeCompare(b, 'fr'));
+    keys.forEach(key => tbody.appendChild(buildRow(key, db[key])));
+    document.getElementById('countBadge').textContent = keys.length;
+}
+
+function buildRow(key, data) {
+    const tr = document.createElement('tr');
+    tr.dataset.key = key;
+    if (data.secu) tr.classList.add('secu-row');
+    tr.innerHTML = `
+        <td>
+            <div class="flex items-center gap-1">
+                <span class="font-medium text-slate-700 text-xs cursor-pointer hover:text-indigo-600 transition intervention-name"
+                    title="Double-clic pour renommer"
+                    ondblclick="renameRow(this)">${escHtml(key)}</span>
+            </div>
+        </td>
+        <td><input type="number" value="${data.duration}" class="row-duration" data-key="${escHtml(key)}" oninput="rowChanged(this)"></td>
+        <td>
+            <select class="row-type text-xs p-1 rounded border border-slate-200 bg-slate-50 w-full" data-key="${escHtml(key)}" onchange="rowChanged(this)">
+                <option value="Ambulatoire" ${data.type==='Ambulatoire'?'selected':''}>Ambu</option>
+                <option value="Hospit 1 nuit" ${data.type==='Hospit 1 nuit'?'selected':''}>1 nuit</option>
+            </select>
+        </td>
+        <td><input type="number" value="${data.biarritz.hc}" class="row-hc" data-key="${escHtml(key)}" oninput="rowChanged(this)"></td>
+        <td><input type="number" value="${data.biarritz.anesth}" class="row-anesth" data-key="${escHtml(key)}" oninput="rowChanged(this)" style="color:#9333ea"></td>
+        <td><input type="number" value="${data.biarritz.fso}" class="row-fso" data-key="${escHtml(key)}" oninput="rowChanged(this)" style="color:#9333ea"></td>
+        <td><input type="number" value="${data.biarritz.sejour}" class="row-sejour" data-key="${escHtml(key)}" oninput="rowChanged(this)" style="color:#9333ea"></td>
+        <td><input type="number" value="${data.biarritz.implants}" class="row-implants" data-key="${escHtml(key)}" oninput="rowChanged(this)" style="color:#db2777"></td>
+        <td class="text-center">
+            <input type="checkbox" ${data.secu?'checked':''} class="row-secu w-4 h-4 rounded accent-green-600" data-key="${escHtml(key)}" onchange="rowChanged(this)">
+        </td>
+        <td>
+            <button onclick="deleteRow('${escHtml(key).replace(/'/g,"\\'")}', this)"
+                class="delete-row-btn w-6 h-6 rounded-full hover:bg-red-100 text-slate-300 hover:text-red-500 transition flex items-center justify-center text-xs">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </td>
+    `;
+    return tr;
+}
+
+function rowChanged(el) {
+    const key = el.dataset.key;
+    if (!db[key]) return;
+    const tr = el.closest('tr');
+    db[key].duration         = parseInt(tr.querySelector('.row-duration').value) || 0;
+    db[key].type             = tr.querySelector('.row-type').value;
+    db[key].biarritz.hc      = parseFloat(tr.querySelector('.row-hc').value) || 0;
+    db[key].biarritz.anesth  = parseFloat(tr.querySelector('.row-anesth').value) || 0;
+    db[key].biarritz.fso     = parseFloat(tr.querySelector('.row-fso').value) || 0;
+    db[key].biarritz.sejour  = parseFloat(tr.querySelector('.row-sejour').value) || 0;
+    db[key].biarritz.implants= parseFloat(tr.querySelector('.row-implants').value) || 0;
+    db[key].secu             = tr.querySelector('.row-secu').checked;
+    markDirty();
+    if (currentKey === key) calculate();
+}
+
+function collectTableEdits() {
+    document.querySelectorAll('#interventionsTableBody tr').forEach(tr => {
+        const key = tr.dataset.key;
+        if (!key || !db[key]) return;
+        db[key].duration          = parseInt(tr.querySelector('.row-duration')?.value) || 0;
+        db[key].type              = tr.querySelector('.row-type')?.value || 'Ambulatoire';
+        db[key].biarritz.hc       = parseFloat(tr.querySelector('.row-hc')?.value) || 0;
+        db[key].biarritz.anesth   = parseFloat(tr.querySelector('.row-anesth')?.value) || 0;
+        db[key].biarritz.fso      = parseFloat(tr.querySelector('.row-fso')?.value) || 0;
+        db[key].biarritz.sejour   = parseFloat(tr.querySelector('.row-sejour')?.value) || 0;
+        db[key].biarritz.implants = parseFloat(tr.querySelector('.row-implants')?.value) || 0;
+        db[key].secu              = tr.querySelector('.row-secu')?.checked || false;
+    });
+}
+
+function addNewRow() {
+    const name = prompt('Nom de la nouvelle intervention :');
+    if (!name || !name.trim()) return;
+    const key = name.trim();
+    if (db[key]) { showToast('Cette intervention existe déjà', 'error'); return; }
+    db[key] = { duration: 60, type: 'Ambulatoire', biarritz: { hc: 0, anesth: 0, fso: 0, sejour: 0, implants: 0 } };
+    rebuildParamsTable();
+    rebuildSelect();
+    markDirty();
+    // Scroll to new row
+    const rows = document.querySelectorAll('#interventionsTableBody tr');
+    rows[rows.length - 1]?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    showToast(`"${key}" ajouté`, 'ok');
+}
+
+function deleteRow(key, btn) {
+    if (!confirm(`Supprimer "${key}" ?`)) return;
+    delete db[key];
+    btn.closest('tr').remove();
+    rebuildSelect();
+    document.getElementById('countBadge').textContent = Object.keys(db).length;
+    if (currentKey === key) { currentKey = ''; hideResults(); }
+    markDirty();
+    showToast(`"${key}" supprimé`, 'error');
+}
+
+function renameRow(el) {
+    const tr = el.closest('tr');
+    const oldKey = tr.dataset.key;
+    const newName = prompt('Renommer :', oldKey);
+    if (!newName || newName.trim() === oldKey) return;
+    const newKey = newName.trim();
+    if (db[newKey]) { showToast('Ce nom existe déjà', 'error'); return; }
+    db[newKey] = { ...db[oldKey] };
+    delete db[oldKey];
+    tr.dataset.key = newKey;
+    el.textContent = newKey;
+    tr.querySelectorAll('[data-key]').forEach(inp => inp.dataset.key = newKey);
+    if (currentKey === oldKey) currentKey = newKey;
+    rebuildSelect();
+    markDirty();
+}
+
+// ─── CALC SELECT ──────────────────────────────────────────────────────────
+function rebuildSelect() {
+    const select = document.getElementById('interventionSelect');
+    const prev = select.value;
+    select.innerHTML = '<option value="">-- Sélectionner --</option>';
+    Object.keys(db).sort((a,b) => a.localeCompare(b,'fr')).forEach(key => {
+        const opt = document.createElement('option');
+        opt.value = key; opt.textContent = key;
+        if (key === prev) opt.selected = true;
+        select.appendChild(opt);
+    });
+}
+
+function markDirty() {
+    isDirty = true;
+    setGistStatus('dirty', 'Modifié non sauvegardé');
+}
+
+// ─── CALC LOGIC (uses structural) ─────────────────────────────────────────
 function hideResults() {
     document.getElementById('emptyState').classList.remove('hidden');
     document.getElementById('resultCard').classList.add('hidden');
@@ -371,7 +906,6 @@ function loadInterventionData(key) {
     calculate();
 }
 
-// ─── CLINIQUE ─────────────────────────────────────────────────────────────────
 function setClinic(clinic) {
     currentClinic = clinic;
     document.querySelectorAll('.clinic-btn').forEach(b => b.classList.remove('active'));
@@ -379,81 +913,76 @@ function setClinic(clinic) {
     document.getElementById('badgeClinic').textContent = {
         alphand: 'Clinique Alphand', etoile: 'Clinique Étoile', biarritz: 'Clinique Biarritz'
     }[clinic];
-
-    const typeEl   = document.getElementById('inputType');
+    const typeEl = document.getElementById('inputType');
     const etoileDiv = document.getElementById('etoile-stay-container');
     const etoileWarn = document.getElementById('etoile-warning');
-
     if (clinic === 'etoile') {
-        typeEl.value = 'Ambulatoire';
-        typeEl.disabled = true;
-        etoileWarn.classList.remove('hidden');
-        etoileDiv.classList.remove('hidden');
+        typeEl.value = 'Ambulatoire'; typeEl.disabled = true;
+        etoileWarn.classList.remove('hidden'); etoileDiv.classList.remove('hidden');
+        updateEtoileStayOptions();
     } else {
         typeEl.disabled = false;
-        etoileWarn.classList.add('hidden');
-        etoileDiv.classList.add('hidden');
+        etoileWarn.classList.add('hidden'); etoileDiv.classList.add('hidden');
         if (currentKey) typeEl.value = db[currentKey].type;
     }
     if (currentKey) calculate();
 }
 
-// ─── CALCULATE ────────────────────────────────────────────────────────────────
-function calculate() {
-    if (!currentKey) return;
-    const duration = parseInt(document.getElementById('inputDuration').value) || 0;
-    const type     = document.getElementById('inputType').value;
-    const data     = db[currentKey];
-    const isHarmonized = document.getElementById('toggleHarmonization').checked;
+function updateEtoileStayOptions() {
+    const sel = document.getElementById('etoileStay');
+    const prev = sel.value;
+    const s = structural.etoile;
+    sel.innerHTML = `
+        <option value="${s.box}">Box (${s.box} €)</option>
+        <option value="${s.double}">Ch. Double (${s.double} €)</option>
+        <option value="${s.simple}">Ch. Simple (${s.simple} €)</option>
+    `;
+    sel.value = prev;
+}
 
-    // Mode label
-    const statusEl = document.getElementById('harmonization-status');
+function calculate() {
+    if (!currentKey || !db[currentKey]) return;
+    const duration     = parseInt(document.getElementById('inputDuration').value) || 0;
+    const type         = document.getElementById('inputType').value;
+    const data         = db[currentKey];
+    const isHarmonized = document.getElementById('toggleHarmonization').checked;
+    const statusEl     = document.getElementById('harmonization-status');
     statusEl.textContent = isHarmonized ? 'Harmonisation Active' : 'Mode Standard';
-    statusEl.className = isHarmonized
+    statusEl.className   = isHarmonized
         ? 'text-[10px] uppercase font-bold text-green-600'
         : 'text-[10px] uppercase font-bold text-slate-400';
 
-    const baseHC      = data.biarritz.hc;
+    const baseHC       = data.biarritz.hc;
     const implantsCost = data.biarritz.implants;
+    const refTech      = calcAlphand(duration, data.type);
+    const TARGET       = refTech.total + baseHC + implantsCost;
 
-    // Référence Alphand
-    const refTech    = calcAlphand(duration, data.type);
-    const TARGET     = refTech.total + baseHC + implantsCost;
-
-    // Frais selon clinique
     let localTech;
     if      (currentClinic === 'alphand')  localTech = calcAlphand(duration, type);
     else if (currentClinic === 'etoile')   localTech = calcEtoile(duration);
     else                                   localTech = { clinic: data.biarritz.fso, anesth: data.biarritz.anesth, stay: data.biarritz.sejour };
 
-    const techTotal   = localTech.clinic + localTech.anesth + localTech.stay + implantsCost;
-    const computedHC  = isHarmonized ? Math.max(TARGET - techTotal, baseHC) : baseHC;
-    const profit      = computedHC - baseHC;
+    const techTotal  = localTech.clinic + localTech.anesth + localTech.stay + implantsCost;
+    const computedHC = isHarmonized ? Math.max(TARGET - techTotal, baseHC) : baseHC;
+    const profit     = computedHC - baseHC;
 
-    // ── Affichage ──
     let titleHtml = currentKey.replace(' (SÉCU)', '');
     if (data.secu) titleHtml += ' <span class="badge-secu">SÉCU</span>';
     document.getElementById('resTitle').innerHTML = titleHtml;
     document.getElementById('badgeTime').textContent = duration + ' min';
-
-    document.getElementById('valHC').value             = computedHC;
-    document.getElementById('valAnesth').textContent   = fmt(localTech.anesth);
-    document.getElementById('valClinic').textContent   = fmt(localTech.clinic);
-    document.getElementById('valStay').textContent     = fmt(localTech.stay);
-    document.getElementById('resTotal').textContent    = fmt(techTotal + computedHC) + ' €';
-
+    document.getElementById('valHC').value           = computedHC;
+    document.getElementById('valAnesth').textContent = fmt(localTech.anesth);
+    document.getElementById('valClinic').textContent = fmt(localTech.clinic);
+    document.getElementById('valStay').textContent   = fmt(localTech.stay);
+    document.getElementById('resTotal').textContent  = fmt(techTotal + computedHC) + ' €';
     updateDescriptions(duration, type);
 
-    // Implants
     const rowImp = document.getElementById('rowImplants');
     if (implantsCost > 0) {
         rowImp.style.display = 'flex';
         document.getElementById('valImplants').textContent = fmt(implantsCost);
-    } else {
-        rowImp.style.display = 'none';
-    }
+    } else { rowImp.style.display = 'none'; }
 
-    // ── Thème HC row ──
     const rowHC  = document.getElementById('rowHC');
     const iconHC = document.getElementById('iconHC');
     const hcInp  = document.getElementById('valHC');
@@ -480,34 +1009,34 @@ function calculate() {
     }
 }
 
-// ─── ALPHAND : 750 €/h par tranches 30 min ───────────────────────────────────
 function calcAlphand(dur, type) {
-    const blocks    = Math.ceil(dur / 30);
-    const billing   = blocks * 30;
-    const clinic    = blocks * 375;
-    const anesth    = billing <= 60 ? 500 : 500 + Math.ceil((billing - 60) / 30) * 100;
-    const stay      = type === 'Hospit 1 nuit' ? 650 : 350;
+    const s       = structural.alphand;
+    const blocks  = Math.ceil(dur / 30);
+    const billing = blocks * 30;
+    const clinic  = blocks * (s.bloc_per_hour / 2);
+    const anesth  = billing <= 60 ? s.anesth_base : s.anesth_base + Math.ceil((billing - 60) / 30) * s.anesth_step;
+    const stay    = type === 'Hospit 1 nuit' ? s.stay_nuit : s.stay_ambu;
     return { clinic, anesth, stay, total: clinic + anesth + stay };
 }
 
-// ─── ÉTOILE : 190 €/15 min · Anesthésie 500 € + 100 €/30 min ────────────────
-// Hébergement : Box 260 € · Ch. Double 360 € · Ch. Simple 420 €
 function calcEtoile(dur) {
-    const clinic    = Math.ceil(dur / 15) * 190;
-    const billing   = Math.ceil(dur / 30) * 30;
-    const anesth    = billing <= 60 ? 500 : 500 + Math.ceil((billing - 60) / 30) * 100;
-    const stay      = parseInt(document.getElementById('etoileStay').value) || 260;
+    const s      = structural.etoile;
+    const clinic = Math.ceil(dur / 15) * s.bloc_per_15;
+    const billing= Math.ceil(dur / 30) * 30;
+    const anesth = billing <= 60 ? s.anesth_base : s.anesth_base + Math.ceil((billing - 60) / 30) * s.anesth_step;
+    const stay   = parseInt(document.getElementById('etoileStay').value) || s.box;
     return { clinic, anesth, stay, total: clinic + anesth + stay };
 }
 
 function updateDescriptions(dur, type) {
+    const s = structural;
     if (currentClinic === 'alphand') {
-        document.getElementById('descAnesth').textContent = '500 € + 100 €/30 min';
-        document.getElementById('descClinic').textContent = 'Bloc 750 €/h (' + Math.ceil(dur/30)*30 + ' min)';
-        document.getElementById('descStay').textContent   = type === 'Hospit 1 nuit' ? 'Nuit (650 €)' : 'Ambu (350 €)';
+        document.getElementById('descAnesth').textContent = `${s.alphand.anesth_base} € + ${s.alphand.anesth_step} €/30 min`;
+        document.getElementById('descClinic').textContent = `Bloc ${s.alphand.bloc_per_hour} €/h (${Math.ceil(dur/30)*30} min)`;
+        document.getElementById('descStay').textContent   = type === 'Hospit 1 nuit' ? `Nuit (${s.alphand.stay_nuit} €)` : `Ambu (${s.alphand.stay_ambu} €)`;
     } else if (currentClinic === 'etoile') {
-        document.getElementById('descAnesth').textContent = '500 € + 100 €/30 min';
-        document.getElementById('descClinic').textContent = '190 € / 15 min';
+        document.getElementById('descAnesth').textContent = `${s.etoile.anesth_base} € + ${s.etoile.anesth_step} €/30 min`;
+        document.getElementById('descClinic').textContent = `${s.etoile.bloc_per_15} € / 15 min`;
         const sel = document.getElementById('etoileStay');
         document.getElementById('descStay').textContent   = sel.options[sel.selectedIndex].text;
     } else {
@@ -528,26 +1057,35 @@ function updateTotalManual() {
     document.getElementById('hcSubtitle').textContent = 'Modifié manuellement';
 }
 
+// ─── UTILS ─────────────────────────────────────────────────────────────────
 function fmt(n) {
     const v = parseFloat(n);
     return Number.isInteger(v) ? v.toString() : v.toFixed(2).replace('.00', '');
 }
 
+function escHtml(str) {
+    return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
 function copyToClipboard(id, isText) {
     let val = isText ? document.getElementById(id).textContent : document.getElementById(id).value;
     val = val.toString().replace(/\s€/g, '').trim();
-    if (navigator.clipboard) navigator.clipboard.writeText(val).then(showToast);
+    if (navigator.clipboard) navigator.clipboard.writeText(val).then(() => showToast('Copié !', 'ok'));
     else {
         const t = document.createElement('textarea');
         t.value = val; document.body.appendChild(t); t.select();
-        document.execCommand('copy'); document.body.removeChild(t); showToast();
+        document.execCommand('copy'); document.body.removeChild(t); showToast('Copié !', 'ok');
     }
 }
 
-function showToast() {
-    const t = document.getElementById('toast');
+function showToast(msg, type) {
+    const t  = document.getElementById('toast');
+    const ic = t.querySelector('i');
+    document.getElementById('toastMsg').textContent = msg;
+    ic.className = type === 'error' ? 'fa-solid fa-triangle-exclamation text-red-400' : 'fa-solid fa-check text-green-400';
     t.classList.remove('opacity-0', '-translate-y-20');
-    setTimeout(() => t.classList.add('opacity-0', '-translate-y-20'), 2000);
+    clearTimeout(t._timeout);
+    t._timeout = setTimeout(() => t.classList.add('opacity-0', '-translate-y-20'), 2500);
 }
 </script>
 </body>
