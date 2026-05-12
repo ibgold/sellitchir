@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Expert Pricing V16 — Clinique Belleza</title>
+    <title>Expert Pricing V16b — Clinique Belleza</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -541,23 +541,19 @@ let isDirty = false;
 const VERSION = 'V16';
 
 // ─── STORAGE KEYS ──────────────────────────────────────────────────────────
-const LS_TOKEN = 'ep_gist_token';
-const LS_ID    = 'ep_gist_id';
+const LS_TOKEN    = 'ep_gist_token';
+const LS_ID       = 'ep_gist_id';
+const HARDCODED_GIST_ID = 'f65101ed3187968676cfe4a66e13204b';
 
 // ─── INIT ──────────────────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
     // Restore credentials from localStorage
     const savedToken = localStorage.getItem(LS_TOKEN);
-    const savedId    = localStorage.getItem(LS_ID);
     if (savedToken) document.getElementById('gistToken').value = savedToken;
-    if (savedId)    document.getElementById('gistId').value    = savedId;
-
-    if (savedToken && savedId) {
-        loadFromGist();
-    } else {
-        initWithDefaults();
-        setGistStatus('no-config', 'Non configuré');
-    }
+    // Always use hardcoded Gist ID
+    document.getElementById('gistId').value = HARDCODED_GIST_ID;
+    // Load on start — no token needed for read
+    loadFromGist();
 
     document.getElementById('interventionSelect').addEventListener('change', e => {
         currentKey = e.target.value;
@@ -606,27 +602,32 @@ function setGistStatus(state, label) {
 }
 
 function onConfigChange() {
-    const { token, id } = getGistCreds();
+    const token = document.getElementById('gistToken').value.trim();
     if (token) localStorage.setItem(LS_TOKEN, token);
-    if (id)    localStorage.setItem(LS_ID, id);
 }
 
 async function loadFromGist() {
-    const { token, id } = getGistCreds();
-    if (!token || !id) { setGistStatus('no-config', 'Token / ID manquant'); return; }
+    const id = HARDCODED_GIST_ID;
     setGistStatus('loading', 'Chargement…');
     try {
-        const res = await fetch(`https://api.github.com/gists/${id}`, {
-            headers: { 'Authorization': `Bearer ${token}`, 'Accept': 'application/vnd.github+json' }
+        // Raw read — no token required for secret gists via raw URL
+        const metaRes = await fetch(`https://api.github.com/gists/${id}`, {
+            headers: { 'Accept': 'application/vnd.github+json' }
         });
-        if (!res.ok) throw new Error(`HTTP ${res.status}`);
-        const gist = await res.json();
+        if (!metaRes.ok) throw new Error(`HTTP ${metaRes.status}`);
+        const gist = await metaRes.json();
         const file = Object.values(gist.files)[0];
-        const data = JSON.parse(file.content);
+        // Fetch raw content directly
+        const rawRes = await fetch(file.raw_url);
+        if (!rawRes.ok) throw new Error(`Raw HTTP ${rawRes.status}`);
+        const text = await rawRes.text();
+        const data = JSON.parse(text);
+        // If file is empty placeholder, keep defaults
+        if (!data.db) { initWithDefaults(); setGistStatus('ok', 'Prêt (défaut)'); return; }
         applyLoadedData(data);
         setGistStatus('ok', 'Synchronisé');
         const d = new Date(gist.updated_at);
-        document.getElementById('versionLabel').textContent = `${VERSION} · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
+        document.getElementById('versionLabel').textContent = `V16b · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
         showToast('Données chargées ✓', 'ok');
     } catch(e) {
         setGistStatus('error', 'Erreur: ' + e.message);
@@ -636,8 +637,9 @@ async function loadFromGist() {
 }
 
 async function saveToGist() {
-    const { token, id } = getGistCreds();
-    if (!token || !id) { showToast('Configure d\'abord le token et le Gist ID', 'error'); return; }
+    const token = document.getElementById('gistToken').value.trim();
+    const id    = HARDCODED_GIST_ID;
+    if (!token) { showToast('Token requis pour sauvegarder', 'error'); return; }
 
     // Collect current table edits before saving
     collectTableEdits();
@@ -661,7 +663,7 @@ async function saveToGist() {
         isDirty = false;
         setGistStatus('ok', 'Synchronisé');
         const d = new Date(gist.updated_at);
-        document.getElementById('versionLabel').textContent = `${VERSION} · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
+        document.getElementById('versionLabel').textContent = `V16b · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
         showToast('Sauvegardé dans le Gist ✓', 'ok');
     } catch(e) {
         setGistStatus('error', 'Erreur: ' + e.message);
