@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dr. Massarwa — Feuille de route de conversion des patients</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'DM Sans', sans-serif; background-color: #f1f0ee; }
+        h1, h2, h3, h4, .font-display { font-family: 'Outfit', sans-serif; }
+
+        .tab-content { display: none; animation: fadeUp 0.35s ease-out; }
+        .tab-content.active { display: block; }
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        .timeline-line {
+            position: absolute; left: 2rem; top: 0; bottom: 0;
+            width: 2px; background-color: #e2ddd8; z-index: 0;
+        }
+        .timeline-line-new { background: linear-gradient(to bottom, #d97706, #b45309); }
+
+        @media (max-width: 768px) { .timeline-line { left: 1.5rem; } }
+
+        .badge-critical {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca;
+            font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+            padding: 2px 8px; border-radius: 99px; text-transform: uppercase;
+        }
+        .badge-key {
+            display: inline-flex; align-items: center; gap: 4px;
+            background: #fff7ed; color: #c2410c; border: 1px solid #fed7aa;
+            font-size: 10px; font-weight: 700; letter-spacing: 0.06em;
+            padding: 2px 8px; border-radius: 99px; text-transform: uppercase;
+        }
+        .kpi-card {
+            background: rgba(255,255,255,0.07);
+            border: 1px solid rgba(255,255,255,0.12);
+            border-radius: 14px;
+            padding: 16px 20px;
+            backdrop-filter: blur(10px);
+        }
+        .principle-box {
+            background: linear-gradient(135deg, #eff6ff, #eef2ff);
+            border-left: 3px solid #6366f1;
+            border-radius: 0 10px 10px 0;
+            padding: 12px 16px;
+            margin-top: 16px;
+        }
+        .scope-banner {
+            background: linear-gradient(90deg, #fef3c7, #fef9ee);
+            border: 1px solid #fcd34d;
+            border-radius: 10px;
+            padding: 10px 16px;
+        }
+
+        .progress-bar { transition: width 1.2s cubic-bezier(0.4, 0, 0.2, 1); }
+
+        .tab-btn-active {
+            background: white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            color: #1c1917;
+        }
+
+        .comp-row:nth-child(even) { background: #fafaf9; }
+        .comp-row:hover { background: #f5f3f0; }
+
+        .step-num-old {
+            width: 48px; height: 48px;
+            background: white; border: 3px solid #e7e5e4;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px;
+            color: #a8a29e; box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        }
+        .step-num-new {
+            width: 48px; height: 48px;
+            background: #d97706; border: 3px solid white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-family: 'Outfit', sans-serif; font-weight: 700; font-size: 18px;
+            color: white; box-shadow: 0 4px 12px rgba(217,119,6,0.35);
+        }
+    </style>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        brand: { 50:'#fffbeb', 100:'#fef3c7', 200:'#fde68a', 500:'#f59e0b', 600:'#d97706', 700:'#b45309', 900:'#1c1917' }
+                    }
+                }
+            }
+        }
+
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.classList.remove('tab-btn-active');
+                btn.classList.add('text-stone-400');
+            });
+            const activeBtn = document.getElementById('btn-' + tabId);
+            activeBtn.classList.add('tab-btn-active');
+            activeBtn.classList.remove('text-stone-400');
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.getElementById('content-' + tabId).classList.add('active');
+        }
+
+        window.addEventListener('load', () => {
+            setTimeout(() => {
+                document.getElementById('bar-old').style.width = '35%';
+                document.getElementById('bar-new').style.width = '60%';
+            }, 400);
+        });
+    </script>
+</head>
+<body class="text-stone-800 antialiased min-h-screen pb-24">
+
+    <!-- HEADER -->
+    <header class="bg-gradient-to-br from-stone-900 via-stone-800 to-stone-900 text-white py-14 px-6 shadow-2xl relative overflow-hidden">
+        <div class="absolute inset-0 opacity-[0.03]" style="background-image:url('data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIj48ZmlsdGVyIGlkPSJhIj48ZmVUdXJidWxlbmNlIHR5cGU9ImZyYWN0YWxOb2lzZSIgYmFzZUZyZXF1ZW5jeT0iLjY1IiBudW1PY3RhdmVzPSIzIiBzdGl0Y2hUaWxlcz0ic3RpdGNoIi8+PGZlQ29sb3JNYXRyaXggdHlwZT0ic2F0dXJhdGUiIHZhbHVlcz0iMCIvPjwvZmlsdGVyPjxyZWN0IHdpZHRoPSIzMDAiIGhlaWdodD0iMzAwIiBmaWx0ZXI9InVybCgjYSkiIG9wYWNpdHk9IjEiLz48L3N2Zz4=');"></div>
+        <div class="absolute top-0 right-0 w-72 h-72 bg-amber-500 opacity-5 rounded-full blur-3xl -translate-y-1/2 translate-x-1/4"></div>
+
+        <div class="max-w-5xl mx-auto relative z-10">
+            <div class="flex items-center justify-center gap-2 mb-5">
+                <span class="h-px w-10 bg-amber-400/50"></span>
+                <span class="text-amber-400 text-xs font-semibold tracking-widest uppercase">VENCOR &mdash; Excellence Chirurgicale</span>
+                <span class="h-px w-10 bg-amber-400/50"></span>
+            </div>
+            <div class="text-center">
+                <h1 class="font-display text-4xl md:text-5xl font-bold tracking-tight mb-2">Dr. Saeed Massarwa</h1>
+                <h2 class="font-display text-lg md:text-xl text-stone-300 font-light">Feuille de route de conversion des patients</h2>
+            </div>
+
+            <!-- KPI Strip -->
+            <div class="mt-10 grid grid-cols-1 md:grid-cols-2 gap-4 max-w-xl mx-auto">
+                <div class="kpi-card">
+                    <p class="text-stone-400 text-xs font-medium uppercase tracking-wider mb-2">Taux de conversion actuel</p>
+                    <div class="flex items-end gap-2 mb-3">
+                        <span class="font-display text-3xl font-bold text-white">~35%</span>
+                        <span class="text-stone-400 text-sm mb-1">des consultations</span>
+                    </div>
+                    <div class="w-full bg-stone-700 rounded-full h-1.5">
+                        <div id="bar-old" class="progress-bar bg-red-400 h-1.5 rounded-full" style="width:0%"></div>
+                    </div>
+                </div>
+                <div class="kpi-card border-amber-500/30">
+                    <p class="text-stone-400 text-xs font-medium uppercase tracking-wider mb-2">Objectif à 60 jours</p>
+                    <div class="flex items-end gap-2 mb-3">
+                        <span class="font-display text-3xl font-bold text-amber-400">60%</span>
+                        <span class="text-stone-400 text-sm mb-1">des consultations</span>
+                    </div>
+                    <div class="w-full bg-stone-700 rounded-full h-1.5">
+                        <div id="bar-new" class="progress-bar bg-amber-400 h-1.5 rounded-full" style="width:0%"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Scope banner -->
+    <div class="max-w-4xl mx-auto px-4 mt-6">
+        <div class="scope-banner flex items-start gap-3">
+            <span class="text-amber-600 mt-0.5">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path></svg>
+            </span>
+            <p class="text-amber-800 text-xs leading-relaxed">
+                <strong>Périmètre :</strong> Ce document couvre uniquement ce que le Dr Massarwa peut contrôler directement — de la consultation jusqu'à la décision du patient. L'acquisition de patients (gérée par la clinique) est hors périmètre.
+            </p>
+        </div>
+    </div>
+
+    <!-- TABS -->
+    <div class="max-w-lg mx-auto mt-8 px-4 relative z-20">
+        <div class="bg-stone-200/70 backdrop-blur-sm p-1.5 rounded-2xl flex justify-between items-center shadow-sm border border-stone-300/50">
+            <button id="btn-old" onclick="switchTab('old')"
+                class="tab-btn w-1/3 py-2.5 rounded-xl font-semibold text-xs transition-all duration-250 tab-btn-active font-display">
+                Processus actuel
+            </button>
+            <button id="btn-new" onclick="switchTab('new')"
+                class="tab-btn w-1/3 py-2.5 rounded-xl font-semibold text-xs transition-all duration-250 text-stone-400 font-display">
+                Nouveau processus
+            </button>
+            <button id="btn-compare" onclick="switchTab('compare')"
+                class="tab-btn w-1/3 py-2.5 rounded-xl font-semibold text-xs transition-all duration-250 text-stone-400 font-display">
+                Comparaison
+            </button>
+        </div>
+    </div>
+
+    <main class="max-w-4xl mx-auto px-4 sm:px-6 mt-10 relative">
+
+        <!-- TAB 1 — CURRENT PROCESS -->
+        <div id="content-old" class="tab-content active relative">
+            <div class="timeline-line"></div>
+
+            <!-- STEP 1 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="step-num-old">1</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <h3 class="font-display text-lg font-bold text-stone-800">La consultation</h3>
+                        <span class="badge-critical">
+                            <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                            Critique
+                        </span>
+                    </div>
+                    <div class="space-y-2.5 text-sm text-stone-600 mb-5">
+                        <p><strong class="text-stone-700">Durée officielle :</strong> 15 minutes — souvent dépassée lorsque le patient montre de l'intérêt.</p>
+                        <p><strong class="text-stone-700">Contenu :</strong> Antécédents médicaux, examen physique, explication de l'intervention, risques, photos avant/après si demandé.</p>
+                        <p><strong class="text-stone-700">Ce qu'il manque :</strong> Aucune exploration de l'élément déclencheur du patient, de sa douleur émotionnelle, ou de la façon dont il imagine sa vie après l'intervention.</p>
+                        <p><strong class="text-stone-700">Structure :</strong> Aucun cadre — le Dr se fie à son instinct. Le résultat varie considérablement d'un patient à l'autre.</p>
+                    </div>
+                    <div class="bg-red-50 border border-red-100 rounded-xl p-4">
+                        <p class="text-red-700 font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            Points de friction
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-2 text-sm text-red-700">
+                                <span class="badge-critical mt-0.5 shrink-0">Critique</span>
+                                <span>Le patient repart avec des informations cliniques, mais sans le sentiment d'être <em>compris</em>. Sans ancrage émotionnel, il n'a rien à quoi se raccrocher lorsque le doute s'installe à la maison.</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-red-700">
+                                <span class="badge-key mt-0.5 shrink-0">Clé</span>
+                                <span>Les vraies objections — peur, avis du partenaire, budget, timing — ne sont jamais soulevées. Elles ne peuvent pas être traitées plus tard si elles n'ont jamais été identifiées dans la pièce.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="step-num-old">2</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <h3 class="font-display text-lg font-bold text-stone-800">L'annonce du prix</h3>
+                        <span class="badge-critical">
+                            <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                            Critique
+                        </span>
+                    </div>
+                    <div class="space-y-2.5 text-sm text-stone-600 mb-5">
+                        <p><strong class="text-stone-700">Qui remet le devis :</strong> La secrétaire / le manager de la clinique — pas le Dr Massarwa.</p>
+                        <p><strong class="text-stone-700">Contexte :</strong> Le patient sort de la salle de consultation, rompt le contact avec le chirurgien et reçoit le chiffre dans un couloir ou un bureau administratif.</p>
+                        <p><strong class="text-stone-700">Cadrage de la valeur :</strong> Aucun. La secrétaire n'a aucune idée de ce qui a été discuté et aucun lien personnel avec le patient.</p>
+                        <p><strong class="text-stone-700">Remises :</strong> Parfois offertes sans logique — ce qui peut en fait diminuer la valeur perçue de l'intervention.</p>
+                    </div>
+                    <div class="bg-red-50 border border-red-100 rounded-xl p-4">
+                        <p class="text-red-700 font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            Points de friction
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-2 text-sm text-red-700">
+                                <span class="badge-critical mt-0.5 shrink-0">Critique</span>
+                                <span>L'élan émotionnel construit pendant la consultation est coupé au pire moment possible. Le patient reçoit le chiffre froidement, sans aucun contexte pour l'ancrer.</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-red-700">
+                                <span class="badge-critical mt-0.5 shrink-0">Critique</span>
+                                <span>Sans cadrage de la valeur, le cerveau du patient passe immédiatement en mode "coût" au lieu du mode "investissement". C'est le moment exact où le "je vais y réfléchir" naît.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="step-num-old">3</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <h3 class="font-display text-lg font-bold text-stone-800">La décision — Conclusion</h3>
+                        <span class="badge-critical">
+                            <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                            Critique
+                        </span>
+                    </div>
+                    <div class="space-y-2.5 text-sm text-stone-600 mb-5">
+                        <p><strong class="text-stone-700">Ce qui se passe :</strong> Lorsqu'un patient dit "je vais y réfléchir", il part sans être challengé. Aucune tentative n'est faite pour comprendre ce qui le retient réellement.</p>
+                        <p><strong class="text-stone-700">Taux de conversion :</strong> ~35% en moyenne. Autour de 50% dans les cliniques les plus performantes (Beer-Sheva récemment), jusqu'à 20% dans les plus faibles.</p>
+                        <p><strong class="text-stone-700">Taux de retour :</strong> Les patients qui reviennent d'eux-mêmes le font généralement 1 à 3 mois plus tard. La plupart ne reviennent jamais.</p>
+                        <p><strong class="text-stone-700">Réservation :</strong> Gérée directement par la clinique en cas d'accord — le Dr n'est pas impliqué à ce moment-là.</p>
+                    </div>
+                    <div class="bg-red-50 border border-red-100 rounded-xl p-4">
+                        <p class="text-red-700 font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            Points de friction
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-2 text-sm text-red-700">
+                                <span class="badge-critical mt-0.5 shrink-0">Critique</span>
+                                <span>"Je vais y réfléchir" n'est pas une réponse définitive — c'est le signal que quelque chose manque. Soit de l'information, soit de la réassurance. Laisser couler, c'est laisser l'opportunité expirer.</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-red-700">
+                                <span class="badge-critical mt-0.5 shrink-0">Critique</span>
+                                <span>La motivation atteint son apogée pendant la consultation. Au moment où le patient sort, la vie reprend le dessus — le doute grandit, le partenaire donne son avis, et la décision n'est jamais prise.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="step-num-old">4</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-stone-200 p-6 sm:p-8">
+                    <div class="flex items-center gap-3 mb-4">
+                        <h3 class="font-display text-lg font-bold text-stone-800">Suivi post-consultation</h3>
+                        <span class="badge-key">
+                            <svg class="w-2.5 h-2.5" fill="currentColor" viewBox="0 0 8 8"><circle cx="4" cy="4" r="4"/></svg>
+                            Clé
+                        </span>
+                    </div>
+                    <div class="space-y-2.5 text-sm text-stone-600 mb-5">
+                        <p><strong class="text-stone-700">Ce qui existe :</strong> Rien. Une fois qu'un patient part sans réserver, aucun contact structuré n'est prévu — ni de la part du Dr ni de la clinique.</p>
+                        <p><strong class="text-stone-700">Données :</strong> Aucun suivi des consultations passées, aucun statut du patient (indécis / hors budget / à recontacter). Tout repose sur la mémoire.</p>
+                        <p><strong class="text-stone-700">Retours spontanés :</strong> Certains patients reviennent d'eux-mêmes après 1 à 3 mois — mais c'est du hasard, pas un système.</p>
+                    </div>
+                    <div class="bg-red-50 border border-red-100 rounded-xl p-4">
+                        <p class="text-red-700 font-semibold text-xs uppercase tracking-wider mb-3 flex items-center gap-1.5">
+                            <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                            Points de friction
+                        </p>
+                        <ul class="space-y-2">
+                            <li class="flex items-start gap-2 text-sm text-red-700">
+                                <span class="badge-key mt-0.5 shrink-0">Clé</span>
+                                <span>Les prospects chauds — les patients qui voulaient y aller mais ont hésité — se refroidissent d'eux-mêmes. Sans suivi, ils choisissent un autre chirurgien ou abandonnent complètement l'idée.</span>
+                            </li>
+                            <li class="flex items-start gap-2 text-sm text-red-700">
+                                <span class="badge-key mt-0.5 shrink-0">Clé</span>
+                                <span>Sans données, il n'y a aucun moyen de séparer les prospects récupérables des pertes définitives. On ne peut gérer que ce que l'on mesure.</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 2 — NEW PROCESS -->
+        <div id="content-new" class="tab-content relative">
+            <div class="timeline-line timeline-line-new"></div>
+
+            <!-- STEP 1 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="step-num-new">1</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-amber-100 p-6 sm:p-8 hover:shadow-md transition-shadow">
+                    <h3 class="font-display text-lg font-bold text-stone-800 mb-4">La consultation structurée</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Découvrir le déclencheur :</strong> Pourquoi maintenant ? Qu'est-ce qui a changé dans leur vie ? Cela révèle leur niveau d'urgence réel et aide à calibrer toute la conversation.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Ancrer la douleur émotionnelle :</strong> Laissez-les exprimer avec des mots ce que vivre avec ce problème leur coûte — au quotidien. Ce qu'ils voient dans le miroir. Ce qu'ils évitent. Ce qu'ils ont arrêté de faire à cause de cela.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Projeter dans le résultat :</strong> Qu'est-ce qui changerait concrètement pour eux si c'était résolu ? Cette projection vers l'avenir crée le désir d'agir — maintenant, pas dans trois mois.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Faire émerger les objections tôt :</strong> Peur de l'opération ? Avis du partenaire ? Timing ? Budget ? Les nommer maintenant évite d'être pris au dépourvu au moment de la décision.</p>
+                        </li>
+                    </ul>
+                    <div class="principle-box">
+                        <p class="text-indigo-700 text-xs font-bold uppercase tracking-wider mb-1">Méthode C.E.S.A.R.E. &mdash; <span class="text-indigo-500">C &middot; Cadrage &amp; E &middot; Émotionnel</span></p>
+                        <p class="text-indigo-800 text-sm leading-relaxed">Le patient n'achète pas une intervention — il achète une transformation. Il doit l'avoir exprimée <em>lui-même</em> avant de pouvoir s'engager. Quand le chirurgien explique, c'est un argumentaire. Quand le patient parle, c'est une décision personnelle.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="step-num-new">2</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-amber-100 p-6 sm:p-8 hover:shadow-md transition-shadow">
+                    <h3 class="font-display text-lg font-bold text-stone-800 mb-4">Le pont vers le prix</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Cadrer avant de quitter la pièce :</strong> Avant que le patient ne sorte, résumez ce qui a été discuté — sa douleur, son objectif, la solution. Il doit partir avec une vision claire, pas avec une liste de complications.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Préparer le passage de relais :</strong> Faites-leur savoir que la secrétaire les accompagnera sur les détails financiers — normalisez ce moment. Ne le laissez pas tomber comme une surprise froide.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Poser une question d'intention :</strong> "Si le coût correspond à ce que vous aviez en tête, seriez-vous ouvert à discuter d'une date ?" — qualifiez leur niveau de préparation avant qu'ils ne sortent.</p>
+                        </li>
+                    </ul>
+                    <div class="principle-box">
+                        <p class="text-indigo-700 text-xs font-bold uppercase tracking-wider mb-1">Méthode C.E.S.A.R.E. &mdash; <span class="text-indigo-500">S &middot; Storytelling &amp; A &middot; Annonce du Prix</span></p>
+                        <p class="text-indigo-800 text-sm leading-relaxed">La valeur doit être ancrée <em>avant</em> que le coût ne soit énoncé. Le cerveau accepte un prix proportionnellement à ce qu'il a déjà imaginé gagner. Brisez ce lien, et vous ne laissez au patient qu'un chiffre.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="step-num-new">3</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-amber-100 p-6 sm:p-8 hover:shadow-md transition-shadow">
+                    <h3 class="font-display text-lg font-bold text-stone-800 mb-4">Conclusion sur place</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Gérer le "je vais y réfléchir" en temps réel :</strong> Ce n'est pas une réponse — c'est un signal. La bonne réaction n'est pas de les laisser partir, c'est de demander : "Qu'est-ce qui vous empêche de décider aujourd'hui ?"</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Identifier le vrai blocage :</strong> Coût ? Peur ? Partenaire ? Timing ? Chaque objection nécessite une réponse différente. Sans identification, toute tentative de conclusion se fait à l'aveuglette.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Micro-engagement s'ils ont besoin de temps :</strong> Si le patient ne peut sincèrement pas décider sur-le-champ, fixez une prochaine étape concrète avant son départ — une date de suivi, une question spécifique à résoudre, une date limite précise.</p>
+                        </li>
+                    </ul>
+                    <div class="principle-box">
+                        <p class="text-indigo-700 text-xs font-bold uppercase tracking-wider mb-1">Méthode C.E.S.A.R.E. &mdash; <span class="text-indigo-500">R &middot; Rassurer</span></p>
+                        <p class="text-indigo-800 text-sm leading-relaxed">"Je vais y réfléchir" signifie qu'il manque quelque chose — soit de l'information, soit de la réassurance. Traitez-le pendant que la dynamique est encore vive. Une fois chez eux, vous êtes en concurrence avec leurs enfants, leur partenaire, leur compte bancaire et Netflix.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- STEP 4 -->
+            <div class="relative pl-16 md:pl-24 mb-10">
+                <div class="absolute left-0 top-0 w-16 md:w-20 flex justify-center z-10">
+                    <div class="step-num-new">4</div>
+                </div>
+                <div class="bg-white rounded-2xl shadow-sm border border-amber-100 p-6 sm:p-8 hover:shadow-md transition-shadow">
+                    <h3 class="font-display text-lg font-bold text-stone-800 mb-4">Suivi post-consultation</h3>
+                    <ul class="space-y-3">
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Prise de nouvelles Jour 2 / Jour 3 :</strong> Un message court — aucune pression, aucun ton commercial. "Avez-vous eu le temps d'y réfléchir ? Y a-t-il quelque chose que je puisse aider à clarifier ?"</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Suivi minimal :</strong> Après chaque consultation, notez le statut (réservé / en réflexion / non adapté / refusé) et la prochaine date de suivi. Le papier ou un simple tableau suffit à ce stade.</p>
+                        </li>
+                        <li class="flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-600 p-1 rounded-full mt-0.5 shrink-0">
+                                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"></path></svg>
+                            </span>
+                            <p class="text-sm text-stone-700"><strong>Perspectives :</strong> Pour l'instant, le Dr Massarwa gère cela seul. À mesure que le volume augmente, le suivi est la première chose à déléguer à un coordinateur de patients.</p>
+                        </li>
+                    </ul>
+                    <div class="principle-box">
+                        <p class="text-indigo-700 text-xs font-bold uppercase tracking-wider mb-1">Méthode C.E.S.A.R.E. &mdash; <span class="text-indigo-500">E &middot; Engager</span></p>
+                        <p class="text-indigo-800 text-sm leading-relaxed">Vous ne faites pas de suivi pour <em>vendre</em> — vous faites du suivi pour <em>aider le patient à prendre une décision qu'il ne pourrait pas prendre seul</em>. Ce changement de perspective modifie tout le ton du message, et avec lui, le taux de réponse.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Summary card -->
+            <div class="mt-12 bg-gradient-to-br from-stone-900 to-stone-800 rounded-2xl p-8 text-white shadow-xl relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-48 h-48 bg-amber-400 opacity-5 rounded-full blur-3xl"></div>
+                <h3 class="font-display text-xl font-bold mb-8 text-center">Ce que ce processus change</h3>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-5 text-center relative z-10">
+                    <div>
+                        <div class="text-3xl mb-2">🎯</div>
+                        <h4 class="font-display font-semibold text-amber-300 mb-1 text-sm">Conversion</h4>
+                        <p class="text-xs text-stone-400 leading-snug">Plus de réservations à partir des mêmes consultations — aucun patient supplémentaire n'est nécessaire.</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl mb-2">⚡</div>
+                        <h4 class="font-display font-semibold text-amber-300 mb-1 text-sm">Dynamique</h4>
+                        <p class="text-xs text-stone-400 leading-snug">Les décisions sont prises au pic de motivation — pas une semaine plus tard quand le doute s'est déjà installé.</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl mb-2">🧠</div>
+                        <h4 class="font-display font-semibold text-amber-300 mb-1 text-sm">Compétence</h4>
+                        <p class="text-xs text-stone-400 leading-snug">Un cadre réutilisable qui fonctionne dans toutes les cliniques et pour tous les profils de patients.</p>
+                    </div>
+                    <div>
+                        <div class="text-3xl mb-2">📈</div>
+                        <h4 class="font-display font-semibold text-amber-300 mb-1 text-sm">Évolutivité</h4>
+                        <p class="text-xs text-stone-400 leading-snug">Plus d'opérations &rarr; position plus forte &rarr; le coordinateur devient viable &rarr; délégation.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3 — SIDE BY SIDE -->
+        <div id="content-compare" class="tab-content">
+            <div class="bg-white rounded-2xl shadow-sm border border-stone-200 overflow-hidden">
+                <div class="grid grid-cols-3 bg-stone-800 text-white text-sm font-display font-semibold">
+                    <div class="p-4 border-r border-stone-700">Étape</div>
+                    <div class="p-4 border-r border-stone-700 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-red-400 inline-block"></span> Processus actuel
+                    </div>
+                    <div class="p-4 flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span> Nouveau processus
+                    </div>
+                </div>
+
+                <!-- Row 1 -->
+                <div class="comp-row grid grid-cols-3 border-b border-stone-100">
+                    <div class="p-4 border-r border-stone-100">
+                        <p class="font-display font-semibold text-sm text-stone-700">1. La consultation</p>
+                        <span class="badge-critical mt-1">Critique</span>
+                    </div>
+                    <div class="p-4 border-r border-stone-100 text-sm text-stone-600 space-y-1.5">
+                        <p>Clinique uniquement : intervention, risques, photos.</p>
+                        <p class="text-red-600 font-medium">&#10007; Aucune exploration émotionnelle.</p>
+                        <p class="text-red-600 font-medium">&#10007; Aucun cadre reproductible.</p>
+                    </div>
+                    <div class="p-4 text-sm text-stone-600 space-y-1.5">
+                        <p>Clinique <em>+</em> émotionnel : déclencheur, douleur, projection.</p>
+                        <p class="text-emerald-700 font-medium">&#10003; Le patient formule sa propre motivation.</p>
+                        <p class="text-emerald-700 font-medium">&#10003; Objections soulevées avant le départ.</p>
+                    </div>
+                </div>
+
+                <!-- Row 2 -->
+                <div class="comp-row grid grid-cols-3 border-b border-stone-100">
+                    <div class="p-4 border-r border-stone-100">
+                        <p class="font-display font-semibold text-sm text-stone-700">2. L'annonce du prix</p>
+                        <span class="badge-critical mt-1">Critique</span>
+                    </div>
+                    <div class="p-4 border-r border-stone-100 text-sm text-stone-600 space-y-1.5">
+                        <p>La secrétaire remet le devis seule, hors contexte.</p>
+                        <p class="text-red-600 font-medium">&#10007; Élan brisé au pire moment.</p>
+                        <p class="text-red-600 font-medium">&#10007; Aucun cadrage de la valeur avant le chiffre.</p>
+                    </div>
+                    <div class="p-4 text-sm text-stone-600 space-y-1.5">
+                        <p>Le Dr prépare la transition avant que le patient ne sorte.</p>
+                        <p class="text-emerald-700 font-medium">&#10003; Valeur ancrée avant l'annonce du coût.</p>
+                        <p class="text-emerald-700 font-medium">&#10003; Intention qualifiée avant de quitter la pièce.</p>
+                    </div>
+                </div>
+
+                <!-- Row 3 -->
+                <div class="comp-row grid grid-cols-3 border-b border-stone-100">
+                    <div class="p-4 border-r border-stone-100">
+                        <p class="font-display font-semibold text-sm text-stone-700">3. Conclusion / Décision</p>
+                        <span class="badge-critical mt-1">Critique</span>
+                    </div>
+                    <div class="p-4 border-r border-stone-100 text-sm text-stone-600 space-y-1.5">
+                        <p>"Je vais y réfléchir" accepté sans résistance.</p>
+                        <p class="text-red-600 font-medium">&#10007; Dynamique laissée inexploitée.</p>
+                        <p class="text-red-600 font-medium">&#10007; Le vrai blocage n'est jamais identifié.</p>
+                    </div>
+                    <div class="p-4 text-sm text-stone-600 space-y-1.5">
+                        <p>Blocage identifié et traité sur place.</p>
+                        <p class="text-emerald-700 font-medium">&#10003; Décision prise au pic de motivation.</p>
+                        <p class="text-emerald-700 font-medium">&#10003; Micro-engagement s'ils ont besoin de plus de temps.</p>
+                    </div>
+                </div>
+
+                <!-- Row 4 -->
+                <div class="comp-row grid grid-cols-3">
+                    <div class="p-4 border-r border-stone-100">
+                        <p class="font-display font-semibold text-sm text-stone-700">4. Suivi</p>
+                        <span class="badge-key mt-1">Clé</span>
+                    </div>
+                    <div class="p-4 border-r border-stone-100 text-sm text-stone-600 space-y-1.5">
+                        <p>Zéro contact après le départ du patient.</p>
+                        <p class="text-red-600 font-medium">&#10007; Les prospects chauds se refroidissent d'eux-mêmes.</p>
+                        <p class="text-red-600 font-medium">&#10007; Aucun suivi, aucune donnée.</p>
+                    </div>
+                    <div class="p-4 text-sm text-stone-600 space-y-1.5">
+                        <p>Prise de nouvelles J2-J3 + suivi du statut du patient.</p>
+                        <p class="text-emerald-700 font-medium">&#10003; Suivi pour aider, pas pour vendre.</p>
+                        <p class="text-emerald-700 font-medium">&#10003; Une base pour mesurer et s'améliorer.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="text-center text-stone-400 text-xs mt-14 pb-6">
+        Feuille de route de conversion des patients &mdash; VENCOR &copy; 2026
+    </footer>
+
+</body>
+</html>
