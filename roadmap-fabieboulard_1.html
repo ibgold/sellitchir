@@ -1,0 +1,600 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Roadmap — Dr. Fabié-Boulard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300;0,6..72,400;0,6..72,600;1,6..72,300;1,6..72,400&family=DM+Sans:wght@300;400;500&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:        #080808;
+  --bg-mid:    #0F0F0F;
+  --bg-light:  #181818;
+  --border:    rgba(255,255,255,0.09);
+  --border-hi: rgba(255,255,255,0.18);
+  --text:      #F0EDE8;
+  --text-dim:  rgba(240,237,232,0.50);
+  --text-faint:rgba(240,237,232,0.28);
+  --green:     #4ADE80;
+  --green-bg:  rgba(74,222,128,0.07);
+  --green-bd:  rgba(74,222,128,0.18);
+  --amber:     #FCD34D;
+  --amber-bg:  rgba(252,211,77,0.07);
+  --amber-bd:  rgba(252,211,77,0.2);
+  --blue:      #93C5FD;
+  --blue-bg:   rgba(147,197,253,0.07);
+  --blue-bd:   rgba(147,197,253,0.18);
+}
+* { box-sizing:border-box; margin:0; padding:0; }
+body {
+  font-family:'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ── HEADER ── */
+.header { padding: 48px 0 36px; border-bottom: 1px solid var(--border); }
+.header-inner { max-width: 760px; margin: 0 auto; padding: 0 32px; }
+.header-eyebrow {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--text-faint); margin-bottom: 16px;
+  display: flex; align-items: center; gap: 10px;
+}
+.header-eyebrow::before { content:''; width:24px; height:1px; background:var(--text-faint); }
+.header-title {
+  font-family: 'Newsreader', serif;
+  font-style: italic; font-weight: 300;
+  font-size: 42px; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 8px;
+}
+.header-title em { font-style: normal; color: var(--text-dim); }
+.header-sub {
+  font-size: 13px; color: var(--text-dim); margin-top: 10px;
+  display: flex; align-items: center; gap: 10px; flex-wrap: wrap;
+}
+.header-chip {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px; border-radius: 20px;
+  border: 1px solid var(--border); background: var(--bg-light);
+  font-size: 11px; color: var(--text-dim);
+  font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px;
+}
+
+/* ── MAIN ── */
+.main { max-width: 760px; margin: 0 auto; padding: 40px 32px 80px; }
+
+/* ── ALERT CARD ── */
+.alert-card {
+  background: var(--amber-bg); border: 1px solid var(--amber-bd);
+  border-radius: 12px; padding: 20px 24px; margin-bottom: 40px;
+  display: flex; gap: 16px; align-items: flex-start;
+}
+.alert-icon { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.alert-label {
+  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
+  color: var(--amber); font-family: 'JetBrains Mono', monospace; margin-bottom: 6px;
+}
+.alert-text { font-size: 13px; line-height: 1.6; color: var(--text); }
+.alert-text strong { color: var(--amber); font-weight: 500; }
+
+/* ── PROGRESS ── */
+.progress-bar-wrap { margin-bottom: 40px; }
+.progress-label {
+  display: flex; justify-content: space-between;
+  font-size: 11px; color: var(--text-dim); margin-bottom: 10px;
+  font-family: 'JetBrains Mono', monospace; letter-spacing: 0.5px;
+}
+.progress-track { height: 2px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--green), rgba(74,222,128,0.5));
+  border-radius: 2px; width: 40%;
+}
+
+/* ── TIMELINE ── */
+.timeline { display: flex; flex-direction: column; }
+.step { display: flex; gap: 0; position: relative; }
+.step-left {
+  width: 48px; flex-shrink: 0;
+  display: flex; flex-direction: column; align-items: center;
+}
+.step-dot {
+  width: 28px; height: 28px; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 11px; flex-shrink: 0; position: relative; z-index: 1;
+  margin-top: 18px; font-family: 'JetBrains Mono', monospace; font-weight: 500;
+}
+.step-dot.done   { background: var(--green); color: #050a05; box-shadow: 0 0 14px rgba(74,222,128,0.2); }
+.step-dot.active { background: var(--bg-light); border: 1px solid var(--border-hi); color: var(--text); }
+.step-dot.cond   { background: var(--amber-bg); border: 1px solid var(--amber-bd); color: var(--amber); }
+.step-dot.recur  { background: var(--blue-bg);  border: 1px solid var(--blue-bd);  color: var(--blue); }
+.step-dot.pending{ background: var(--bg-mid);   border: 1px solid var(--border);   color: var(--text-faint); }
+.step-line { width: 1px; flex: 1; min-height: 16px; }
+.step-line.done    { background: rgba(74,222,128,0.3); }
+.step-line.active  { background: linear-gradient(180deg,rgba(74,222,128,0.3),rgba(255,255,255,0.08)); }
+.step-line.pending { background: rgba(255,255,255,0.06); }
+
+/* step body */
+.step-body { flex: 1; padding: 14px 0 28px 16px; }
+.step-tag { font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:1.5px; text-transform:uppercase; margin-bottom:5px; }
+.step-tag.done    { color: var(--green); }
+.step-tag.active  { color: var(--text-dim); }
+.step-tag.cond    { color: var(--amber); }
+.step-tag.recur   { color: var(--blue); }
+.step-tag.pending { color: var(--text-faint); }
+
+.step-title {
+  font-family: 'Newsreader', serif;
+  font-size: 20px; font-weight: 400; letter-spacing: -0.01em; margin-bottom: 4px;
+  display: flex; align-items: center; gap: 8px; cursor: pointer;
+}
+.step-title:hover { color: rgba(240,237,232,0.85); }
+.step-title.no-toggle { cursor: default; }
+.step-meta { font-size: 12px; color: var(--text-faint); margin-bottom: 14px; }
+.chevron { font-size: 11px; color: var(--text-faint); transition: transform 0.2s; margin-left: auto; }
+.chevron.open { transform: rotate(180deg); }
+
+/* subtasks */
+.subtasks { display:flex; flex-direction:column; gap:10px; overflow:hidden; transition:max-height .3s ease, opacity .3s ease; }
+.subtasks.collapsed { max-height:0 !important; opacity:0; pointer-events:none; }
+
+.subtask {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 12px 14px; background: var(--bg-mid);
+  border: 1px solid var(--border); border-radius: 10px;
+}
+.subtask.done   { background: var(--green-bg);  border-color: var(--green-bd); }
+.subtask.cond   { background: var(--amber-bg);  border-color: var(--amber-bd); }
+.subtask.blue   { background: var(--blue-bg);   border-color: var(--blue-bd); }
+.subtask-check {
+  width: 18px; height: 18px; border-radius: 5px;
+  flex-shrink: 0; display: flex; align-items: center;
+  justify-content: center; font-size: 9px; margin-top: 1px;
+}
+.subtask-check.done    { background: var(--green); color: #050a05; font-weight: 700; }
+.subtask-check.pending { background: transparent; border: 1px solid var(--border-hi); }
+.subtask-check.cond    { background: var(--amber-bg); border: 1px solid var(--amber-bd); color: var(--amber); font-size: 10px; }
+.subtask-title { font-size: 13px; font-weight: 500; margin-bottom: 2px; }
+.subtask-desc  { font-size: 12px; color: var(--text-faint); line-height: 1.5; }
+
+/* note box */
+.note-box {
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  border-left: 2px solid var(--amber-bd); border-radius: 8px;
+  padding: 12px 14px; font-size: 12px; color: var(--text-dim); line-height: 1.6; margin-top: 10px;
+}
+.note-box.blue { border-left-color: var(--blue-bd); }
+
+/* coach grid */
+.coach-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px; }
+.coach-card {
+  background: var(--bg-mid); border: 1px solid var(--border); border-radius: 10px; padding: 14px;
+}
+.coach-name { font-family:'Newsreader',serif; font-style:italic; font-size:15px; margin-bottom:5px; }
+.coach-role { font-size:10px; letter-spacing:1px; text-transform:uppercase; color:var(--text-faint); font-family:'JetBrains Mono',monospace; margin-bottom:10px; }
+.sessions-count {
+  background: var(--green-bg); border: 1px solid var(--green-bd); color: var(--green);
+  padding: 2px 8px; border-radius: 20px; font-size: 11px; font-family:'JetBrains Mono',monospace; display:inline-block;
+}
+
+/* kpi chips */
+.kpi-chips { display:flex; flex-wrap:wrap; gap:7px; margin-top:10px; }
+.kpi-chip {
+  padding: 4px 12px; border-radius: 20px;
+  background: rgba(255,255,255,0.03); border: 1px solid var(--border);
+  font-size: 11px; color: var(--text-faint); font-family:'JetBrains Mono',monospace; letter-spacing:0.3px;
+}
+
+/* section divider */
+.section-label {
+  font-family:'JetBrains Mono',monospace; font-size:9px; letter-spacing:2px;
+  text-transform:uppercase; color:var(--text-faint);
+  border-top: 1px solid var(--border); padding-top: 28px; margin-bottom: 4px;
+}
+
+/* footer */
+.footer {
+  text-align:center; padding:32px; border-top:1px solid var(--border);
+  font-size:11px; color:var(--text-faint); font-family:'JetBrains Mono',monospace; letter-spacing:1px;
+}
+.footer span { font-family:'Newsreader',serif; font-style:italic; font-size:13px; color:var(--text-dim); letter-spacing:0; }
+
+@media (max-width:600px) {
+  .header-title { font-size: 30px; }
+  .coach-grid { grid-template-columns: 1fr; }
+  .header-inner, .main { padding-left: 20px; padding-right: 20px; }
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-inner">
+    <div class="header-eyebrow">Vencor — Consulting</div>
+    <div class="header-title">Dr. Aurélie<br><em>Fabié-Boulard</em></div>
+    <div class="header-sub">
+      <span class="header-chip">📍 Toulouse</span>
+      <span class="header-chip">🗓 Démarré le 21 mai 2026</span>
+      <span class="header-chip">👥 Virginie · Jonathan</span>
+    </div>
+  </div>
+</div>
+
+<div class="main">
+
+  <!-- ALERT -->
+  <div class="alert-card">
+    <div class="alert-icon">⚠️</div>
+    <div>
+      <div class="alert-label">Point critique — Annulations consultations</div>
+      <div class="alert-text">
+        Volume d'annulations élevé observé ces dernières semaines.
+        <strong>Correction en cours : prépaiement des consultations via GoCardless.</strong>
+        Chaque créneau est désormais sécurisé dès la réservation dans le nouveau process.
+      </div>
+    </div>
+  </div>
+
+  <!-- PROGRESS -->
+  <div class="progress-bar-wrap">
+    <div class="progress-label">
+      <span>Progression globale</span>
+      <span>3 étapes terminées · 2 en cours</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill"></div></div>
+  </div>
+
+  <!-- TIMELINE -->
+  <div class="timeline">
+
+    <!-- 1 — AUDIT -->
+    <div class="step">
+      <div class="step-left">
+        <div class="step-dot done">✓</div>
+        <div class="step-line done"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag done">Étape 1 · Terminée</div>
+        <div class="step-title" onclick="toggle('audit')">
+          Audit du parcours patient
+          <span class="chevron" id="chev-audit">▾</span>
+        </div>
+        <div class="step-meta">21 avril 2026</div>
+        <div class="subtasks" id="sub-audit" style="max-height:400px">
+          <div class="subtask done">
+            <div class="subtask-check done">✓</div>
+            <div class="subtask-content">
+              <div class="subtask-title">RDV d'audit avec Dr. Fabié-Boulard</div>
+              <div class="subtask-desc">Analyse complète du parcours patient — prise de contact, consultation, closing.</div>
+            </div>
+          </div>
+          <div class="subtask done">
+            <div class="subtask-check done">✓</div>
+            <div class="subtask-content">
+              <div class="subtask-title">3 frictions majeures identifiées</div>
+              <div class="subtask-desc">Absence de tracking · Chirurgienne en position vendeuse · Zéro engagement financier jour J</div>
+            </div>
+          </div>
+          <div class="subtask done">
+            <div class="subtask-check done">✓</div>
+            <div class="subtask-content">
+              <div class="subtask-title">Nouveau process rédigé et mis en ligne</div>
+              <div class="subtask-desc">Cloisonnement des rôles · Positionnement premium · Méthodes CARES &amp; CESARE</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2 — SCRIPTS -->
+    <div class="step">
+      <div class="step-left">
+        <div class="step-dot done">✓</div>
+        <div class="step-line done"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag done">Étape 2 · Terminée</div>
+        <div class="step-title" onclick="toggle('scripts')">
+          Rédaction des scripts personnalisés
+          <span class="chevron" id="chev-scripts">▾</span>
+        </div>
+        <div class="step-meta">Avant le 29 avril 2026</div>
+        <div class="subtasks" id="sub-scripts" style="max-height:300px">
+          <div class="subtask done">
+            <div class="subtask-check done">✓</div>
+            <div class="subtask-content">
+              <div class="subtask-title">Script CARES — Virginie</div>
+              <div class="subtask-desc">Qualification téléphonique · Filtrage budget et profil · Prépaiement via GoCardless</div>
+            </div>
+          </div>
+          <div class="subtask done">
+            <div class="subtask-check done">✓</div>
+            <div class="subtask-content">
+              <div class="subtask-title">Script CESARE — Jonathan</div>
+              <div class="subtask-desc">Closing post-consultation · Capitalisation sur le momentum · Mandat GoCardless jour J</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3 — PRÉSENTATION -->
+    <div class="step">
+      <div class="step-left">
+        <div class="step-dot done">✓</div>
+        <div class="step-line active"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag done">Étape 3 · Terminée</div>
+        <div class="step-title" onclick="toggle('rdv')">
+          Présentation &amp; validation du nouveau process
+          <span class="chevron" id="chev-rdv">▾</span>
+        </div>
+        <div class="step-meta">29 avril 2026</div>
+        <div class="subtasks" id="sub-rdv" style="max-height:400px">
+          <div class="subtask done">
+            <div class="subtask-check done">✓</div>
+            <div class="subtask-content">
+              <div class="subtask-title">Présentation à l'équipe</div>
+              <div class="subtask-desc">Dr. Fabié-Boulard · Virginie · Jonathan — validation des rôles et responsabilités</div>
+            </div>
+          </div>
+          <div class="subtask done">
+            <div class="subtask-check done">✓</div>
+            <div class="subtask-content">
+              <div class="subtask-title">Implémentation immédiate</div>
+              <div class="subtask-desc">Tarif unique 150€ · Doctolib chirurgie désactivé · Tarifs retirés du site web</div>
+            </div>
+          </div>
+          <div class="subtask done">
+            <div class="subtask-check done">✓</div>
+            <div class="subtask-content">
+              <div class="subtask-title">GoCardless configuré</div>
+              <div class="subtask-desc">Prépaiement consultations et honoraires — correction du problème d'annulations</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4 — OUTILS -->
+    <div class="step">
+      <div class="step-left">
+        <div class="step-dot active">4</div>
+        <div class="step-line active"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag active">Étape 4 · En cours</div>
+        <div class="step-title" onclick="toggle('outils')">
+          Mise en place des outils
+          <span class="chevron open" id="chev-outils">▾</span>
+        </div>
+        <div class="step-meta">1/3 en place</div>
+        <div class="subtasks" id="sub-outils" style="max-height:400px">
+          <div class="subtask done">
+            <div class="subtask-check done">✓</div>
+            <div class="subtask-content">
+              <div class="subtask-title">Paiement — GoCardless</div>
+              <div class="subtask-desc">Prépaiement consultations (150€) et mandats honoraires. En production.</div>
+            </div>
+          </div>
+          <div class="subtask">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Enregistrement des appels</div>
+              <div class="subtask-desc">À configurer sur place au démarrage du process.</div>
+            </div>
+          </div>
+          <div class="subtask">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">CRM &amp; tracking des leads</div>
+              <div class="subtask-desc">Pipeline leads → consultations → closing. Base du reporting mensuel.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5 — COACHINGS -->
+    <div class="step">
+      <div class="step-left">
+        <div class="step-dot active">5</div>
+        <div class="step-line active"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag active">Étape 5 · En cours · Jusqu'à la fin du programme</div>
+        <div class="step-title" onclick="toggle('coaching')">
+          Coachings hebdomadaires
+          <span class="chevron open" id="chev-coaching">▾</span>
+        </div>
+        <div class="step-meta">4 séances effectuées · En continu</div>
+        <div class="subtasks" id="sub-coaching" style="max-height:500px">
+          <div class="coach-grid">
+            <div class="coach-card">
+              <div class="coach-name">Virginie</div>
+              <div class="coach-role">Qualification · CARES</div>
+              <span class="sessions-count">2 séances</span>
+            </div>
+            <div class="coach-card">
+              <div class="coach-name">Jonathan</div>
+              <div class="coach-role">Closing · CESARE</div>
+              <span class="sessions-count">2 séances</span>
+            </div>
+          </div>
+          <div class="note-box blue">
+            Prochain objectif : valider le roleplay Jonathan pour démarrage du nouveau process au 25 mai. Les coachings se poursuivent chaque semaine jusqu'à la fin du programme, avec enregistrements réels dès le lancement.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6 — DÉMARRAGE NOUVEAU PROCESS -->
+    <div class="step">
+      <div class="step-left">
+        <div class="step-dot cond">→</div>
+        <div class="step-line pending"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag cond">Milestone · Conditionnel — À confirmer demain</div>
+        <div class="step-title" onclick="toggle('demarrage')">
+          Démarrage du nouveau process
+          <span class="chevron open" id="chev-demarrage">▾</span>
+        </div>
+        <div class="step-meta">25 mai 2026 — si roleplay Jonathan validé</div>
+        <div class="subtasks" id="sub-demarrage" style="max-height:500px">
+          <div class="subtask cond">
+            <div class="subtask-check cond">?</div>
+            <div class="subtask-content">
+              <div class="subtask-title">Validation roleplay Jonathan</div>
+              <div class="subtask-desc">Condition de déclenchement. À confirmer lors du RDV du 21 mai.</div>
+            </div>
+          </div>
+          <div class="subtask">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Activation enregistrement des appels</div>
+              <div class="subtask-desc">Mise en route sur place — tous les appels Virginie &amp; Jonathan enregistrés dès le lancement.</div>
+            </div>
+          </div>
+          <div class="subtask">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Premiers patients sous le nouveau process</div>
+              <div class="subtask-desc">CARES appliqué par Virginie à l'entrée · CESARE appliqué par Jonathan en post-consultation.</div>
+            </div>
+          </div>
+          <div class="note-box">
+            Le mois de juin servira à observer le process en conditions réelles, analyser les premiers appels enregistrés et ajuster les scripts selon les objections rencontrées.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7 — RAPPORTS MENSUELS -->
+    <div class="step">
+      <div class="step-left">
+        <div class="step-dot recur">↺</div>
+        <div class="step-line pending"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag recur">Récurrent · Mensuel</div>
+        <div class="step-title" onclick="toggle('rapports')">
+          Rapports mensuels avec le Dr.
+          <span class="chevron open" id="chev-rapports">▾</span>
+        </div>
+        <div class="step-meta">Chaque mois dès juin 2026</div>
+        <div class="subtasks" id="sub-rapports" style="max-height:400px">
+          <div class="subtask blue">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Rapport Juin 2026</div>
+              <div class="subtask-desc">Premier mois en conditions réelles · Analyse CARES + CESARE · KPIs initiaux</div>
+            </div>
+          </div>
+          <div class="subtask blue">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Rapport Juillet 2026</div>
+              <div class="subtask-desc">Suivi de la progression · Ajustements scripts · Évolution du taux de closing</div>
+            </div>
+          </div>
+          <div class="subtask blue">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Rapport Août 2026</div>
+              <div class="subtask-desc">Bilan fin de programme · Recommandations · Décision reconduction</div>
+            </div>
+          </div>
+          <div class="note-box blue">
+            Chaque rapport mensuel couvre : volume leads, taux de no-show, taux de conversion consultation → intervention, CA opérations signées, mandats GoCardless, et axes d'amélioration prioritaires.
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8 — JUIN EN DÉTAIL -->
+    <div class="step">
+      <div class="step-left">
+        <div class="step-dot recur">6</div>
+        <div class="step-line pending"></div>
+      </div>
+      <div class="step-body">
+        <div class="step-tag recur">Mois 1 du process réel · Juin 2026</div>
+        <div class="step-title" onclick="toggle('juin')">
+          Détail — Mois de juin
+          <span class="chevron open" id="chev-juin">▾</span>
+        </div>
+        <div class="step-meta">Observations terrain · Ajustements · Débriefs</div>
+        <div class="subtasks" id="sub-juin" style="max-height:600px">
+          <div class="subtask">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Analyse des premiers appels enregistrés</div>
+              <div class="subtask-desc">Écoute Virginie : application CARES, filtre budget, annonce prépaiement. Points de blocage identifiés.</div>
+            </div>
+          </div>
+          <div class="subtask">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Analyse des premiers closings Jonathan</div>
+              <div class="subtask-desc">Écoute post-consultation : utilisation CESARE, objections rencontrées, mandats GoCardless obtenus.</div>
+            </div>
+          </div>
+          <div class="subtask">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Coachings hebdomadaires — corrections en temps réel</div>
+              <div class="subtask-desc">Débriefs sur cas réels, ajustements de posture, travail sur objections spécifiques à la clinique.</div>
+            </div>
+          </div>
+          <div class="subtask">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Mise en place CRM &amp; tracking</div>
+              <div class="subtask-desc">Pipeline opérationnel : leads → consultations → devis → interventions. Base de mesure continue.</div>
+            </div>
+          </div>
+          <div class="subtask">
+            <div class="subtask-check pending"></div>
+            <div class="subtask-content">
+              <div class="subtask-title">Rapport mensuel fin juin</div>
+              <div class="subtask-desc">Bilan du premier mois · KPIs initiaux · Plan d'action juillet.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /timeline -->
+</div><!-- /main -->
+
+<div class="footer">
+  <span>Vencor</span> &nbsp;·&nbsp; Confidentiel &nbsp;·&nbsp; Dr. Fabié-Boulard
+</div>
+
+<script>
+function toggle(id) {
+  const sub  = document.getElementById('sub-'  + id);
+  const chev = document.getElementById('chev-' + id);
+  if (!sub) return;
+  const open = !sub.classList.contains('collapsed');
+  if (open) { sub.classList.add('collapsed'); if(chev) chev.classList.remove('open'); }
+  else       { sub.classList.remove('collapsed'); if(chev) chev.classList.add('open'); }
+}
+window.addEventListener('load', () => {
+  setTimeout(() => {
+    ['audit','scripts','rdv'].forEach(id => {
+      const s = document.getElementById('sub-'+id);
+      const c = document.getElementById('chev-'+id);
+      if(s) s.classList.add('collapsed');
+      if(c) c.classList.remove('open');
+    });
+  }, 500);
+});
+</script>
+</body>
+</html>
