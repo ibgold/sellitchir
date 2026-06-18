@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Audit & Stratégie : Parcours Patient - Dr Bekara & Dr Jorquera</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        medical: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0ea5e9',
+                            600: '#0284c7',
+                            800: '#075985',
+                            900: '#0c4a6e',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .tab-transition { transition: all 0.3s ease-in-out; }
+        
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 8px; }
+        ::-webkit-scrollbar-track { background: #f1f5f9; }
+        ::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
+        ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+        /* Modal animations */
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        .animate-fade-in { animation: fadeIn 0.3s ease-out forwards; }
+        .animate-slide-up { animation: slideUp 0.4s ease-out forwards; }
+    </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased min-h-screen flex flex-col relative">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-slate-200 shadow-sm sticky top-0 z-40">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 bg-medical-600 text-white rounded-xl flex items-center justify-center font-bold text-xl shadow-inner">
+                    <i class="fa-solid fa-stethoscope"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 leading-tight">Audit & Stratégie Patient</h1>
+                    <p class="text-sm text-slate-500 font-medium">Cabinet Dr Bekara & Dr Jorquera</p>
+                </div>
+            </div>
+            
+            <!-- Tabs Navigation -->
+            <div class="flex bg-slate-100 p-1 rounded-xl shadow-inner">
+                <button onclick="switchTab('actuel')" data-tab="actuel" class="tab-btn px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 bg-white text-medical-600 shadow-sm ring-1 ring-slate-900/5 flex items-center gap-2">
+                    <i class="fa-solid fa-magnifying-glass"></i> 1. Process Actuel
+                </button>
+                <button onclick="switchTab('cible')" data-tab="cible" class="tab-btn px-6 py-2 rounded-lg text-sm font-semibold transition-all duration-200 text-slate-500 hover:text-slate-700 hover:bg-slate-50 flex items-center gap-2">
+                    <i class="fa-solid fa-arrow-trend-up"></i> 2. Nouveau Process
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Area -->
+    <main class="flex-grow w-full max-w-5xl mx-auto px-4 py-10 sm:px-6 lg:px-8">
+
+        <!-- ========================================== -->
+        <!-- TAB 1 : PROCESS ACTUEL                     -->
+        <!-- ========================================== -->
+        <div id="actuel" class="tab-content block animate-[fadeIn_0.5s_ease-out]">
+            
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Cartographie du Process Actuel</h2>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">Analyse détaillée de l'expérience patient existante, identifiant les goulots d'étranglement et la perte de rentabilité.</p>
+            </div>
+
+            <!-- Timeline Actuelle -->
+            <div class="relative border-l-2 border-slate-200 ml-4 md:ml-6 space-y-12 pb-8">
+                
+                <!-- Étape 1 -->
+                <div class="relative ml-6 md:ml-10">
+                    <span class="absolute flex items-center justify-center w-10 h-10 bg-slate-100 rounded-full -left-11 md:-left-[3.75rem] ring-8 ring-slate-50 text-slate-500 font-bold border border-slate-200 shadow-sm">1</span>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-phone text-slate-400"></i> Acquisition & Premier Contact
+                        </h3>
+                        <ul class="space-y-3 text-slate-600">
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0"></div>
+                                <p><strong>Prise de RDV :</strong> Autonome via Doctolib (sans filtre, 24/7) ou par téléphone avec Virginie.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0"></div>
+                                <p><strong>Appel Secrétariat :</strong> Demande de motif, annonce du prix de la consultation (95€-100€). Aucune fourchette donnée.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0"></div>
+                                <p class="text-red-600 font-medium">Friction : Défaut de Pré-qualification. Tous les profils sont acceptés (CMU, IMC trop élevé, "touristes").</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Étape 2 -->
+                <div class="relative ml-6 md:ml-10">
+                    <span class="absolute flex items-center justify-center w-10 h-10 bg-slate-100 rounded-full -left-11 md:-left-[3.75rem] ring-8 ring-slate-50 text-slate-500 font-bold border border-slate-200 shadow-sm">2</span>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-xmark text-slate-400"></i> Phase Pré-Consultation
+                        </h3>
+                        <ul class="space-y-3 text-slate-600">
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0"></div>
+                                <p><strong>Engagement :</strong> Aucun acompte ou garantie n'est demandé pour réserver la place.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-400 flex-shrink-0"></div>
+                                <p class="text-red-600 font-medium">Friction : Taux de No-Show estimé entre 10% et 20%, causant une perte directe de 3 heures médicales par semaine.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Étape 3 -->
+                <div class="relative ml-6 md:ml-10">
+                    <span class="absolute flex items-center justify-center w-10 h-10 bg-slate-100 rounded-full -left-11 md:-left-[3.75rem] ring-8 ring-slate-50 text-slate-500 font-bold border border-slate-200 shadow-sm">3</span>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow border-l-4 border-l-orange-400">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-user-doctor text-orange-500"></i> La Consultation (Moment Critique)
+                        </h3>
+                        <ul class="space-y-3 text-slate-600 mb-4">
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0"></div>
+                                <p><strong>Déroulement :</strong> ~30 minutes, avec un fort pic émotionnel (Momentum) généré par l'expertise du chirurgien.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-orange-400 flex-shrink-0"></div>
+                                <p><strong>Remise du devis :</strong> Les chirurgiens rédigent, impriment et remettent le devis financier eux-mêmes.</p>
+                            </li>
+                        </ul>
+                        <div class="bg-orange-50 text-orange-800 p-4 rounded-lg text-sm font-medium border border-orange-100">
+                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> <strong>Perte d'Autorité :</strong> Le chirurgien est perçu comme "vendeur". Annoncer les prix dégrade sa posture d'expert et crée une gêne menant à une sous-évaluation des prestations.
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Étape 4 -->
+                <div class="relative ml-6 md:ml-10">
+                    <span class="absolute flex items-center justify-center w-10 h-10 bg-slate-100 rounded-full -left-11 md:-left-[3.75rem] ring-8 ring-slate-50 text-slate-500 font-bold border border-slate-200 shadow-sm">4</span>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-slate-200 hover:shadow-md transition-shadow border-l-4 border-l-red-500">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-house-user text-red-500"></i> Post-Consultation & Décision
+                        </h3>
+                        <ul class="space-y-3 text-slate-600 mb-4">
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-red-500 flex-shrink-0"></div>
+                                <p><strong>Follow-up :</strong> Totalement inexistant. Le patient repart seul avec ses papiers.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1.5 w-1.5 h-1.5 rounded-full bg-slate-400 flex-shrink-0"></div>
+                                <p><strong>Action requise :</strong> Le patient doit faire l'effort d'envoyer un email ou d'appeler pour s'opérer.</p>
+                            </li>
+                        </ul>
+                        <div class="bg-red-50 text-red-800 p-4 rounded-lg text-sm font-medium border border-red-100">
+                            <i class="fa-solid fa-triangle-exclamation mr-1"></i> <strong>Hémorragie de Conversion :</strong> Perte totale de "Momentum". L'inertie redescend. Le taux de conversion stagne inutilement à ~33%.
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Résumé des Frictions Actuelles -->
+            <div class="mt-4 bg-red-50 rounded-2xl p-6 border border-red-200 shadow-sm">
+                <h3 class="text-lg font-bold text-red-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-file-waveform"></i> Bilan des Frictions Actuelles
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-red-100 flex items-start gap-3">
+                        <i class="fa-solid fa-user-tag text-red-500 mt-1 text-lg"></i>
+                        <div>
+                            <strong class="text-slate-900 block text-sm">Perte d'Autorité</strong>
+                            <span class="text-slate-600 text-sm">Le médecin agit comme "vendeur" en remettant le devis, créant un malaise.</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-red-100 flex items-start gap-3">
+                        <i class="fa-solid fa-hourglass-empty text-red-500 mt-1 text-lg"></i>
+                        <div>
+                            <strong class="text-slate-900 block text-sm">Perte de Momentum</strong>
+                            <span class="text-slate-600 text-sm">Aucun encadrement post-consultation immédiat, la décision d'achat s'évapore.</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-red-100 flex items-start gap-3">
+                        <i class="fa-solid fa-calendar-xmark text-red-500 mt-1 text-lg"></i>
+                        <div>
+                            <strong class="text-slate-900 block text-sm">No-Shows (10-20%)</strong>
+                            <span class="text-slate-600 text-sm">Rendez-vous banalisés sans engagement financier préalable, entraînant des pertes sèches.</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-red-100 flex items-start gap-3">
+                        <i class="fa-solid fa-filter-circle-xmark text-red-500 mt-1 text-lg"></i>
+                        <div>
+                            <strong class="text-slate-900 block text-sm">Temps Médical Gaspillé</strong>
+                            <span class="text-slate-600 text-sm">Consultations polluées par des profils non qualifiés (touristes, IMC inadapté).</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ========================================== -->
+        <!-- TAB 2 : NOUVEAU PROCESS                    -->
+        <!-- ========================================== -->
+        <div id="cible" class="tab-content hidden animate-[fadeIn_0.5s_ease-out]">
+            
+            <div class="mb-12 text-center">
+                <h2 class="text-3xl font-bold text-slate-900 mb-4">Le Nouveau Système Propriétaire</h2>
+                <p class="text-lg text-slate-600 max-w-2xl mx-auto">Un écosystème cloisonné basé sur les méthodes CARES et CESARE pour éradiquer les touristes et maximiser l'engagement financier à chaud.</p>
+            </div>
+
+            <!-- Timeline Cible -->
+            <div class="relative border-l-2 border-medical-300 ml-4 md:ml-6 space-y-12 pb-8">
+                
+                <!-- Étape 1 : CARES -->
+                <div class="relative ml-6 md:ml-10">
+                    <span class="absolute flex items-center justify-center w-10 h-10 bg-medical-600 rounded-full -left-11 md:-left-[3.75rem] ring-8 ring-slate-50 text-white font-bold shadow-md">1</span>
+                    <div class="bg-white rounded-2xl p-6 shadow-md border-t-4 border-medical-500">
+                        <div class="flex justify-between items-start mb-4">
+                            <h3 class="text-xl font-bold text-slate-900 flex items-center gap-2">
+                                <i class="fa-solid fa-shield-halved text-medical-500"></i> Filtre & Qualification (Virginie)
+                            </h3>
+                        </div>
+                        <ul class="space-y-3 text-slate-600 mb-5">
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-medical-500"><i class="fa-solid fa-arrow-trend-up"></i></div>
+                                <p><strong>Alignement Tarifaire :</strong> Augmentation de la première consultation à <strong>150€</strong> pour affirmer l'expertise premium.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-medical-500"><i class="fa-solid fa-check"></i></div>
+                                <p><strong>Nettoyage Public :</strong> Retrait des tarifs en ligne pour obliger le passage par le standard.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-medical-500"><i class="fa-solid fa-check"></i></div>
+                                <p><strong>Redirection :</strong> Doctolib indique qu'un appel au cabinet est obligatoire pour valider le RDV.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-medical-500"><i class="fa-solid fa-check"></i></div>
+                                <p><strong>Tech Stack Financière :</strong> Sécurisation du créneau par pré-paiement des 150€ au téléphone via lien SMS (GoCardless).</p>
+                            </li>
+                        </ul>
+                        
+                        <!-- Badge Méthode -->
+                        <button onclick="openModal('caresModal')" class="inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-sm font-bold rounded-full shadow-lg hover:-translate-y-0.5 transition-all">
+                            <i class="fa-solid fa-bolt text-yellow-400"></i> Découvrir la méthode CARES
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Étape 2 : EXPERT -->
+                <div class="relative ml-6 md:ml-10">
+                    <span class="absolute flex items-center justify-center w-10 h-10 bg-medical-600 rounded-full -left-11 md:-left-[3.75rem] ring-8 ring-slate-50 text-white font-bold shadow-md">2</span>
+                    <div class="bg-white rounded-2xl p-6 shadow-md border border-slate-200">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-user-tie text-medical-500"></i> La Consultation Experte (Chirurgiens)
+                        </h3>
+                        <div class="bg-slate-100 border-l-4 border-slate-400 text-slate-700 px-4 py-3 rounded-r-lg text-sm mb-5 font-medium">
+                            <i class="fa-solid fa-calendar-check mr-2"></i> <strong>Règle d'or logistique :</strong> Alternance stricte des plannings. Les premières consultations des deux chirurgiens ne se chevauchent jamais.
+                        </div>
+                        <ul class="space-y-3 text-slate-600">
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-slate-400"><i class="fa-solid fa-arrow-right"></i></div>
+                                <p><strong>Diagnostic pur :</strong> Le chirurgien écoute, diagnostique et établit le plan de traitement idéal.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-slate-400"><i class="fa-solid fa-arrow-right"></i></div>
+                                <p><strong>Cloisonnement Total :</strong> Le médecin ne remet <strong>AUCUN</strong> devis et ne justifie <strong>AUCUN</strong> prix. Il clôture en déléguant à 100% l'aspect financier.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Étape 3 : CESARE -->
+                <div class="relative ml-6 md:ml-10">
+                    <span class="absolute flex items-center justify-center w-10 h-10 bg-medical-600 rounded-full -left-11 md:-left-[3.75rem] ring-8 ring-slate-50 text-white font-bold shadow-md">3</span>
+                    <div class="bg-white rounded-2xl p-6 shadow-xl border-2 border-medical-500 relative overflow-hidden">
+                        <div class="absolute top-0 right-0 bg-medical-500 text-white text-xs font-bold px-3 py-1 rounded-bl-lg">NOUVEAU RÔLE</div>
+                        <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-solid fa-handshake-angle text-medical-500"></i> Utilisation du Momentum (Coordinatrice)
+                        </h3>
+                        <ul class="space-y-3 text-slate-600 mb-5">
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-medical-500"><i class="fa-solid fa-check"></i></div>
+                                <p><strong>Intervention Immédiate :</strong> Prise de relais à la seconde où le médecin termine pour capter l'inertie émotionnelle.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-medical-500"><i class="fa-solid fa-check"></i></div>
+                                <p><strong>Annonce Tarifaire :</strong> C'est la coordinatrice qui défend la valeur du devis avec assurance.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-medical-500"><i class="fa-solid fa-check"></i></div>
+                                <p><strong>Tech Stack Opératoire :</strong> Validation directe de l'acompte dans le bureau (exclusivement via Mandat Digitalisé GoCardless).</p>
+                            </li>
+                        </ul>
+
+                        <!-- Badge Méthode -->
+                        <button onclick="openModal('cesareModal')" class="inline-flex items-center gap-2 px-5 py-2.5 bg-medical-600 hover:bg-medical-700 text-white text-sm font-bold rounded-full shadow-lg hover:-translate-y-0.5 transition-all">
+                            <i class="fa-solid fa-fire text-orange-200"></i> Découvrir la méthode CESARE
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Étape 4 : VIP -->
+                <div class="relative ml-6 md:ml-10">
+                    <span class="absolute flex items-center justify-center w-10 h-10 bg-emerald-500 rounded-full -left-11 md:-left-[3.75rem] ring-8 ring-slate-50 text-white font-bold shadow-md">4</span>
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border-t-4 border-emerald-500">
+                        <h3 class="text-xl font-bold text-slate-900 mb-4 flex items-center gap-2">
+                            <i class="fa-brands fa-whatsapp text-emerald-500 text-2xl"></i> Suivi VIP Continu
+                        </h3>
+                        <ul class="space-y-3 text-slate-600">
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-emerald-500"><i class="fa-solid fa-arrow-right"></i></div>
+                                <p><strong>Dès validation de l'acompte :</strong> Création du groupe WhatsApp dédié au patient.</p>
+                            </li>
+                            <li class="flex items-start gap-2">
+                                <div class="mt-1 w-5 flex-shrink-0 text-emerald-500"><i class="fa-solid fa-arrow-right"></i></div>
+                                <p><strong>Séparation des Rôles :</strong> La Coordinatrice gère l'admin/logistique. L'équipe médicale gère les questions cliniques.</p>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Résumé des Bénéfices Cibles -->
+            <div class="mt-4 bg-medical-50 rounded-2xl p-6 border border-medical-200 shadow-sm">
+                <h3 class="text-lg font-bold text-medical-900 mb-4 flex items-center gap-2">
+                    <i class="fa-solid fa-chart-line"></i> Bénéfices & Impact Stratégique
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-white p-4 rounded-xl border border-medical-100 flex items-start gap-3">
+                        <i class="fa-solid fa-arrow-up-right-dots text-medical-600 mt-1 text-lg"></i>
+                        <div>
+                            <strong class="text-slate-900 block text-sm">Explosion du Closing</strong>
+                            <span class="text-slate-600 text-sm">Augmentation drastique du taux de conversion en capitalisant sur le momentum et l'engagement financier à chaud.</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-medical-100 flex items-start gap-3">
+                        <i class="fa-solid fa-crown text-medical-600 mt-1 text-lg"></i>
+                        <div>
+                            <strong class="text-slate-900 block text-sm">Autorité Restaurée</strong>
+                            <span class="text-slate-600 text-sm">Le médecin redevient l'Expert intouchable, totalement libéré des justifications tarifaires.</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-medical-100 flex items-start gap-3">
+                        <i class="fa-solid fa-clock-rotate-left text-medical-600 mt-1 text-lg"></i>
+                        <div>
+                            <strong class="text-slate-900 block text-sm">Optimisation du Temps</strong>
+                            <span class="text-slate-600 text-sm">Éradication des profils "touristes" et suppression de la perte des 3h hebdomadaires.</span>
+                        </div>
+                    </div>
+                    <div class="bg-white p-4 rounded-xl border border-medical-100 flex items-start gap-3">
+                        <i class="fa-solid fa-handshake-angle text-medical-600 mt-1 text-lg"></i>
+                        <div>
+                            <strong class="text-slate-900 block text-sm">Expérience Patient VIP</strong>
+                            <span class="text-slate-600 text-sm">Un accompagnement humain continu (WhatsApp) qui fidélise et favorise le bouche-à-oreille.</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- ========================================== -->
+    <!-- MODALS (Popups pour les Méthodes)          -->
+    <!-- ========================================== -->
+
+    <!-- Overlay global -->
+    <div id="modalOverlay" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300" onclick="closeAllModals()"></div>
+
+    <!-- Modal CARES -->
+    <div id="caresModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 pointer-events-none">
+        <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden opacity-0 transform translate-y-8 transition-all duration-300 pointer-events-auto flex flex-col max-h-full">
+            <!-- Header Modal -->
+            <div class="bg-slate-900 p-6 flex justify-between items-start">
+                <div>
+                    <span class="text-yellow-400 text-xs font-bold uppercase tracking-widest">Protocole Secrétariat</span>
+                    <h2 class="text-2xl font-bold text-white mt-1">Méthode C.A.R.E.S.</h2>
+                    <p class="text-slate-300 text-sm mt-1">Script de qualification téléphonique pour Virginie</p>
+                </div>
+                <button onclick="closeAllModals()" class="text-slate-400 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            <!-- Body Modal -->
+            <div class="p-6 overflow-y-auto space-y-3 bg-slate-50">
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">C</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Connecter & Cadrer</h4>
+                        <p class="text-sm text-slate-600 mt-1">Poser le cadre premium. Le patient doit sentir qu'il est géré par une structure d'experts.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">A</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Analyser & Qualifier</h4>
+                        <p class="text-sm text-slate-600 mt-1">Filtre médical (IMC) et analyse de la motivation réelle avant de bloquer du temps médical.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">R</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Rassurer & Revaloriser</h4>
+                        <p class="text-sm text-slate-600 mt-1">Vendre l'expertise des Dr Bekara/Jorquera avant d'annoncer que la consultation est à 150€, payable à l'avance.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">E</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Engager vers le RDV</h4>
+                        <p class="text-sm text-slate-600 mt-1">Créer la rareté sur l'agenda. Transformer l'intérêt en réservation ferme.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-slate-900 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">S</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Sécuriser (Tech Stack)</h4>
+                        <p class="text-sm text-slate-600 mt-1">Envoi immédiat du lien de paiement <strong>GoCardless</strong> par SMS. Le RDV n'est validé qu'à réception du pré-paiement.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal CESARE -->
+    <div id="cesareModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 sm:p-6 pointer-events-none">
+        <div class="bg-white rounded-2xl w-full max-w-2xl shadow-2xl overflow-hidden opacity-0 transform translate-y-8 transition-all duration-300 pointer-events-auto flex flex-col max-h-full">
+            <!-- Header Modal -->
+            <div class="bg-medical-600 p-6 flex justify-between items-start">
+                <div>
+                    <span class="text-medical-200 text-xs font-bold uppercase tracking-widest">Protocole Coordinatrice</span>
+                    <h2 class="text-2xl font-bold text-white mt-1">Méthode C.E.S.A.R.E.</h2>
+                    <p class="text-medical-100 text-sm mt-1">Script d'utilisation du momentum post-consultation</p>
+                </div>
+                <button onclick="closeAllModals()" class="text-medical-200 hover:text-white transition-colors">
+                    <i class="fa-solid fa-xmark text-2xl"></i>
+                </button>
+            </div>
+            <!-- Body Modal -->
+            <div class="p-6 overflow-y-auto space-y-3 bg-slate-50">
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-medical-500 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">C</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Cadrage & Accueil</h4>
+                        <p class="text-sm text-slate-600 mt-1">Récupérer le patient à la sortie du chirurgien. Se présenter comme son "partenaire VIP" pour la suite.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-medical-500 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">E</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Émotionnel</h4>
+                        <p class="text-sm text-slate-600 mt-1">Faire verbaliser le pic d'enthousiasme généré par le chirurgien. Projeter le patient dans son résultat final.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-medical-500 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">S</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Storytelling & Autorité</h4>
+                        <p class="text-sm text-slate-600 mt-1">Rappeler subtilement que les agendas opératoires se remplissent vite pour justifier une décision rapide.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-medical-500 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">A</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Annonce du Prix</h4>
+                        <p class="text-sm text-slate-600 mt-1">Annoncer le devis avec aplomb. Sans gêne. Appel à l'action clair : "Pour bloquer cette date, il suffit d'un acompte".</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-medical-500 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">R</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Rassurer (Objections)</h4>
+                        <p class="text-sm text-slate-600 mt-1">Gérer les peurs financières ou logistiques avec empathie, mais en maintenant le cap vers la réservation.</p>
+                    </div>
+                </div>
+                <div class="flex gap-4 bg-white p-4 rounded-xl shadow-sm border border-slate-100">
+                    <div class="w-10 h-10 rounded-lg bg-medical-500 text-white font-bold flex items-center justify-center flex-shrink-0 text-lg">E</div>
+                    <div>
+                        <h4 class="font-bold text-slate-900">Engager & Encaisser (Tech Stack)</h4>
+                        <p class="text-sm text-slate-600 mt-1">Faire signer le <strong>Mandat GoCardless</strong> sur tablette pour valider l'acompte avant de créer le groupe WhatsApp.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Tab Management
+        function switchTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(el => {
+                el.classList.add('hidden');
+                el.classList.remove('block');
+            });
+            
+            document.querySelectorAll('.tab-btn').forEach(el => {
+                el.classList.remove('bg-white', 'text-medical-600', 'shadow-sm', 'ring-1', 'ring-slate-900/5');
+                el.classList.add('text-slate-500', 'hover:text-slate-700', 'hover:bg-slate-50');
+            });
+            
+            const content = document.getElementById(tabId);
+            content.classList.remove('hidden');
+            content.classList.add('block');
+            
+            const activeBtn = document.querySelector(`[data-tab="${tabId}"]`);
+            activeBtn.classList.remove('text-slate-500', 'hover:text-slate-700', 'hover:bg-slate-50');
+            activeBtn.classList.add('bg-white', 'text-medical-600', 'shadow-sm', 'ring-1', 'ring-slate-900/5');
+        }
+
+        // Modal Management
+        const overlay = document.getElementById('modalOverlay');
+        
+        function openModal(modalId) {
+            const modal = document.getElementById(modalId);
+            const modalInner = modal.querySelector('div');
+            
+            // Show overlay
+            overlay.classList.remove('hidden');
+            setTimeout(() => overlay.classList.remove('opacity-0'), 10);
+            
+            // Show modal
+            modal.classList.remove('hidden');
+            modal.classList.add('flex');
+            
+            // Animate in
+            setTimeout(() => {
+                modalInner.classList.remove('opacity-0', 'translate-y-8');
+            }, 10);
+        }
+
+        function closeAllModals() {
+            // Fade out overlay
+            overlay.classList.add('opacity-0');
+            
+            document.querySelectorAll('[id$="Modal"]').forEach(modal => {
+                if(!modal.classList.contains('hidden')) {
+                    const modalInner = modal.querySelector('div');
+                    // Animate out
+                    modalInner.classList.add('opacity-0', 'translate-y-8');
+                    
+                    // Hide after animation
+                    setTimeout(() => {
+                        modal.classList.add('hidden');
+                        modal.classList.remove('flex');
+                        overlay.classList.add('hidden');
+                    }, 300);
+                }
+            });
+        }
+
+        // Close on Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') closeAllModals();
+        });
+
+        // Initialize with 'actuel' tab
+        document.addEventListener("DOMContentLoaded", () => {
+            switchTab('actuel');
+        });
+    </script>
+</body>
+</html>
