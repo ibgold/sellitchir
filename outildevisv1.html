@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Expert Pricing V16c — Clinique Belleza</title>
+    <title>Expert Pricing V16d — Clinique Belleza</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
@@ -71,7 +71,7 @@
             </div>
             <div>
                 <h1 class="text-base font-bold text-slate-900 leading-tight">Expert Pricing</h1>
-                <p class="text-[10px] text-slate-400 font-medium tracking-wide" id="versionLabel">V16 · chargement…</p>
+                <p class="text-[10px] text-slate-400 font-medium tracking-wide" id="versionLabel">V16d · chargement…</p>
             </div>
         </div>
 
@@ -541,7 +541,7 @@ let structural = JSON.parse(JSON.stringify(DEFAULT_STRUCTURAL));
 let currentClinic = 'alphand';
 let currentKey = '';
 let isDirty = false;
-const VERSION = 'V16';
+const VERSION = 'V16d';
 
 // ─── STORAGE KEYS ──────────────────────────────────────────────────────────
 const LS_TOKEN    = 'ep_gist_token';
@@ -630,7 +630,7 @@ async function loadFromGist() {
         applyLoadedData(data);
         setGistStatus('ok', 'Synchronisé');
         const d = new Date(gist.updated_at);
-        document.getElementById('versionLabel').textContent = `V16b · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
+        document.getElementById('versionLabel').textContent = `V16d · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
         showToast('Données chargées ✓', 'ok');
     } catch(e) {
         setGistStatus('error', 'Erreur: ' + e.message);
@@ -666,7 +666,7 @@ async function saveToGist() {
         isDirty = false;
         setGistStatus('ok', 'Synchronisé');
         const d = new Date(gist.updated_at);
-        document.getElementById('versionLabel').textContent = `V16b · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
+        document.getElementById('versionLabel').textContent = `V16d · ${d.toLocaleDateString('fr-FR')} ${d.toLocaleTimeString('fr-FR', {hour:'2-digit',minute:'2-digit'})}`;
         showToast('Sauvegardé dans le Gist ✓', 'ok');
     } catch(e) {
         setGistStatus('error', 'Erreur: ' + e.message);
@@ -810,7 +810,7 @@ function rowChanged(el) {
     db[key].duration         = parseInt(tr.querySelector('.row-duration').value) || 0;
     const etoileVal          = tr.querySelector('.row-duration-etoile').value;
     const biarritzVal        = tr.querySelector('.row-duration-biarritz').value;
-    db[key].duration_etoile   = etoileVal   !== '' ? parseInt(etoileVal)   : null;
+    db[key].duration_etoile   = etoileVal    !== '' ? parseInt(etoileVal)   : null;
     db[key].duration_biarritz = biarritzVal !== '' ? parseInt(biarritzVal) : null;
     db[key].type             = tr.querySelector('.row-type').value;
     db[key].biarritz.hc      = parseFloat(tr.querySelector('.row-hc').value) || 0;
@@ -979,7 +979,11 @@ function calculate() {
 
     const baseHC       = data.biarritz.hc;
     const implantsCost = data.biarritz.implants;
-    const refTech      = calcAlphand(duration, data.type);
+    
+    // Le calcul de la référence cible est désormais basé sur la clinique Étoile
+    // en utilisant la durée paramétrée d'Étoile si elle existe.
+    const refDur       = data.duration_etoile != null ? data.duration_etoile : data.duration;
+    const refTech      = calcEtoile(refDur);
     const TARGET       = refTech.total + baseHC + implantsCost;
 
     let localTech;
@@ -1022,7 +1026,7 @@ function calculate() {
         hcSub.className   = 'text-xs font-bold text-green-600 mt-0.5';
         badge.classList.remove('hidden');
         document.getElementById('profitAmount').textContent = '+' + fmt(profit) + ' €';
-        document.getElementById('footerNote').textContent   = '* HC aligné sur la référence Alphand pour maximiser la marge.';
+        document.getElementById('footerNote').textContent   = '* HC aligné sur la référence Étoile pour maximiser la marge.';
     } else {
         rowHC.className  = 'flex items-center justify-between p-4 rounded-xl bg-blue-50 border border-blue-100 ring-1 ring-blue-200 shadow-sm transition-all duration-300';
         iconHC.className = 'w-12 h-12 rounded-full bg-white text-blue-600 flex items-center justify-center shadow-sm';
